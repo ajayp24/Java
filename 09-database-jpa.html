@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Database &amp; JPA — Java Interview Prep</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#10b981;--accent2:#00d4aa;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:var(--accent);font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(16,185,129,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:960px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(16,185,129,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent2)}
+  .note::before{content:'💡 '}
+  .warn{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:#ff6b6b}
+  .warn::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP &amp; SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html" class="active"><span class="num">09</span> Database &amp; JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM &amp; Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Database &amp; JPA</div>
+  <div class="page-header">
+    <div class="topic-badge">🗄️ Topic 09</div>
+    <h1>Database &amp; JPA</h1>
+    <p class="page-desc">JPA/Hibernate entity mapping, N+1 problem and fixes, transaction management, query optimization, caching levels, connection pooling, and database indexing — all at senior depth.</p>
+  </div>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#entities">Entity Mapping</a></li>
+      <li><a href="#relationships">Relationships</a></li>
+      <li><a href="#n-plus-one">N+1 Problem &amp; Fix</a></li>
+      <li><a href="#transactions">Transaction Management</a></li>
+      <li><a href="#caching">JPA Caching</a></li>
+      <li><a href="#query-opt">Query Optimization</a></li>
+      <li><a href="#indexing">Indexing Strategy</a></li>
+      <li><a href="#interview-qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <section id="entities">
+    <h2>1. Entity Mapping</h2>
+    <div class="code-block"><span class="ann">@Entity</span>
+<span class="ann">@Table</span>(name = <span class="str">"orders"</span>, indexes = {
+    <span class="ann">@Index</span>(name = <span class="str">"idx_customer_status"</span>, columnList = <span class="str">"customer_id, status"</span>)
+})
+<span class="kw">public class</span> <span class="cls">Order</span> {
+    <span class="ann">@Id</span>
+    <span class="ann">@GeneratedValue</span>(strategy = <span class="cls">GenerationType</span>.SEQUENCE,
+        generator = <span class="str">"order_seq"</span>)
+    <span class="ann">@SequenceGenerator</span>(name = <span class="str">"order_seq"</span>, sequenceName = <span class="str">"order_sequence"</span>,
+        allocationSize = <span class="num">50</span>)  <span class="cmt">// batches 50 IDs — reduces DB round trips</span>
+    <span class="kw">private</span> <span class="cls">Long</span> id;
+
+    <span class="ann">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="kw">private</span> <span class="cls">Long</span> customerId;
+
+    <span class="ann">@Enumerated</span>(<span class="cls">EnumType</span>.STRING)  <span class="cmt">// store as "PENDING", not 0/1/2</span>
+    <span class="kw">private</span> <span class="cls">OrderStatus</span> status;
+
+    <span class="ann">@Column</span>(precision = <span class="num">15</span>, scale = <span class="num">2</span>)
+    <span class="kw">private</span> <span class="cls">BigDecimal</span> total;
+
+    <span class="ann">@Column</span>(updatable = <span class="kw">false</span>)
+    <span class="ann">@CreationTimestamp</span>
+    <span class="kw">private</span> <span class="cls">Instant</span> createdAt;
+
+    <span class="ann">@Version</span>  <span class="cmt">// optimistic locking — prevents lost updates</span>
+    <span class="kw">private</span> <span class="kw">int</span> version;
+}</div>
+    <div class="note">Prefer GenerationType.SEQUENCE with allocationSize over IDENTITY. IDENTITY disables JDBC batch inserts because each insert needs the auto-generated ID immediately.</div>
+  </section>
+
+  <section id="relationships">
+    <h2>2. Relationships</h2>
+    <div class="code-block"><span class="cmt">// One-to-Many — Order has many OrderItems</span>
+<span class="ann">@OneToMany</span>(mappedBy = <span class="str">"order"</span>, cascade = <span class="cls">CascadeType</span>.ALL,
+    fetch = <span class="cls">FetchType</span>.LAZY, orphanRemoval = <span class="kw">true</span>)
+<span class="kw">private</span> <span class="cls">List</span>&lt;<span class="cls">OrderItem</span>&gt; items = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;&gt;();
+
+<span class="cmt">// Many-to-One — OrderItem belongs to Order</span>
+<span class="ann">@ManyToOne</span>(fetch = <span class="cls">FetchType</span>.LAZY)
+<span class="ann">@JoinColumn</span>(name = <span class="str">"order_id"</span>, nullable = <span class="kw">false</span>)
+<span class="kw">private</span> <span class="cls">Order</span> order;
+
+<span class="cmt">// Many-to-Many — use @JoinTable on owning side</span>
+<span class="ann">@ManyToMany</span>(cascade = { <span class="cls">CascadeType</span>.PERSIST, <span class="cls">CascadeType</span>.MERGE })
+<span class="ann">@JoinTable</span>(name = <span class="str">"product_tags"</span>,
+    joinColumns = <span class="ann">@JoinColumn</span>(name = <span class="str">"product_id"</span>),
+    inverseJoinColumns = <span class="ann">@JoinColumn</span>(name = <span class="str">"tag_id"</span>))
+<span class="kw">private</span> <span class="cls">Set</span>&lt;<span class="cls">Tag</span>&gt; tags = <span class="kw">new</span> <span class="cls">HashSet</span>&lt;&gt;();</div>
+    <div class="warn">EAGER fetch type on collections is dangerous — it loads all related data even when you don't need it, and combined with multiple EAGER collections causes Cartesian product queries. Always use LAZY for @OneToMany and @ManyToMany.</div>
+  </section>
+
+  <section id="n-plus-one">
+    <h2>3. N+1 Problem &amp; Fixes</h2>
+    <p>The N+1 problem: loading N entities and then issuing 1 additional query per entity to load a related collection = N+1 total queries.</p>
+    <div class="code-block"><span class="cmt">// N+1 problem — 1 query for orders, N queries for order.getItems()</span>
+<span class="cls">List</span>&lt;<span class="cls">Order</span>&gt; orders = orderRepo.<span class="met">findAll</span>();   <span class="cmt">// SELECT * FROM orders</span>
+orders.<span class="met">forEach</span>(o -&gt; o.<span class="met">getItems</span>().<span class="met">size</span>());   <span class="cmt">// SELECT * FROM order_items WHERE order_id=? × N</span>
+
+<span class="cmt">// Fix 1: JOIN FETCH — loads everything in one query (use for single relationship)</span>
+<span class="ann">@Query</span>(<span class="str">"SELECT DISTINCT o FROM Order o JOIN FETCH o.items WHERE o.status = :status"</span>)
+<span class="cls">List</span>&lt;<span class="cls">Order</span>&gt; <span class="met">findWithItems</span>(<span class="ann">@Param</span>(<span class="str">"status"</span>) <span class="cls">OrderStatus</span> status);
+
+<span class="cmt">// Fix 2: @EntityGraph — declarative alternative to JOIN FETCH</span>
+<span class="ann">@EntityGraph</span>(attributePaths = { <span class="str">"items"</span>, <span class="str">"items.product"</span> })
+<span class="cls">List</span>&lt;<span class="cls">Order</span>&gt; <span class="met">findByCustomerId</span>(<span class="cls">Long</span> customerId);
+
+<span class="cmt">// Fix 3: @BatchSize — issues IN() query for collection instead of 1-by-1</span>
+<span class="ann">@OneToMany</span>(mappedBy = <span class="str">"order"</span>, fetch = <span class="cls">FetchType</span>.LAZY)
+<span class="ann">@BatchSize</span>(size = <span class="num">100</span>)  <span class="cmt">// loads items for up to 100 orders in one IN() query</span>
+<span class="kw">private</span> <span class="cls">List</span>&lt;<span class="cls">OrderItem</span>&gt; items;
+
+<span class="cmt">// Fix 4: Projections / DTOs — avoid entity entirely when you need a subset</span>
+<span class="ann">@Query</span>(<span class="str">"SELECT new com.example.dto.OrderSummaryDto(o.id, o.status, o.total) FROM Order o"</span>)
+<span class="cls">List</span>&lt;<span class="cls">OrderSummaryDto</span>&gt; <span class="met">findOrderSummaries</span>();
+<span class="cmt">// No lazy-load issue — DTO has no persistent collections</span></div>
+    <div class="warn">JOIN FETCH with pagination (@PageRequest) causes HHH90003004 warning and incorrect results — Hibernate loads all data in memory and paginates in Java. Use @BatchSize or a two-query approach (paginate IDs first, then fetch full entities by those IDs).</div>
+  </section>
+
+  <section id="transactions">
+    <h2>4. Transaction Management</h2>
+    <div class="code-block"><span class="cmt">// Transaction propagation — what happens when one @Transactional calls another</span>
+<span class="cmt">// REQUIRED (default) — join existing or create new</span>
+<span class="cmt">// REQUIRES_NEW     — always create new (suspends outer)</span>
+<span class="cmt">// MANDATORY        — must have existing or throws</span>
+<span class="cmt">// NEVER            — must NOT have existing or throws</span>
+<span class="cmt">// NOT_SUPPORTED    — suspend existing, run without transaction</span>
+<span class="cmt">// SUPPORTS         — use existing if present, else run without</span>
+<span class="cmt">// NESTED           — savepoint within outer transaction</span>
+
+<span class="ann">@Transactional</span>(
+    propagation = <span class="cls">Propagation</span>.REQUIRED,
+    isolation = <span class="cls">Isolation</span>.READ_COMMITTED,     <span class="cmt">// prevents dirty reads</span>
+    rollbackFor = <span class="cls">Exception</span>.<span class="kw">class</span>,           <span class="cmt">// rollback on checked exceptions too</span>
+    timeout = <span class="num">30</span>                               <span class="cmt">// seconds</span>
+)
+<span class="kw">public void</span> <span class="met">placeOrder</span>(<span class="cls">CreateOrderRequest</span> req) { ... }
+
+<span class="cmt">// Pessimistic locking — DB-level row lock</span>
+<span class="ann">@Lock</span>(<span class="cls">LockModeType</span>.PESSIMISTIC_WRITE)
+<span class="ann">@Query</span>(<span class="str">"SELECT i FROM Inventory i WHERE i.productId = :id"</span>)
+<span class="cls">Inventory</span> <span class="met">findAndLockByProductId</span>(<span class="ann">@Param</span>(<span class="str">"id"</span>) <span class="cls">Long</span> id);
+<span class="cmt">// → SELECT ... FOR UPDATE</span>
+
+<span class="cmt">// Optimistic locking — @Version field, throws OptimisticLockException on conflict</span>
+<span class="cmt">// Retry on optimistic lock failure:</span>
+<span class="ann">@Retryable</span>(value = <span class="cls">OptimisticLockException</span>.<span class="kw">class</span>, maxAttempts = <span class="num">3</span>,
+    backoff = <span class="ann">@Backoff</span>(delay = <span class="num">100</span>))
+<span class="kw">public void</span> <span class="met">updateInventory</span>(<span class="cls">Long</span> productId, <span class="kw">int</span> delta) { ... }</div>
+  </section>
+
+  <section id="caching">
+    <h2>5. JPA Caching Levels</h2>
+    <table>
+      <tr><th>Level</th><th>Scope</th><th>Automatic</th><th>Notes</th></tr>
+      <tr><td>L1 (Session/EntityManager)</td><td>One transaction/session</td><td>Yes</td><td>Always on; cleared on flush/close</td></tr>
+      <tr><td>L2 (Second-level)</td><td>SessionFactory (all sessions)</td><td>No (@Cache on entity)</td><td>Ehcache, Caffeine, Hazelcast, Redis</td></tr>
+      <tr><td>Query cache</td><td>SessionFactory</td><td>No (@QueryHints)</td><td>Caches result sets; invalidated on entity changes</td></tr>
+    </table>
+    <div class="code-block"><span class="cmt">// L2 cache configuration</span>
+<span class="ann">@Entity</span>
+<span class="ann">@Cache</span>(usage = <span class="cls">CacheConcurrencyStrategy</span>.READ_WRITE)  <span class="cmt">// or NONSTRICT_READ_WRITE</span>
+<span class="kw">public class</span> <span class="cls">Product</span> { ... }
+
+<span class="cmt">// application.yml</span>
+<span class="cmt">spring.jpa.properties.hibernate.cache.use_second_level_cache: true</span>
+<span class="cmt">spring.jpa.properties.hibernate.cache.region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory</span></div>
+  </section>
+
+  <section id="query-opt">
+    <h2>6. Query Optimization</h2>
+    <div class="code-block"><span class="cmt">// Enable SQL logging (dev only)</span>
+<span class="cmt">spring.jpa.show-sql: true</span>
+<span class="cmt">spring.jpa.properties.hibernate.format_sql: true</span>
+<span class="cmt">logging.level.org.hibernate.type.descriptor.sql: TRACE  # shows parameter values</span>
+
+<span class="cmt">// Use JPQL projections to avoid over-fetching</span>
+<span class="ann">@Query</span>(<span class="str">"SELECT o.id, o.status, o.total FROM Order o WHERE o.customerId = :cid"</span>)
+<span class="cls">List</span>&lt;<span class="cls">Object</span>[]&gt; <span class="met">findOrderSummary</span>(<span class="ann">@Param</span>(<span class="str">"cid"</span>) <span class="cls">Long</span> cid);
+
+<span class="cmt">// Specification API — dynamic queries without string concatenation</span>
+<span class="kw">public class</span> <span class="cls">OrderSpecs</span> {
+    <span class="kw">public static</span> <span class="cls">Specification</span>&lt;<span class="cls">Order</span>&gt; <span class="met">hasStatus</span>(<span class="cls">OrderStatus</span> s) {
+        <span class="kw">return</span> (root, q, cb) -&gt; s == <span class="kw">null</span> ? <span class="kw">null</span> : cb.<span class="met">equal</span>(root.<span class="met">get</span>(<span class="str">"status"</span>), s);
+    }
+    <span class="kw">public static</span> <span class="cls">Specification</span>&lt;<span class="cls">Order</span>&gt; <span class="met">totalGreaterThan</span>(<span class="cls">BigDecimal</span> min) {
+        <span class="kw">return</span> (root, q, cb) -&gt; min == <span class="kw">null</span> ? <span class="kw">null</span> : cb.<span class="met">greaterThan</span>(root.<span class="met">get</span>(<span class="str">"total"</span>), min);
+    }
+}
+<span class="cls">Specification</span>&lt;<span class="cls">Order</span>&gt; spec = <span class="cls">Specification</span>
+    .<span class="met">where</span>(<span class="cls">OrderSpecs</span>.<span class="met">hasStatus</span>(status))
+    .<span class="met">and</span>(<span class="cls">OrderSpecs</span>.<span class="met">totalGreaterThan</span>(minTotal));
+orderRepo.<span class="met">findAll</span>(spec, pageable);</div>
+  </section>
+
+  <section id="indexing">
+    <h2>7. Indexing Strategy</h2>
+    <table>
+      <tr><th>Scenario</th><th>Index Type</th><th>Columns</th></tr>
+      <tr><td>Primary key</td><td>Clustered (auto)</td><td>id</td></tr>
+      <tr><td>Frequent WHERE clause</td><td>B-tree</td><td>customer_id, status</td></tr>
+      <tr><td>Range queries + equality</td><td>Composite B-tree</td><td>(status, created_at) — equality first</td></tr>
+      <tr><td>Full-text search</td><td>GIN/GiST (PostgreSQL)</td><td>description, title</td></tr>
+      <tr><td>Unique constraint</td><td>Unique index</td><td>email</td></tr>
+      <tr><td>Low-selectivity column</td><td>Partial index</td><td>WHERE status = 'PENDING'</td></tr>
+    </table>
+    <div class="note">Composite index column order matters: equality columns first, range columns last. Index (status, created_at) enables WHERE status=X AND created_at &gt; Y but not WHERE created_at &gt; Y alone.</div>
+  </section>
+
+  <section id="interview-qa">
+    <h2>8. Interview Q&amp;A</h2>
+    <div class="qa-block">
+      <div class="qa-q">What is the N+1 query problem and how do you detect and fix it?</div>
+      <div class="qa-a">
+        <strong>Problem:</strong> Loading a collection of N entities triggers 1 additional SQL per entity to load a lazy association = N+1 queries total. 100 orders → 101 queries.<br><br>
+        <strong>Detection:</strong><br>
+        1. Enable SQL logging (hibernate.show_sql) and count queries<br>
+        2. Use Hibernate Statistics API in tests<br>
+        3. P6Spy or datasource-proxy library to log and count queries<br>
+        4. Look for repeated queries with different IDs in logs<br><br>
+        <strong>Fixes:</strong><br>
+        - JOIN FETCH: single query, loads association in memory — avoid with pagination<br>
+        - @EntityGraph: same as JOIN FETCH but declarative<br>
+        - @BatchSize: IN() queries (e.g., WHERE order_id IN (1,2,...,100))<br>
+        - DTO projections: avoid entity entirely, no lazy-load issue<br>
+        - Two-query approach for paginated results: fetch IDs first, then entities by ID
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">Explain the difference between optimistic and pessimistic locking.</div>
+      <div class="qa-a">
+        <strong>Optimistic locking</strong> assumes conflicts are rare. No DB-level lock is acquired. When updating, checks that a @Version counter hasn't changed since read. If another transaction committed first, throws OptimisticLockException. Best for read-heavy, low-contention scenarios.<br><br>
+        <strong>Pessimistic locking</strong> acquires a DB-level row lock (SELECT FOR UPDATE) for the duration of the transaction. Other transactions trying to read/write that row are blocked. Best for high-contention scenarios where conflicts are frequent and costly (e.g., inventory deduction).<br><br>
+        Trade-offs: Optimistic — better throughput, worse UX on conflict (retry needed). Pessimistic — serializes access, lower throughput, risk of deadlock, potential timeout if lock held too long.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between FetchType.LAZY and EAGER, and when would you use each?</div>
+      <div class="qa-a">
+        <strong>EAGER</strong> — association is always loaded with the parent entity, in the same query (or additional queries). @ManyToOne and @OneToOne default to EAGER.<br><br>
+        <strong>LAZY</strong> — association loaded only when accessed for the first time. Requires an active session. @OneToMany and @ManyToMany default to LAZY.<br><br>
+        <strong>Use LAZY almost always</strong> — EAGER on collections causes unnecessary data loading and can produce Cartesian products. Exception: small, always-needed associations (@ManyToOne to a reference table) where EAGER is reasonable.<br><br>
+        Common trap: calling a lazy association after the EntityManager is closed → LazyInitializationException. Fix: use @Transactional on the service method, or use JOIN FETCH/DTO in the query.
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="08-microservices.html" class="btn">← Microservices</a>
+    <a href="10-system-design.html" class="btn next">System Design →</a>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design — Java Interview Prep</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#e879f9;--accent2:#00d4aa;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:var(--accent);font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(232,121,249,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:960px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(232,121,249,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent2)}
+  .note::before{content:'💡 '}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP &amp; SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database &amp; JPA</a>
+  <a href="10-system-design.html" class="active"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM &amp; Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / System Design</div>
+  <div class="topic-badge">🏗️ Topic 10</div>
+  <h1>System Design</h1>
+  <p class="page-desc">Scalability, CAP theorem, caching strategies, message queues, sharding, high availability, rate limiting, and the frameworks to reason about large-scale system trade-offs in interviews.</p>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#cap">CAP Theorem</a></li>
+      <li><a href="#scalability">Scalability Patterns</a></li>
+      <li><a href="#caching">Caching Strategies</a></li>
+      <li><a href="#messaging">Message Queues</a></li>
+      <li><a href="#sharding">Database Sharding</a></li>
+      <li><a href="#ha">High Availability</a></li>
+      <li><a href="#rate-limiting">Rate Limiting</a></li>
+      <li><a href="#interview-qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <section id="cap">
+    <h2>1. CAP Theorem</h2>
+    <p>A distributed system can guarantee at most 2 of the 3 properties simultaneously:</p>
+    <table>
+      <tr><th>Property</th><th>Meaning</th></tr>
+      <tr><td><strong>Consistency</strong></td><td>Every read receives the most recent write or an error</td></tr>
+      <tr><td><strong>Availability</strong></td><td>Every request receives a non-error response (may not be the latest data)</td></tr>
+      <tr><td><strong>Partition tolerance</strong></td><td>System continues operating even when nodes can't communicate</td></tr>
+    </table>
+    <div class="note">In practice, network partitions (P) are unavoidable — you must choose between C and A during a partition. CP systems return errors when partitioned (consistent but unavailable); AP systems return stale data (available but inconsistent). PACELC extends CAP: even when no partition (E), choose Latency (L) vs. Consistency (C).</div>
+    <table>
+      <tr><th>Database</th><th>Posture</th><th>Reason</th></tr>
+      <tr><td>PostgreSQL</td><td>CP</td><td>Strong ACID guarantees; replication lag means eventual consistency</td></tr>
+      <tr><td>Cassandra</td><td>AP (tunable)</td><td>Leaderless replication; tunable quorum (ONE/QUORUM/ALL)</td></tr>
+      <tr><td>DynamoDB</td><td>AP (default) / CP</td><td>Eventually consistent reads by default; strongly consistent optional</td></tr>
+      <tr><td>Redis (cluster)</td><td>AP</td><td>Async replication; split-brain possible</td></tr>
+    </table>
+  </section>
+
+  <section id="scalability">
+    <h2>2. Scalability Patterns</h2>
+    <table>
+      <tr><th>Pattern</th><th>How</th><th>Best For</th><th>Limit</th></tr>
+      <tr><td>Vertical scaling</td><td>Bigger server (more CPU/RAM)</td><td>DB servers, single-node ops</td><td>Hardware ceiling; single point of failure</td></tr>
+      <tr><td>Horizontal scaling</td><td>More servers behind load balancer</td><td>Stateless services</td><td>Shared state must be externalized (Redis, DB)</td></tr>
+      <tr><td>Read replicas</td><td>Route reads to replicas</td><td>Read-heavy workloads</td><td>Replication lag; not suitable for strong consistency</td></tr>
+      <tr><td>CQRS</td><td>Separate read/write models</td><td>Complex domain + heavy reporting</td><td>Complexity; eventual consistency</td></tr>
+      <tr><td>Async processing</td><td>Queue write operations</td><td>Spike absorption, decoupling</td><td>Latency added to writes</td></tr>
+    </table>
+  </section>
+
+  <section id="caching">
+    <h2>3. Caching Strategies</h2>
+    <table>
+      <tr><th>Strategy</th><th>Description</th><th>Best For</th></tr>
+      <tr><td>Cache-aside (Lazy)</td><td>App reads cache; on miss reads DB and populates cache</td><td>General purpose — most common</td></tr>
+      <tr><td>Write-through</td><td>App writes to cache AND DB synchronously</td><td>High read rate with low write tolerance for stale</td></tr>
+      <tr><td>Write-behind (async)</td><td>Write to cache; async write to DB</td><td>Write-heavy, can tolerate DB lag</td></tr>
+      <tr><td>Read-through</td><td>Cache manages DB reads transparently</td><td>When cache library supports it</td></tr>
+    </table>
+    <div class="code-block"><span class="cmt">// Cache-aside pattern in Java</span>
+<span class="kw">public</span> <span class="cls">User</span> <span class="met">getUser</span>(<span class="cls">Long</span> id) {
+    <span class="cls">String</span> key = <span class="str">"user:"</span> + id;
+    <span class="cls">User</span> cached = (User) cache.<span class="met">get</span>(key);
+    <span class="kw">if</span> (cached != <span class="kw">null</span>) <span class="kw">return</span> cached;
+
+    <span class="cls">User</span> user = userRepo.<span class="met">findById</span>(id).<span class="met">orElseThrow</span>();
+    cache.<span class="met">put</span>(key, user, <span class="cls">Duration</span>.<span class="met">ofMinutes</span>(<span class="num">30</span>));
+    <span class="kw">return</span> user;
+}
+
+<span class="cmt">// Cache invalidation on update</span>
+<span class="kw">public</span> <span class="cls">User</span> <span class="met">updateUser</span>(<span class="cls">Long</span> id, <span class="cls">UpdateUserRequest</span> req) {
+    <span class="cls">User</span> updated = userRepo.<span class="met">save</span>(<span class="met">applyChanges</span>(userRepo.<span class="met">findById</span>(id).<span class="met">orElseThrow</span>(), req));
+    cache.<span class="met">evict</span>(<span class="str">"user:"</span> + id);  <span class="cmt">// invalidate — don't update; avoids race condition</span>
+    <span class="kw">return</span> updated;
+}
+
+<span class="cmt">// Cache stampede prevention — probabilistic early expiration or distributed lock</span>
+<span class="kw">public</span> <span class="cls">User</span> <span class="met">getUserWithLock</span>(<span class="cls">Long</span> id) {
+    <span class="cls">String</span> key = <span class="str">"user:"</span> + id;
+    <span class="cls">User</span> cached = (<span class="cls">User</span>) cache.<span class="met">get</span>(key);
+    <span class="kw">if</span> (cached != <span class="kw">null</span>) <span class="kw">return</span> cached;
+    <span class="cmt">// Acquire distributed lock to prevent thundering herd</span>
+    <span class="kw">return</span> redissonLock.<span class="met">withLock</span>(<span class="str">"lock:user:"</span> + id, () -&gt; {
+        <span class="cls">User</span> doubleCheck = (<span class="cls">User</span>) cache.<span class="met">get</span>(key);
+        <span class="kw">if</span> (doubleCheck != <span class="kw">null</span>) <span class="kw">return</span> doubleCheck;
+        <span class="cls">User</span> user = userRepo.<span class="met">findById</span>(id).<span class="met">orElseThrow</span>();
+        cache.<span class="met">put</span>(key, user, <span class="cls">Duration</span>.<span class="met">ofMinutes</span>(<span class="num">30</span>));
+        <span class="kw">return</span> user;
+    });
+}</div>
+  </section>
+
+  <section id="messaging">
+    <h2>4. Message Queues</h2>
+    <table>
+      <tr><th>System</th><th>Model</th><th>Throughput</th><th>Best For</th></tr>
+      <tr><td>Kafka</td><td>Durable log, consumer groups</td><td>Millions/sec</td><td>Event streaming, audit log, replay</td></tr>
+      <tr><td>RabbitMQ</td><td>AMQP, exchanges/queues</td><td>Thousands/sec</td><td>Task queues, complex routing, RPC</td></tr>
+      <tr><td>SQS</td><td>Managed, at-least-once</td><td>High (with FIFO limits)</td><td>AWS workloads, simple queuing</td></tr>
+      <tr><td>SNS + SQS</td><td>Fan-out pub/sub</td><td>High</td><td>Broadcast events to multiple consumers</td></tr>
+    </table>
+    <div class="note">Kafka retains messages for a configurable period (default 7 days) — consumers can replay events. RabbitMQ deletes messages after consumption — no replay. Choose Kafka when you need event sourcing, audit trails, or multiple independent consumers of the same stream.</div>
+  </section>
+
+  <section id="sharding">
+    <h2>5. Database Sharding</h2>
+    <table>
+      <tr><th>Strategy</th><th>How</th><th>Pros</th><th>Cons</th></tr>
+      <tr><td>Range sharding</td><td>Shard by value range (user_id 0-999 → shard 1)</td><td>Easy range queries</td><td>Hot spots if data is skewed</td></tr>
+      <tr><td>Hash sharding</td><td>shard = hash(key) % N</td><td>Even distribution</td><td>Range queries span all shards; resharding is hard</td></tr>
+      <tr><td>Directory sharding</td><td>Lookup table maps key → shard</td><td>Flexible, move data freely</td><td>Lookup table is a bottleneck/single point of failure</td></tr>
+      <tr><td>Geo sharding</td><td>Shard by geographic region</td><td>Regulatory compliance, latency</td><td>Cross-region queries complex</td></tr>
+    </table>
+    <div class="note">Consistent hashing minimizes data movement when adding/removing shards. A new node takes a portion from a neighbor rather than reshuffling everything. Cassandra, DynamoDB, and Redis Cluster use consistent hashing.</div>
+  </section>
+
+  <section id="ha">
+    <h2>6. High Availability Patterns</h2>
+    <ul>
+      <li><strong>Load balancing:</strong> Round-robin, least connections, IP hash. L4 (TCP) vs L7 (HTTP-aware, sticky sessions).</li>
+      <li><strong>Active-Active:</strong> Multiple nodes handle traffic; any node can fail without outage. Requires data synchronization.</li>
+      <li><strong>Active-Passive:</strong> Primary handles traffic; standby takes over on failure. Simpler but slower failover.</li>
+      <li><strong>Health checks + auto-healing:</strong> Kubernetes readiness/liveness probes, ELB health checks. Replace unhealthy instances automatically.</li>
+      <li><strong>Multi-AZ/Multi-region:</strong> Survive datacenter failure. Multi-region adds latency but survives regional outages.</li>
+      <li><strong>Blue-green deployment:</strong> Two identical environments; switch traffic instantly. Easy rollback.</li>
+      <li><strong>Canary deployment:</strong> Route small % of traffic to new version; increment if healthy.</li>
+    </ul>
+  </section>
+
+  <section id="rate-limiting">
+    <h2>7. Rate Limiting Algorithms</h2>
+    <table>
+      <tr><th>Algorithm</th><th>How it works</th><th>Pros</th><th>Cons</th></tr>
+      <tr><td>Token bucket</td><td>Tokens added at fixed rate; request consumes token</td><td>Allows bursting up to bucket size</td><td>More complex; distributed requires Redis</td></tr>
+      <tr><td>Leaky bucket</td><td>Queue requests; process at fixed rate; overflow dropped</td><td>Smooth output rate</td><td>Bursts still queue, adding latency</td></tr>
+      <tr><td>Fixed window counter</td><td>Count requests per time window</td><td>Simple</td><td>Boundary exploitation: 2x limit across window edges</td></tr>
+      <tr><td>Sliding window log</td><td>Log timestamps, count in rolling window</td><td>Accurate</td><td>High memory (stores all timestamps)</td></tr>
+      <tr><td>Sliding window counter</td><td>Approximate sliding window using two fixed windows</td><td>Accurate, low memory</td><td>Slight approximation</td></tr>
+    </table>
+    <div class="code-block"><span class="cmt">// Redis sliding window rate limiter (Lua script — atomic)</span>
+<span class="cmt">// KEYS[1] = rate-limit:{userId}</span>
+<span class="cmt">// ARGV[1] = current time ms</span>
+<span class="cmt">// ARGV[2] = window size ms (60000 = 1 min)</span>
+<span class="cmt">// ARGV[3] = max requests per window</span>
+<span class="kw">local</span> now = tonumber(ARGV[<span class="num">1</span>])
+<span class="kw">local</span> window = tonumber(ARGV[<span class="num">2</span>])
+<span class="kw">local</span> limit = tonumber(ARGV[<span class="num">3</span>])
+redis.call(<span class="str">'zremrangebyscore'</span>, KEYS[<span class="num">1</span>], <span class="num">0</span>, now - window)
+<span class="kw">local</span> count = redis.call(<span class="str">'zcard'</span>, KEYS[<span class="num">1</span>])
+<span class="kw">if</span> count &lt; limit <span class="kw">then</span>
+    redis.call(<span class="str">'zadd'</span>, KEYS[<span class="num">1</span>], now, now)
+    redis.call(<span class="str">'expire'</span>, KEYS[<span class="num">1</span>], window / <span class="num">1000</span>)
+    <span class="kw">return</span> <span class="num">1</span>  -- allowed
+<span class="kw">else</span>
+    <span class="kw">return</span> <span class="num">0</span>  -- rate limited
+<span class="kw">end</span></div>
+  </section>
+
+  <section id="interview-qa">
+    <h2>8. Interview Q&amp;A</h2>
+    <div class="qa-block">
+      <div class="qa-q">Design a URL shortener (bit.ly). Walk through your design.</div>
+      <div class="qa-a">
+        <strong>Requirements:</strong> ~100M URLs/day write, 10B reads/day, short URLs unique, must be permanent.<br><br>
+        <strong>Scale estimates:</strong> 1157 writes/sec, 115,740 reads/sec. Read:Write = 100:1.<br><br>
+        <strong>Core design:</strong><br>
+        1. <strong>Short code generation:</strong> hash(long_url) → take 6 chars, or use distributed ID (Snowflake) → base62 encode → 6 chars = 56B combinations. Handle collision with append counter.<br>
+        2. <strong>Storage:</strong> {short_code → long_url} in DB. PostgreSQL with index on short_code, or DynamoDB for scale.<br>
+        3. <strong>Read path:</strong> Client → CDN → API Gateway → Redis cache (miss → DB → cache-aside) → 301/302 redirect.<br>
+        4. <strong>Caching:</strong> 80% traffic to 20% URLs — cache hot URLs in Redis with LRU eviction.<br>
+        5. <strong>301 vs 302:</strong> 301 = permanent (browser caches, reduces server hits), 302 = temporary (allows analytics of every request). Choose 302 for analytics.<br>
+        6. <strong>Analytics:</strong> Publish click events to Kafka → stream processor → analytics DB (Clickhouse).
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What is the trade-off between SQL and NoSQL databases?</div>
+      <div class="qa-a">
+        <strong>SQL (PostgreSQL, MySQL):</strong> ACID transactions, rich query language, joins, schema enforcement, strong consistency. Best for: financial transactions, relational data, complex reporting, data integrity requirements.<br><br>
+        <strong>NoSQL:</strong><br>
+        - <strong>Key-value (Redis, DynamoDB):</strong> O(1) lookups, massive scale, limited query patterns<br>
+        - <strong>Document (MongoDB):</strong> Flexible schema, nested documents, good for catalogs/content<br>
+        - <strong>Column-family (Cassandra):</strong> Write-heavy, time-series, wide rows<br>
+        - <strong>Graph (Neo4j):</strong> Relationship traversal (social networks, recommendations)<br><br>
+        <strong>Common mistake:</strong> choosing NoSQL for scale before exhausting SQL optimization (indexing, read replicas, sharding). PostgreSQL handles hundreds of thousands of writes/sec with proper indexing. Start with SQL; migrate if you hit real limits.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">How would you design a notification system to send millions of emails per day?</div>
+      <div class="qa-a">
+        <strong>Architecture:</strong><br>
+        1. <strong>API layer:</strong> Accepts notification requests, validates, writes to Kafka topic "notifications.pending"<br>
+        2. <strong>Preference service:</strong> Checks user notification preferences (opted out? channel preference?)<br>
+        3. <strong>Templating service:</strong> Renders email from template + data, deduplicates by idempotency key<br>
+        4. <strong>Sending service:</strong> Consumes from Kafka, calls SES/SendGrid API with retry + exponential backoff<br>
+        5. <strong>Delivery tracking:</strong> Webhook from email provider → status DB (delivered/bounced/opened)<br><br>
+        <strong>Scale considerations:</strong><br>
+        - Rate limit per provider (SES = 14 emails/sec on sandbox, scales with verified sending)<br>
+        - Partition Kafka by user_id for per-user ordering guarantees<br>
+        - Separate priority queues: transactional (order confirmed) vs. marketing (newsletter)<br>
+        - Dead letter topic for failed sends with alerting<br>
+        - Idempotency keys prevent duplicate sends on retry
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="09-database-jpa.html" class="btn">← Database &amp; JPA</a>
+    <a href="11-testing.html" class="btn next">Testing →</a>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOP & SOLID Principles — Java Interview Prep</title>
+<style>
+  :root { --bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:#6c63ff;font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(108,99,255,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:900px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .page-header{margin-bottom:40px}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,0.15);border:1px solid rgba(108,99,255,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  h4{font-size:15px;font-weight:600;margin:20px 0 8px}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul,ol{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .solid-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;border-left:4px solid var(--accent)}
+  .solid-card h3{margin:0 0 8px;font-size:17px;color:var(--text)}
+  .solid-card .letter{font-size:28px;font-weight:900;color:var(--accent);float:right;margin-top:-4px}
+  .solid-card p{font-size:14px}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(108,99,255,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent2)}
+  .note::before{content:'💡 '}
+  .warn{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent3)}
+  .warn::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html" class="active"><span class="num">02</span> OOP & SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database & JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM & Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / OOP & SOLID Principles</div>
+  <div class="page-header">
+    <div class="topic-badge">🧱 Topic 02</div>
+    <h1>OOP & SOLID Principles</h1>
+    <p class="page-desc">Mastering object-oriented design and SOLID principles is what separates engineers who write code from engineers who design systems. Essential for Team Lead interviews.</p>
+  </div>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#four-pillars">Four Pillars of OOP</a></li>
+      <li><a href="#abstract-vs-interface">Abstract Class vs Interface</a></li>
+      <li><a href="#solid">SOLID Principles</a></li>
+      <li><a href="#srp">Single Responsibility</a></li>
+      <li><a href="#ocp">Open/Closed</a></li>
+      <li><a href="#lsp">Liskov Substitution</a></li>
+      <li><a href="#isp">Interface Segregation</a></li>
+      <li><a href="#dip">Dependency Inversion</a></li>
+      <li><a href="#interview-qa">Interview Q&A</a></li>
+    </ol>
+  </div>
+
+  <section id="four-pillars">
+    <h2>1. The Four Pillars of OOP</h2>
+    <h3>Encapsulation</h3>
+    <p>Bundling data and the methods that operate on it, hiding internal state. Achieved via access modifiers.</p>
+    <div class="code-block"><span class="kw">public class</span> <span class="cls">BankAccount</span> {
+    <span class="kw">private</span> <span class="kw">double</span> balance;   <span class="cmt">// hidden state</span>
+
+    <span class="kw">public void</span> <span class="met">deposit</span>(<span class="kw">double</span> amount) {
+        <span class="kw">if</span> (amount &lt;= <span class="num">0</span>) <span class="kw">throw new</span> <span class="cls">IllegalArgumentException</span>(<span class="str">"Amount must be positive"</span>);
+        balance += amount;  <span class="cmt">// controlled mutation</span>
+    }
+
+    <span class="kw">public double</span> <span class="met">getBalance</span>() { <span class="kw">return</span> balance; } <span class="cmt">// controlled access</span>
+}</div>
+
+    <h3>Inheritance</h3>
+    <p>A class can inherit fields and methods from a parent class, promoting code reuse. Java supports single inheritance for classes.</p>
+    <div class="code-block"><span class="kw">public abstract class</span> <span class="cls">Vehicle</span> {
+    <span class="kw">protected</span> <span class="cls">String</span> brand;
+    <span class="kw">public abstract void</span> <span class="met">start</span>();
+    <span class="kw">public void</span> <span class="met">displayBrand</span>() { <span class="kw">System</span>.out.<span class="met">println</span>(brand); }
+}
+
+<span class="kw">public class</span> <span class="cls">Car</span> <span class="kw">extends</span> <span class="cls">Vehicle</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="met">start</span>() { <span class="kw">System</span>.out.<span class="met">println</span>(<span class="str">"Car engine started"</span>); }
+}</div>
+
+    <h3>Polymorphism</h3>
+    <p><strong>Compile-time (static)</strong>: Method overloading — same name, different parameters. <strong>Runtime (dynamic)</strong>: Method overriding — subclass provides specific implementation.</p>
+    <div class="code-block"><span class="cmt">// Runtime polymorphism</span>
+<span class="cls">Vehicle</span> v = <span class="kw">new</span> <span class="cls">Car</span>();
+v.<span class="met">start</span>();  <span class="cmt">// calls Car.start() — resolved at runtime</span>
+
+<span class="cmt">// Compile-time polymorphism (overloading)</span>
+<span class="kw">public</span> <span class="kw">int</span> <span class="met">add</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) { <span class="kw">return</span> a + b; }
+<span class="kw">public double</span> <span class="met">add</span>(<span class="kw">double</span> a, <span class="kw">double</span> b) { <span class="kw">return</span> a + b; }</div>
+
+    <h3>Abstraction</h3>
+    <p>Hiding implementation details, exposing only what's necessary. Achieved through abstract classes and interfaces.</p>
+  </section>
+
+  <section id="abstract-vs-interface">
+    <h2>2. Abstract Class vs Interface</h2>
+    <table>
+      <tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
+      <tr><td>Instantiation</td><td>No</td><td>No</td></tr>
+      <tr><td>Multiple inheritance</td><td>No (single)</td><td>Yes (multiple)</td></tr>
+      <tr><td>Constructors</td><td>Yes</td><td>No</td></tr>
+      <tr><td>Fields</td><td>Any (instance/static/final)</td><td>public static final only</td></tr>
+      <tr><td>Methods</td><td>Abstract + concrete</td><td>Abstract + default + static (Java 8+)</td></tr>
+      <tr><td>Access modifiers</td><td>Any</td><td>public (default for methods)</td></tr>
+      <tr><td>When to use</td><td>Shared state + IS-A relationship</td><td>Contract / capability — CAN-DO</td></tr>
+    </table>
+    <div class="code-block"><span class="cmt">// Abstract class — shared state + template method pattern</span>
+<span class="kw">public abstract class</span> <span class="cls">DataProcessor</span> {
+    <span class="kw">private</span> <span class="cls">List</span>&lt;<span class="cls">String</span>&gt; errors = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;&gt;();  <span class="cmt">// shared state</span>
+
+    <span class="kw">public final void</span> <span class="met">process</span>(<span class="cls">String</span> data) {        <span class="cmt">// template method</span>
+        <span class="cls">String</span> validated = <span class="met">validate</span>(data);
+        <span class="cls">String</span> transformed = <span class="met">transform</span>(validated);
+        <span class="met">save</span>(transformed);
+    }
+    <span class="kw">protected abstract</span> <span class="cls">String</span> <span class="met">validate</span>(<span class="cls">String</span> data);
+    <span class="kw">protected abstract</span> <span class="cls">String</span> <span class="met">transform</span>(<span class="cls">String</span> data);
+    <span class="kw">protected abstract void</span> <span class="met">save</span>(<span class="cls">String</span> data);
+}
+
+<span class="cmt">// Interface — contract/capability</span>
+<span class="kw">public interface</span> <span class="cls">Serializable</span> {}                     <span class="cmt">// marker</span>
+<span class="kw">public interface</span> <span class="cls">Comparable</span>&lt;T&gt; { <span class="kw">int</span> <span class="met">compareTo</span>(T o); }
+
+<span class="cmt">// Java 8+ default methods in interfaces</span>
+<span class="kw">public interface</span> <span class="cls">Auditable</span> {
+    <span class="kw">default</span> <span class="cls">LocalDateTime</span> <span class="met">getCreatedAt</span>() { <span class="kw">return</span> <span class="cls">LocalDateTime</span>.<span class="met">now</span>(); }
+    <span class="kw">void</span> <span class="met">setCreatedAt</span>(<span class="cls">LocalDateTime</span> time);
+}</div>
+    <div class="note">Use interface when you want to define a contract that unrelated classes can implement. Use abstract class when you have shared implementation or state that subclasses need.</div>
+  </section>
+
+  <section id="solid">
+    <h2>3. SOLID Principles Overview</h2>
+    <p>SOLID is a set of five design principles that make software easier to understand, maintain, and extend. Critical for Team Lead interviews.</p>
+  </section>
+
+  <section id="srp">
+    <div class="solid-card">
+      <span class="letter">S</span>
+      <h3>Single Responsibility Principle</h3>
+      <p>A class should have only ONE reason to change — it should do one thing well.</p>
+    </div>
+    <div class="code-block"><span class="cmt">// VIOLATION — UserService does too many things</span>
+<span class="kw">class</span> <span class="cls">UserService</span> {
+    <span class="kw">public void</span> <span class="met">saveUser</span>(<span class="cls">User</span> user) { ... }
+    <span class="kw">public void</span> <span class="met">sendWelcomeEmail</span>(<span class="cls">User</span> user) { ... }
+    <span class="kw">public void</span> <span class="met">generateReport</span>() { ... }
+    <span class="kw">public</span> <span class="cls">String</span> <span class="met">formatUserXml</span>(<span class="cls">User</span> user) { ... }
+}
+
+<span class="cmt">// FIX — separate responsibilities</span>
+<span class="kw">class</span> <span class="cls">UserRepository</span>   { <span class="kw">public void</span> <span class="met">save</span>(<span class="cls">User</span> user) { ... } }
+<span class="kw">class</span> <span class="cls">EmailService</span>      { <span class="kw">public void</span> <span class="met">sendWelcome</span>(<span class="cls">User</span> user) { ... } }
+<span class="kw">class</span> <span class="cls">UserReportService</span> { <span class="kw">public void</span> <span class="met">generate</span>() { ... } }
+<span class="kw">class</span> <span class="cls">UserXmlSerializer</span> { <span class="kw">public</span> <span class="cls">String</span> <span class="met">serialize</span>(<span class="cls">User</span> u) { ... } }</div>
+    <p><strong>Team Lead insight:</strong> SRP also applies at the method and module level. A 500-line class almost always violates SRP. During code review, I ask: "What is this class's single responsibility?" If the answer has "and" in it, it needs splitting.</p>
+  </section>
+
+  <section id="ocp">
+    <div class="solid-card">
+      <span class="letter">O</span>
+      <h3>Open/Closed Principle</h3>
+      <p>Software entities should be OPEN for extension but CLOSED for modification. Add new behavior by adding new code, not changing existing code.</p>
+    </div>
+    <div class="code-block"><span class="cmt">// VIOLATION — add new payment means modifying existing class</span>
+<span class="kw">class</span> <span class="cls">PaymentProcessor</span> {
+    <span class="kw">public void</span> <span class="met">pay</span>(<span class="cls">String</span> type, <span class="kw">double</span> amount) {
+        <span class="kw">if</span> (type.<span class="met">equals</span>(<span class="str">"CREDIT"</span>)) { <span class="cmt">/* credit logic */</span> }
+        <span class="kw">else if</span> (type.<span class="met">equals</span>(<span class="str">"PAYPAL"</span>)) { <span class="cmt">/* paypal logic */</span> }
+        <span class="cmt">// Adding CRYPTO requires modifying this class</span>
+    }
+}
+
+<span class="cmt">// FIX — open for extension via interface</span>
+<span class="kw">interface</span> <span class="cls">PaymentMethod</span> {
+    <span class="kw">void</span> <span class="met">pay</span>(<span class="kw">double</span> amount);
+}
+
+<span class="kw">class</span> <span class="cls">CreditCardPayment</span> <span class="kw">implements</span> <span class="cls">PaymentMethod</span> {
+    <span class="kw">public void</span> <span class="met">pay</span>(<span class="kw">double</span> amount) { <span class="cmt">/* credit logic */</span> }
+}
+<span class="kw">class</span> <span class="cls">PayPalPayment</span> <span class="kw">implements</span> <span class="cls">PaymentMethod</span> {
+    <span class="kw">public void</span> <span class="met">pay</span>(<span class="kw">double</span> amount) { <span class="cmt">/* paypal logic */</span> }
+}
+<span class="cmt">// Adding CRYPTO: just create CryptoPayment implements PaymentMethod</span>
+
+<span class="kw">class</span> <span class="cls">PaymentProcessor</span> {
+    <span class="kw">public void</span> <span class="met">process</span>(<span class="cls">PaymentMethod</span> method, <span class="kw">double</span> amount) {
+        method.<span class="met">pay</span>(amount); <span class="cmt">// never needs to change</span>
+    }
+}</div>
+  </section>
+
+  <section id="lsp">
+    <div class="solid-card">
+      <span class="letter">L</span>
+      <h3>Liskov Substitution Principle</h3>
+      <p>Subtypes must be substitutable for their base types without altering program correctness. If S extends T, you should be able to use S wherever T is expected.</p>
+    </div>
+    <div class="code-block"><span class="cmt">// VIOLATION — Square extends Rectangle breaks LSP</span>
+<span class="kw">class</span> <span class="cls">Rectangle</span> {
+    <span class="kw">protected int</span> width, height;
+    <span class="kw">public void</span> <span class="met">setWidth</span>(<span class="kw">int</span> w) { width = w; }
+    <span class="kw">public void</span> <span class="met">setHeight</span>(<span class="kw">int</span> h) { height = h; }
+    <span class="kw">public int</span> <span class="met">area</span>() { <span class="kw">return</span> width * height; }
+}
+
+<span class="kw">class</span> <span class="cls">Square</span> <span class="kw">extends</span> <span class="cls">Rectangle</span> {
+    <span class="kw">public void</span> <span class="met">setWidth</span>(<span class="kw">int</span> w) { width = height = w; } <span class="cmt">// breaks Rectangle contract!</span>
+}
+
+<span class="cmt">// This breaks with Square:</span>
+<span class="cls">Rectangle</span> r = <span class="kw">new</span> <span class="cls">Square</span>();
+r.<span class="met">setWidth</span>(<span class="num">5</span>);
+r.<span class="met">setHeight</span>(<span class="num">10</span>);
+<span class="cmt">// Expected area: 50, Actual: 100 — LSP VIOLATED</span>
+
+<span class="cmt">// FIX — use composition, not inheritance</span>
+<span class="kw">interface</span> <span class="cls">Shape</span> { <span class="kw">int</span> <span class="met">area</span>(); }
+<span class="kw">class</span> <span class="cls">Rectangle</span> <span class="kw">implements</span> <span class="cls">Shape</span> { ... }
+<span class="kw">class</span> <span class="cls">Square</span>    <span class="kw">implements</span> <span class="cls">Shape</span> { ... } <span class="cmt">// separate, no false IS-A</span></div>
+
+    <p><strong>LSP contract rules:</strong> Method signatures must be compatible (preconditions can't be stronger, postconditions can't be weaker). Invariants of the base class must be preserved. Exceptions thrown must be the same or subtypes of base class exceptions.</p>
+  </section>
+
+  <section id="isp">
+    <div class="solid-card">
+      <span class="letter">I</span>
+      <h3>Interface Segregation Principle</h3>
+      <p>Clients should not be forced to depend on interfaces they don't use. Prefer many small, specific interfaces over one large "fat" interface.</p>
+    </div>
+    <div class="code-block"><span class="cmt">// VIOLATION — fat interface forces unnecessary implementation</span>
+<span class="kw">interface</span> <span class="cls">Worker</span> {
+    <span class="kw">void</span> <span class="met">work</span>();
+    <span class="kw">void</span> <span class="met">eat</span>();
+    <span class="kw">void</span> <span class="met">sleep</span>();
+}
+<span class="kw">class</span> <span class="cls">Robot</span> <span class="kw">implements</span> <span class="cls">Worker</span> {
+    <span class="kw">public void</span> <span class="met">work</span>() { <span class="cmt">/* works */</span> }
+    <span class="kw">public void</span> <span class="met">eat</span>()  { <span class="kw">throw new</span> <span class="cls">UnsupportedOperationException</span>(); } <span class="cmt">// forced</span>
+    <span class="kw">public void</span> <span class="met">sleep</span>() { <span class="kw">throw new</span> <span class="cls">UnsupportedOperationException</span>(); } <span class="cmt">// forced</span>
+}
+
+<span class="cmt">// FIX — segregate into focused interfaces</span>
+<span class="kw">interface</span> <span class="cls">Workable</span>  { <span class="kw">void</span> <span class="met">work</span>(); }
+<span class="kw">interface</span> <span class="cls">Eatable</span>   { <span class="kw">void</span> <span class="met">eat</span>(); }
+<span class="kw">interface</span> <span class="cls">Sleepable</span> { <span class="kw">void</span> <span class="met">sleep</span>(); }
+
+<span class="kw">class</span> <span class="cls">HumanWorker</span> <span class="kw">implements</span> <span class="cls">Workable</span>, <span class="cls">Eatable</span>, <span class="cls">Sleepable</span> { ... }
+<span class="kw">class</span> <span class="cls">Robot</span>       <span class="kw">implements</span> <span class="cls">Workable</span> { ... } <span class="cmt">// only what it needs</span></div>
+  </section>
+
+  <section id="dip">
+    <div class="solid-card">
+      <span class="letter">D</span>
+      <h3>Dependency Inversion Principle</h3>
+      <p>High-level modules should not depend on low-level modules — both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.</p>
+    </div>
+    <div class="code-block"><span class="cmt">// VIOLATION — OrderService directly depends on concrete MySQLRepository</span>
+<span class="kw">class</span> <span class="cls">OrderService</span> {
+    <span class="kw">private</span> <span class="cls">MySQLOrderRepository</span> repo = <span class="kw">new</span> <span class="cls">MySQLOrderRepository</span>(); <span class="cmt">// tight coupling</span>
+    <span class="kw">public void</span> <span class="met">placeOrder</span>(<span class="cls">Order</span> o) { repo.<span class="met">save</span>(o); }
+}
+
+<span class="cmt">// FIX — depend on abstraction (interface), inject concrete via DI</span>
+<span class="kw">interface</span> <span class="cls">OrderRepository</span> {
+    <span class="kw">void</span> <span class="met">save</span>(<span class="cls">Order</span> order);
+    <span class="cls">Optional</span>&lt;<span class="cls">Order</span>&gt; <span class="met">findById</span>(<span class="kw">long</span> id);
+}
+
+<span class="kw">class</span> <span class="cls">OrderService</span> {
+    <span class="kw">private final</span> <span class="cls">OrderRepository</span> repo; <span class="cmt">// depends on abstraction</span>
+
+    <span class="ann">@Autowired</span> <span class="cmt">// Spring injects the concrete implementation</span>
+    <span class="kw">public</span> <span class="cls">OrderService</span>(<span class="cls">OrderRepository</span> repo) { <span class="kw">this</span>.repo = repo; }
+    <span class="kw">public void</span> <span class="met">placeOrder</span>(<span class="cls">Order</span> o) { repo.<span class="met">save</span>(o); }
+}
+
+<span class="cmt">// Now swap MySQL for Mongo, Redis, or in-memory for tests — zero OrderService changes</span>
+<span class="kw">class</span> <span class="cls">MySQLOrderRepository</span>  <span class="kw">implements</span> <span class="cls">OrderRepository</span> { ... }
+<span class="kw">class</span> <span class="cls">MongoOrderRepository</span>  <span class="kw">implements</span> <span class="cls">OrderRepository</span> { ... }
+<span class="kw">class</span> <span class="cls">InMemoryOrderRepository</span> <span class="kw">implements</span> <span class="cls">OrderRepository</span> { ... } <span class="cmt">// for tests</span></div>
+    <div class="note">Dependency Inversion is the foundation of Spring's Dependency Injection. Every @Autowired, @Inject, or constructor injection is DIP in action.</div>
+  </section>
+
+  <section id="interview-qa">
+    <h2>Interview Q&A</h2>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between IS-A and HAS-A relationships?</div>
+      <div class="qa-a">
+        <strong>IS-A (inheritance)</strong>: A Dog IS-A Animal. Use when the subclass truly is a specialized form of the superclass and all behavior of the parent applies. Over-used inheritance is a code smell.<br><br>
+        <strong>HAS-A (composition)</strong>: A Car HAS-A Engine. Use when one class uses another's functionality. <strong>"Favor composition over inheritance"</strong> — it's more flexible, less coupled, and easier to test.<br><br>
+        Rule of thumb: Ask "is this IS-A true in ALL scenarios and forever?" If any doubt, use composition. Example: Stack shouldn't extend Vector (it IS-A mistake in java.util) — it should compose a Vector.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">Can you violate LSP while respecting all other SOLID principles?</div>
+      <div class="qa-a">
+        Yes. You can have proper separation of responsibilities (SRP), use interfaces for extension (OCP), segregate interfaces (ISP), and inject dependencies (DIP) — but still violate LSP if your subclasses don't truly behave as substitutes for their base type.<br><br>
+        LSP is often violated subtly: throwing exceptions the base doesn't, returning null where base returns empty collection, adding stronger preconditions. A good LSP check: write unit tests against the base type and run them on all subclasses — they should all pass.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">As a Team Lead, how do you enforce SOLID principles in code reviews?</div>
+      <div class="qa-a">
+        <strong>Practical checklist during review:</strong><br>
+        • SRP: "What does this class do?" — if answer has "and", flag it.<br>
+        • OCP: "How would we add X feature?" — if answer is "modify this class", flag it.<br>
+        • LSP: "Does this subclass truly substitute for the parent in all cases?"<br>
+        • ISP: Any interface with more than 5-7 methods is a smell.<br>
+        • DIP: Any 'new' keyword inside a service class for creating repositories/services — flag it.<br><br>
+        I also run metrics tools (SonarQube, PMD) to catch violations automatically, and pair program with junior engineers on architectural decisions rather than just reviewing after the fact.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between polymorphism and overloading?</div>
+      <div class="qa-a">
+        <strong>Overloading (static/compile-time polymorphism)</strong>: Same method name, different parameter lists. Resolved at compile time based on parameter types. Not true polymorphism in the OOP sense.<br><br>
+        <strong>Overriding (runtime/dynamic polymorphism)</strong>: Subclass provides specific implementation of inherited method. Resolved at runtime based on actual object type. This IS the foundation of OOP — enables writing code against abstractions, not implementations.<br><br>
+        Example: <code>Collections.sort(list)</code> doesn't need to know whether list contains Strings, Integers, or custom objects — the compareTo() method resolves at runtime.
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="01-core-java.html" class="btn">← Core Java</a>
+    <a href="03-collections.html" class="btn next">Collections →</a>
+  </div>
+</main>
+</body>
+</html>

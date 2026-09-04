@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java 8–17+ Features — Java Interview Prep</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#fbbf24;--accent2:#00d4aa;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:var(--accent);font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(251,191,36,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:960px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  h4{font-size:15px;font-weight:600;margin:16px 0 8px;color:var(--text)}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul,ol{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(251,191,36,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent2)}
+  .note::before{content:'💡 '}
+  .warn{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:#ff6b6b}
+  .warn::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  .version-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:rgba(251,191,36,0.15);color:var(--accent);border:1px solid rgba(251,191,36,0.3);margin-left:8px}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#000;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP &amp; SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html" class="active"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database &amp; JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM &amp; Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Java 8–17+ Features</div>
+  <div class="page-header">
+    <div class="topic-badge">🚀 Topic 05</div>
+    <h1>Java 8–17+ Features</h1>
+    <p class="page-desc">Modern Java from lambdas and streams to records, sealed classes, and pattern matching. Every feature interviewers ask about for senior roles, with practical code examples.</p>
+  </div>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#lambda">Lambdas &amp; Functional Interfaces</a></li>
+      <li><a href="#streams">Streams API</a></li>
+      <li><a href="#optional">Optional</a></li>
+      <li><a href="#default-methods">Default &amp; Static Methods</a></li>
+      <li><a href="#java9-plus">Java 9–11 Features</a></li>
+      <li><a href="#records">Records (Java 16+)</a></li>
+      <li><a href="#sealed">Sealed Classes (Java 17)</a></li>
+      <li><a href="#pattern">Pattern Matching (Java 16–21)</a></li>
+      <li><a href="#interview-qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <section id="lambda">
+    <h2>1. Lambdas &amp; Functional Interfaces <span class="version-badge">Java 8</span></h2>
+    <p>A lambda is a concise way to create an anonymous implementation of a @FunctionalInterface — an interface with exactly one abstract method.</p>
+
+    <h3>Key Functional Interfaces</h3>
+    <table>
+      <tr><th>Interface</th><th>Method</th><th>Use Case</th></tr>
+      <tr><td>Predicate&lt;T&gt;</td><td>boolean test(T t)</td><td>Filter / condition</td></tr>
+      <tr><td>Function&lt;T,R&gt;</td><td>R apply(T t)</td><td>Transform one type to another</td></tr>
+      <tr><td>BiFunction&lt;T,U,R&gt;</td><td>R apply(T t, U u)</td><td>Two inputs, one output</td></tr>
+      <tr><td>Consumer&lt;T&gt;</td><td>void accept(T t)</td><td>Side effect, no return</td></tr>
+      <tr><td>Supplier&lt;T&gt;</td><td>T get()</td><td>Provide a value, no input</td></tr>
+      <tr><td>UnaryOperator&lt;T&gt;</td><td>T apply(T t)</td><td>Same type in and out</td></tr>
+      <tr><td>BinaryOperator&lt;T&gt;</td><td>T apply(T t1, T t2)</td><td>Two same-type inputs, same output</td></tr>
+      <tr><td>Comparator&lt;T&gt;</td><td>int compare(T o1, T o2)</td><td>Ordering / sorting</td></tr>
+    </table>
+
+    <div class="code-block"><span class="cmt">// Lambda syntax forms</span>
+() -&gt; <span class="str">"hello"</span>                             <span class="cmt">// no params</span>
+x -&gt; x * <span class="num">2</span>                              <span class="cmt">// one param, expression body</span>
+(x, y) -&gt; x + y                         <span class="cmt">// two params</span>
+(String s) -&gt; { <span class="kw">return</span> s.<span class="met">length</span>(); }   <span class="cmt">// block body, explicit return</span>
+
+<span class="cmt">// Method references — 4 types</span>
+<span class="cls">String</span>::<span class="met">toUpperCase</span>    <span class="cmt">// instance method on type   — s -> s.toUpperCase()</span>
+<span class="str">"hello"</span>::<span class="met">contains</span>     <span class="cmt">// instance method on object — s -> "hello".contains(s)</span>
+<span class="cls">String</span>::<span class="kw">new</span>           <span class="cmt">// constructor reference     — s -> new String(s)</span>
+<span class="cls">Math</span>::<span class="met">abs</span>             <span class="cmt">// static method reference   — n -> Math.abs(n)</span>
+
+<span class="cmt">// Custom @FunctionalInterface</span>
+<span class="ann">@FunctionalInterface</span>
+<span class="kw">interface</span> <span class="cls">TriFunction</span>&lt;<span class="cls">A</span>, <span class="cls">B</span>, <span class="cls">C</span>, <span class="cls">R</span>&gt; {
+    <span class="cls">R</span> <span class="met">apply</span>(<span class="cls">A</span> a, <span class="cls">B</span> b, <span class="cls">C</span> c);
+}
+
+<span class="cmt">// Function composition</span>
+<span class="cls">Function</span>&lt;<span class="cls">String</span>, <span class="cls">String</span>&gt; trim    = <span class="cls">String</span>::trim;
+<span class="cls">Function</span>&lt;<span class="cls">String</span>, <span class="cls">String</span>&gt; upper   = <span class="cls">String</span>::toUpperCase;
+<span class="cls">Function</span>&lt;<span class="cls">String</span>, <span class="cls">String</span>&gt; process = trim.<span class="met">andThen</span>(upper);  <span class="cmt">// trim then upper</span>
+<span class="cmt">// compose() is reverse order: trim.compose(upper) = upper then trim</span></div>
+  </section>
+
+  <section id="streams">
+    <h2>2. Streams API <span class="version-badge">Java 8</span></h2>
+    <p>Streams enable declarative, pipeline-style processing of data. They are lazy — intermediate operations execute only when a terminal operation is invoked.</p>
+
+    <h3>Stream Pipeline</h3>
+    <div class="code-block"><span class="cmt">// Source → Intermediate ops (lazy) → Terminal op (triggers execution)</span>
+<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; result = employees.<span class="met">stream</span>()          <span class="cmt">// source</span>
+    .<span class="met">filter</span>(e -&gt; e.<span class="met">getSalary</span>() &gt; <span class="num">50_000</span>)           <span class="cmt">// intermediate</span>
+    .<span class="met">map</span>(<span class="cls">Employee</span>::<span class="met">getName</span>)                        <span class="cmt">// intermediate</span>
+    .<span class="met">distinct</span>()                                      <span class="cmt">// intermediate</span>
+    .<span class="met">sorted</span>()                                        <span class="cmt">// intermediate</span>
+    .<span class="met">limit</span>(<span class="num">10</span>)                                       <span class="cmt">// intermediate</span>
+    .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">toList</span>());                  <span class="cmt">// terminal</span></div>
+
+    <h3>Collectors</h3>
+    <div class="code-block"><span class="cmt">// groupingBy — group employees by department</span>
+<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">List</span>&lt;<span class="cls">Employee</span>&gt;&gt; byDept = employees.<span class="met">stream</span>()
+    .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">groupingBy</span>(<span class="cls">Employee</span>::<span class="met">getDepartment</span>));
+
+<span class="cmt">// groupingBy with downstream — count per department</span>
+<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">Long</span>&gt; countByDept = employees.<span class="met">stream</span>()
+    .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">groupingBy</span>(
+        <span class="cls">Employee</span>::<span class="met">getDepartment</span>,
+        <span class="cls">Collectors</span>.<span class="met">counting</span>()
+    ));
+
+<span class="cmt">// partitioningBy — split into true/false groups</span>
+<span class="cls">Map</span>&lt;<span class="cls">Boolean</span>, <span class="cls">List</span>&lt;<span class="cls">Employee</span>&gt;&gt; seniorOrNot = employees.<span class="met">stream</span>()
+    .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">partitioningBy</span>(e -&gt; e.<span class="met">getYears</span>() &gt; <span class="num">5</span>));
+
+<span class="cmt">// joining — collect strings</span>
+<span class="cls">String</span> names = employees.<span class="met">stream</span>()
+    .<span class="met">map</span>(<span class="cls">Employee</span>::<span class="met">getName</span>)
+    .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">joining</span>(<span class="str">", "</span>, <span class="str">"["</span>, <span class="str">"]"</span>));  <span class="cmt">// [Alice, Bob, Carol]</span>
+
+<span class="cmt">// toMap</span>
+<span class="cls">Map</span>&lt;<span class="cls">Long</span>, <span class="cls">Employee</span>&gt; byId = employees.<span class="met">stream</span>()
+    .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">toMap</span>(
+        <span class="cls">Employee</span>::<span class="met">getId</span>,
+        e -&gt; e,
+        (e1, e2) -&gt; e1  <span class="cmt">// merge function on duplicate key</span>
+    ));</div>
+
+    <h3>flatMap &amp; Reduce</h3>
+    <div class="code-block"><span class="cmt">// flatMap — flatten nested collections</span>
+<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; allSkills = employees.<span class="met">stream</span>()
+    .<span class="met">flatMap</span>(e -&gt; e.<span class="met">getSkills</span>().<span class="met">stream</span>())  <span class="cmt">// List&lt;List&lt;String&gt;&gt; → Stream&lt;String&gt;</span>
+    .<span class="met">distinct</span>()
+    .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">toList</span>());
+
+<span class="cmt">// reduce — custom aggregation</span>
+<span class="kw">int</span> totalSalary = employees.<span class="met">stream</span>()
+    .<span class="met">mapToInt</span>(<span class="cls">Employee</span>::<span class="met">getSalary</span>)
+    .<span class="met">reduce</span>(<span class="num">0</span>, <span class="cls">Integer</span>::sum);
+
+<span class="cmt">// Parallel streams — use for CPU-bound ops on large data</span>
+<span class="kw">long</span> count = list.<span class="met">parallelStream</span>()  <span class="cmt">// uses ForkJoinPool.commonPool()</span>
+    .<span class="met">filter</span>(s -&gt; s.<span class="met">startsWith</span>(<span class="str">"A"</span>))
+    .<span class="met">count</span>();
+<span class="cmt">// WARNING: parallelStream has overhead; only faster for large datasets &amp; stateless ops</span></div>
+
+    <div class="warn">Never use parallel streams with I/O operations or stateful lambdas. The common ForkJoinPool is shared — blocking it affects the entire JVM. Use a custom pool for blocking parallel work.</div>
+  </section>
+
+  <section id="optional">
+    <h2>3. Optional <span class="version-badge">Java 8</span></h2>
+    <div class="code-block"><span class="cmt">// Creating Optional</span>
+<span class="cls">Optional</span>&lt;<span class="cls">String</span>&gt; name  = <span class="cls">Optional</span>.<span class="met">of</span>(<span class="str">"Alice"</span>);    <span class="cmt">// throws NPE if null</span>
+<span class="cls">Optional</span>&lt;<span class="cls">String</span>&gt; empty = <span class="cls">Optional</span>.<span class="met">empty</span>();         <span class="cmt">// explicit empty</span>
+<span class="cls">Optional</span>&lt;<span class="cls">String</span>&gt; safe  = <span class="cls">Optional</span>.<span class="met">ofNullable</span>(val); <span class="cmt">// null-safe</span>
+
+<span class="cmt">// Consuming</span>
+name.<span class="met">isPresent</span>();                         <span class="cmt">// true</span>
+name.<span class="met">isEmpty</span>();                            <span class="cmt">// false (Java 11+)</span>
+name.<span class="met">get</span>();                                <span class="cmt">// "Alice" — NoSuchElementException if empty</span>
+name.<span class="met">orElse</span>(<span class="str">"default"</span>);                   <span class="cmt">// value or default (always evaluated)</span>
+name.<span class="met">orElseGet</span>(() -&gt; <span class="met">computeDefault</span>());   <span class="cmt">// lazy — only computed if empty</span>
+name.<span class="met">orElseThrow</span>(() -&gt; <span class="kw">new</span> <span class="cls">NotFoundException</span>());
+
+<span class="cmt">// Transforming</span>
+name.<span class="met">map</span>(<span class="cls">String</span>::toUpperCase);            <span class="cmt">// Optional&lt;String&gt;</span>
+name.<span class="met">filter</span>(s -&gt; s.<span class="met">length</span>() &gt; <span class="num">3</span>);         <span class="cmt">// Optional&lt;String&gt;</span>
+name.<span class="met">flatMap</span>(s -&gt; <span class="met">findUser</span>(s));          <span class="cmt">// avoids Optional&lt;Optional&lt;User&gt;&gt;</span>
+name.<span class="met">ifPresent</span>(s -&gt; <span class="cls">System</span>.out.<span class="met">println</span>(s)); <span class="cmt">// side effect if present</span>
+name.<span class="met">ifPresentOrElse</span>(                     <span class="cmt">// Java 9+</span>
+    s -&gt; <span class="cls">System</span>.out.<span class="met">println</span>(s),
+    () -&gt; <span class="cls">System</span>.out.<span class="met">println</span>(<span class="str">"empty"</span>)
+);</div>
+    <div class="warn">Don't use Optional as a field type or method parameter — it's designed for return values only. Never call .get() without checking isPresent() — use orElse/orElseGet instead.</div>
+  </section>
+
+  <section id="default-methods">
+    <h2>4. Default &amp; Static Methods in Interfaces <span class="version-badge">Java 8</span></h2>
+    <div class="code-block"><span class="kw">interface</span> <span class="cls">Vehicle</span> {
+    <span class="kw">void</span> <span class="met">move</span>();  <span class="cmt">// abstract</span>
+
+    <span class="kw">default void</span> <span class="met">stop</span>() {  <span class="cmt">// default — provides implementation</span>
+        <span class="cls">System</span>.out.<span class="met">println</span>(<span class="str">"Stopping"</span>);
+    }
+
+    <span class="kw">static</span> <span class="cls">Vehicle</span> <span class="met">create</span>() {  <span class="cmt">// static — factory method on interface</span>
+        <span class="kw">return</span> () -&gt; <span class="cls">System</span>.out.<span class="met">println</span>(<span class="str">"Moving"</span>);
+    }
+
+    <span class="kw">private void</span> <span class="met">log</span>(<span class="cls">String</span> msg) {  <span class="cmt">// private (Java 9+) — shared logic</span>
+        <span class="cls">System</span>.out.<span class="met">println</span>(<span class="str">"[Vehicle] "</span> + msg);
+    }
+}
+
+<span class="cmt">// Diamond problem — class must override ambiguous default</span>
+<span class="kw">interface</span> <span class="cls">A</span> { <span class="kw">default void</span> <span class="met">greet</span>() { System.out.println(<span class="str">"A"</span>); } }
+<span class="kw">interface</span> <span class="cls">B</span> { <span class="kw">default void</span> <span class="met">greet</span>() { System.out.println(<span class="str">"B"</span>); } }
+<span class="kw">class</span> <span class="cls">C</span> <span class="kw">implements</span> <span class="cls">A</span>, <span class="cls">B</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="met">greet</span>() { <span class="cls">A</span>.<span class="kw">super</span>.<span class="met">greet</span>(); } <span class="cmt">// must resolve explicitly</span>
+}</div>
+  </section>
+
+  <section id="java9-plus">
+    <h2>5. Java 9–11 Features</h2>
+    <div class="code-block"><span class="cmt">// var — local type inference (Java 10)</span>
+<span class="kw">var</span> list = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;<span class="cls">String</span>&gt;();  <span class="cmt">// inferred as ArrayList&lt;String&gt;</span>
+<span class="kw">var</span> map  = <span class="kw">new</span> <span class="cls">HashMap</span>&lt;<span class="cls">String</span>, <span class="cls">Integer</span>&gt;();
+<span class="cmt">// var only in local scope, NOT for fields, params, return types, or lambda params</span>
+
+<span class="cmt">// Collection factory methods (Java 9)</span>
+<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; immutableList = <span class="cls">List</span>.<span class="met">of</span>(<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>);    <span class="cmt">// unmodifiable</span>
+<span class="cls">Set</span>&lt;<span class="cls">String</span>&gt;  immutableSet  = <span class="cls">Set</span>.<span class="met">of</span>(<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>);
+<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">Integer</span>&gt; immutableMap = <span class="cls">Map</span>.<span class="met">of</span>(<span class="str">"one"</span>, <span class="num">1</span>, <span class="str">"two"</span>, <span class="num">2</span>);
+<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">Integer</span>&gt; mapFromEntries = <span class="cls">Map</span>.<span class="met">ofEntries</span>(
+    <span class="cls">Map</span>.<span class="met">entry</span>(<span class="str">"one"</span>, <span class="num">1</span>), <span class="cls">Map</span>.<span class="met">entry</span>(<span class="str">"two"</span>, <span class="num">2</span>)
+);
+
+<span class="cmt">// String methods (Java 11)</span>
+<span class="str">"  hello  "</span>.<span class="met">strip</span>();        <span class="cmt">// Unicode-aware trim</span>
+<span class="str">"  "</span>.<span class="met">isBlank</span>();             <span class="cmt">// true — whitespace-only</span>
+<span class="str">"a,b,c"</span>.<span class="met">lines</span>();           <span class="cmt">// Stream of lines</span>
+<span class="str">"ha"</span>.<span class="met">repeat</span>(<span class="num">3</span>);            <span class="cmt">// "hahaha"</span>
+
+<span class="cmt">// Optional enhancements (Java 9+)</span>
+optional.<span class="met">ifPresentOrElse</span>(v -&gt; use(v), () -&gt; fallback());
+optional.<span class="met">or</span>(() -&gt; <span class="cls">Optional</span>.<span class="met">of</span>(fallback));  <span class="cmt">// Optional&lt;T&gt; chaining (Java 9)</span>
+optional.<span class="met">stream</span>();                          <span class="cmt">// Stream&lt;T&gt; of 0 or 1 element (Java 9)</span></div>
+  </section>
+
+  <section id="records">
+    <h2>6. Records <span class="version-badge">Java 16+</span></h2>
+    <p>Records are immutable data carriers — the compiler auto-generates constructor, getters, equals(), hashCode(), and toString().</p>
+    <div class="code-block"><span class="cmt">// Declare a record</span>
+<span class="kw">record</span> <span class="cls">Point</span>(<span class="kw">int</span> x, <span class="kw">int</span> y) {}
+
+<span class="cls">Point</span> p = <span class="kw">new</span> <span class="cls">Point</span>(<span class="num">3</span>, <span class="num">4</span>);
+p.<span class="met">x</span>();          <span class="cmt">// accessor (not getX())</span>
+p.<span class="met">y</span>();
+p.<span class="met">toString</span>();   <span class="cmt">// Point[x=3, y=4]</span>
+p.<span class="met">equals</span>(<span class="kw">new</span> <span class="cls">Point</span>(<span class="num">3</span>, <span class="num">4</span>)); <span class="cmt">// true — value equality</span>
+
+<span class="cmt">// Records with custom compact constructor — validates inputs</span>
+<span class="kw">record</span> <span class="cls">Range</span>(<span class="kw">int</span> min, <span class="kw">int</span> max) {
+    <span class="cls">Range</span> {  <span class="cmt">// compact constructor — no parameter list</span>
+        <span class="kw">if</span> (min &gt; max) <span class="kw">throw new</span> <span class="cls">IllegalArgumentException</span>(<span class="str">"min > max"</span>);
+    }
+
+    <span class="kw">int</span> <span class="met">size</span>() { <span class="kw">return</span> max - min; }  <span class="cmt">// custom instance method</span>
+    <span class="kw">static</span> <span class="cls">Range</span> <span class="met">of</span>(<span class="kw">int</span> min, <span class="kw">int</span> max) { <span class="kw">return new</span> <span class="cls">Range</span>(min, max); }
+}
+
+<span class="cmt">// Records can implement interfaces</span>
+<span class="kw">record</span> <span class="cls">Money</span>(<span class="cls">BigDecimal</span> amount, <span class="cls">Currency</span> currency) <span class="kw">implements</span> <span class="cls">Comparable</span>&lt;<span class="cls">Money</span>&gt; {
+    <span class="kw">public int</span> <span class="met">compareTo</span>(<span class="cls">Money</span> other) { <span class="kw">return</span> amount.<span class="met">compareTo</span>(other.amount); }
+}
+
+<span class="cmt">// Records are implicitly final — can't extend them or extend records</span>
+<span class="cmt">// All fields are final — records are inherently thread-safe</span></div>
+  </section>
+
+  <section id="sealed">
+    <h2>7. Sealed Classes <span class="version-badge">Java 17</span></h2>
+    <p>Sealed classes restrict which classes can extend or implement them, enabling exhaustive type checking.</p>
+    <div class="code-block"><span class="kw">sealed interface</span> <span class="cls">Shape</span> <span class="kw">permits</span> <span class="cls">Circle</span>, <span class="cls">Rectangle</span>, <span class="cls">Triangle</span> {}
+
+<span class="kw">record</span> <span class="cls">Circle</span>(<span class="kw">double</span> radius) <span class="kw">implements</span> <span class="cls">Shape</span> {}
+<span class="kw">record</span> <span class="cls">Rectangle</span>(<span class="kw">double</span> w, <span class="kw">double</span> h) <span class="kw">implements</span> <span class="cls">Shape</span> {}
+<span class="kw">non-sealed class</span> <span class="cls">Triangle</span> <span class="kw">implements</span> <span class="cls">Shape</span> {}  <span class="cmt">// open for extension</span>
+
+<span class="cmt">// With pattern matching (Java 21 finalized) — compiler knows all subtypes</span>
+<span class="kw">double</span> <span class="met">area</span>(<span class="cls">Shape</span> shape) {
+    <span class="kw">return switch</span> (shape) {
+        <span class="kw">case</span> <span class="cls">Circle</span> c    -&gt; <span class="cls">Math</span>.PI * c.<span class="met">radius</span>() * c.<span class="met">radius</span>();
+        <span class="kw">case</span> <span class="cls">Rectangle</span> r -&gt; r.<span class="met">w</span>() * r.<span class="met">h</span>();
+        <span class="kw">case</span> <span class="cls">Triangle</span> t  -&gt; <span class="met">triangleArea</span>(t);
+        <span class="cmt">// No default needed — compiler verifies all cases covered!</span>
+    };
+}</div>
+  </section>
+
+  <section id="pattern">
+    <h2>8. Pattern Matching <span class="version-badge">Java 16–21</span></h2>
+    <div class="code-block"><span class="cmt">// Pattern matching for instanceof (Java 16)</span>
+<span class="cmt">// Old way:</span>
+<span class="kw">if</span> (obj <span class="kw">instanceof</span> <span class="cls">String</span>) {
+    <span class="cls">String</span> s = (<span class="cls">String</span>) obj;
+    <span class="cls">System</span>.out.<span class="met">println</span>(s.<span class="met">length</span>());
+}
+<span class="cmt">// New way — binding variable</span>
+<span class="kw">if</span> (obj <span class="kw">instanceof</span> <span class="cls">String</span> s &amp;&amp; s.<span class="met">length</span>() &gt; <span class="num">5</span>) {
+    <span class="cls">System</span>.out.<span class="met">println</span>(s.<span class="met">toUpperCase</span>());  <span class="cmt">// s is scoped here</span>
+}
+
+<span class="cmt">// Switch expressions (Java 14+)</span>
+<span class="kw">String</span> result = <span class="kw">switch</span> (day) {
+    <span class="kw">case</span> MON, TUE, WED, THU, FRI -&gt; <span class="str">"Weekday"</span>;
+    <span class="kw">case</span> SAT, SUN -&gt; <span class="str">"Weekend"</span>;
+};
+
+<span class="cmt">// Pattern matching in switch (Java 21)</span>
+<span class="cls">String</span> desc = <span class="kw">switch</span> (obj) {
+    <span class="kw">case</span> <span class="cls">Integer</span> i <span class="kw">when</span> i &lt; <span class="num">0</span> -&gt; <span class="str">"negative int"</span>;
+    <span class="kw">case</span> <span class="cls">Integer</span> i              -&gt; <span class="str">"positive int: "</span> + i;
+    <span class="kw">case</span> <span class="cls">String</span> s               -&gt; <span class="str">"string: "</span> + s;
+    <span class="kw">case null</span>                    -&gt; <span class="str">"null"</span>;
+    <span class="kw">default</span>                      -&gt; <span class="str">"other"</span>;
+};</div>
+  </section>
+
+  <section id="interview-qa">
+    <h2>9. Interview Q&amp;A</h2>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between map() and flatMap() in streams?</div>
+      <div class="qa-a">
+        <strong>map(Function&lt;T, R&gt;)</strong> — applies a function to each element and returns a Stream&lt;R&gt;. One element in, one element out. If the function returns a collection/Optional/Stream, you get a Stream of collections.<br><br>
+        <strong>flatMap(Function&lt;T, Stream&lt;R&gt;&gt;)</strong> — applies a function that returns a Stream per element, then flattens all those streams into one. One element in, zero or more elements out.<br><br>
+        Analogy: map() is like translating each word in a book; flatMap() is like translating each word into multiple synonyms and returning all of them in a flat list.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">When would you use a parallel stream and what are the pitfalls?</div>
+      <div class="qa-a">
+        <strong>Use when:</strong> CPU-bound processing on large datasets (generally 10,000+ elements), stateless and independent operations, computationally expensive per-element work.<br><br>
+        <strong>Pitfalls:</strong><br>
+        1. <strong>Overhead</strong> — fork/join overhead means parallel is SLOWER for small datasets<br>
+        2. <strong>Shared state</strong> — mutating shared variables causes race conditions<br>
+        3. <strong>Order sensitivity</strong> — if order matters, use forEachOrdered() (kills performance benefit)<br>
+        4. <strong>Blocking I/O</strong> — uses ForkJoinPool.commonPool() which is shared; blocking starves the entire JVM<br>
+        5. <strong>Non-associative reduce</strong> — subtraction, string concat with side effects give wrong results<br><br>
+        Always benchmark. Parallel isn't always faster.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What are the advantages of records over Lombok @Data?</div>
+      <div class="qa-a">
+        <strong>Records advantages:</strong> Language feature (no annotation processing), guaranteed immutability (all fields final), compact constructors for validation, transparent — what you see is what you get, no build tool configuration needed, works natively in switch pattern matching and sealed hierarchies.<br><br>
+        <strong>Lombok @Data advantages:</strong> Mutable fields (can use @Setter), works in older Java, more customization, @Builder integration, can extend classes.<br><br>
+        <strong>Use records for:</strong> Pure data holders, DTOs, value objects, command/query objects, API response models.<br><br>
+        <strong>Use Lombok for:</strong> Mutable domain entities, Spring JPA entities (must have no-arg constructor + setters), cases requiring more flexibility.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between orElse() and orElseGet() in Optional?</div>
+      <div class="qa-a">
+        <strong>orElse(T other)</strong> — always evaluates the argument, even if the Optional is present. If computing the default is expensive (DB call, object creation), you pay that cost every time even when the Optional has a value.<br><br>
+        <strong>orElseGet(Supplier&lt;T&gt;)</strong> — lazily evaluates the supplier ONLY when the Optional is empty. Always prefer this for expensive defaults.<br><br>
+        Example: <code>optional.orElse(expensiveComputation())</code> always runs expensiveComputation(). <code>optional.orElseGet(() -&gt; expensiveComputation())</code> only runs it when empty.
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="04-concurrency.html" class="btn">← Concurrency</a>
+    <a href="06-design-patterns.html" class="btn next">Design Patterns →</a>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring Boot — Java Interview Prep</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#38bdf8;--accent2:#00d4aa;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:var(--accent);font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(56,189,248,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:960px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  h4{font-size:15px;font-weight:600;margin:16px 0 8px;color:var(--text)}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul,ol{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(56,189,248,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent2)}
+  .note::before{content:'💡 '}
+  .warn{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:#ff6b6b}
+  .warn::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#000;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP &amp; SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html" class="active"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database &amp; JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM &amp; Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Spring Boot</div>
+  <div class="page-header">
+    <div class="topic-badge">🌱 Topic 07</div>
+    <h1>Spring Boot</h1>
+    <p class="page-desc">IoC/DI, auto-configuration, Spring MVC, AOP, Spring Data JPA, Security, Actuator — everything a team lead is expected to know deeply, including internals interviewers probe.</p>
+  </div>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#ioc-di">IoC Container &amp; DI</a></li>
+      <li><a href="#bean-lifecycle">Bean Lifecycle &amp; Scopes</a></li>
+      <li><a href="#auto-config">Auto-Configuration</a></li>
+      <li><a href="#spring-mvc">Spring MVC</a></li>
+      <li><a href="#aop">AOP</a></li>
+      <li><a href="#spring-data">Spring Data JPA</a></li>
+      <li><a href="#spring-security">Spring Security</a></li>
+      <li><a href="#actuator">Actuator &amp; Observability</a></li>
+      <li><a href="#interview-qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <section id="ioc-di">
+    <h2>1. IoC Container &amp; Dependency Injection</h2>
+    <p>IoC (Inversion of Control): instead of classes creating their own dependencies, the container creates and injects them. Spring achieves this with the ApplicationContext (an IoC container).</p>
+
+    <h3>DI Types</h3>
+    <div class="code-block"><span class="cmt">// Constructor injection (PREFERRED — immutable, testable, required deps clear)</span>
+<span class="ann">@Service</span>
+<span class="kw">public class</span> <span class="cls">OrderService</span> {
+    <span class="kw">private final</span> <span class="cls">OrderRepository</span> repo;
+    <span class="kw">private final</span> <span class="cls">PaymentService</span> payment;
+
+    <span class="cmt">// @Autowired optional when single constructor (Spring 4.3+)</span>
+    <span class="kw">public</span> <span class="cls">OrderService</span>(<span class="cls">OrderRepository</span> repo, <span class="cls">PaymentService</span> payment) {
+        <span class="kw">this</span>.repo = repo;
+        <span class="kw">this</span>.payment = payment;
+    }
+}
+
+<span class="cmt">// Field injection (AVOID — not testable without Spring context, hides deps)</span>
+<span class="ann">@Autowired</span> <span class="kw">private</span> <span class="cls">OrderRepository</span> repo;  <span class="cmt">// bad practice</span>
+
+<span class="cmt">// Qualifier — when multiple beans of same type</span>
+<span class="ann">@Bean("primaryDataSource")</span>
+<span class="kw">public</span> <span class="cls">DataSource</span> <span class="met">primaryDataSource</span>() { ... }
+
+<span class="ann">@Bean("secondaryDataSource")</span>
+<span class="kw">public</span> <span class="cls">DataSource</span> <span class="met">secondaryDataSource</span>() { ... }
+
+<span class="ann">@Autowired</span>
+<span class="ann">@Qualifier</span>(<span class="str">"primaryDataSource"</span>)
+<span class="kw">private</span> <span class="cls">DataSource</span> dataSource;
+
+<span class="cmt">// @Primary — default when no @Qualifier specified</span>
+<span class="ann">@Bean @Primary</span>
+<span class="kw">public</span> <span class="cls">DataSource</span> <span class="met">mainDataSource</span>() { ... }</div>
+  </section>
+
+  <section id="bean-lifecycle">
+    <h2>2. Bean Lifecycle &amp; Scopes</h2>
+    <div class="code-block"><span class="cmt">// Bean lifecycle hooks</span>
+<span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">CacheManager</span> {
+    <span class="ann">@PostConstruct</span>
+    <span class="kw">public void</span> <span class="met">init</span>() {
+        <span class="cmt">// called after all dependencies injected — load cache, open connections</span>
+    }
+    <span class="ann">@PreDestroy</span>
+    <span class="kw">public void</span> <span class="met">cleanup</span>() {
+        <span class="cmt">// called before bean destroyed — close resources, flush cache</span>
+    }
+}</div>
+    <table>
+      <tr><th>Scope</th><th>Description</th><th>Use Case</th></tr>
+      <tr><td>singleton (default)</td><td>One instance per ApplicationContext</td><td>Services, repositories, utilities</td></tr>
+      <tr><td>prototype</td><td>New instance each time requested</td><td>Stateful objects, command objects</td></tr>
+      <tr><td>request</td><td>One per HTTP request (web only)</td><td>Request-specific state</td></tr>
+      <tr><td>session</td><td>One per HTTP session (web only)</td><td>User session state</td></tr>
+      <tr><td>application</td><td>One per ServletContext (web only)</td><td>App-wide shared state in web apps</td></tr>
+    </table>
+    <div class="warn">Injecting a prototype-scoped bean into a singleton bean means the singleton always gets the same prototype instance (at creation time). Fix: inject ApplicationContext and call getBean() each time, or use @Lookup methods.</div>
+  </section>
+
+  <section id="auto-config">
+    <h2>3. Auto-Configuration</h2>
+    <p>Spring Boot reads META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports to find autoconfiguration classes. Each uses @ConditionalOn* to decide whether to apply.</p>
+    <div class="code-block"><span class="cmt">// How autoconfiguration works — simplified</span>
+<span class="ann">@AutoConfiguration</span>
+<span class="ann">@ConditionalOnClass</span>(<span class="cls">DataSource</span>.<span class="kw">class</span>)        <span class="cmt">// only if DataSource on classpath</span>
+<span class="ann">@ConditionalOnMissingBean</span>(<span class="cls">DataSource</span>.<span class="kw">class</span>) <span class="cmt">// only if user hasn't defined one</span>
+<span class="ann">@EnableConfigurationProperties</span>(<span class="cls">DataSourceProperties</span>.<span class="kw">class</span>)
+<span class="kw">public class</span> <span class="cls">DataSourceAutoConfiguration</span> {
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">DataSource</span> <span class="met">dataSource</span>(<span class="cls">DataSourceProperties</span> props) {
+        <span class="kw">return</span> props.<span class="met">initializeDataSourceBuilder</span>().<span class="met">build</span>();
+    }
+}
+
+<span class="cmt">// @ConfigurationProperties — type-safe binding to application.yml</span>
+<span class="ann">@ConfigurationProperties</span>(prefix = <span class="str">"app.cache"</span>)
+<span class="kw">public record</span> <span class="cls">CacheProperties</span>(<span class="kw">int</span> ttlSeconds, <span class="kw">int</span> maxSize, <span class="cls">String</span> type) {}
+
+<span class="cmt">// application.yml:</span>
+<span class="cmt">// app.cache.ttl-seconds: 300</span>
+<span class="cmt">// app.cache.max-size: 1000</span>
+<span class="cmt">// app.cache.type: redis</span>
+
+<span class="cmt">// Profile-specific configuration</span>
+<span class="ann">@Bean</span>
+<span class="ann">@Profile</span>(<span class="str">"production"</span>)
+<span class="kw">public</span> <span class="cls">CacheService</span> <span class="met">redisCacheService</span>() { ... }
+
+<span class="ann">@Bean</span>
+<span class="ann">@Profile</span>(<span class="str">"!production"</span>)  <span class="cmt">// all non-production profiles</span>
+<span class="kw">public</span> <span class="cls">CacheService</span> <span class="met">inMemoryCacheService</span>() { ... }</div>
+  </section>
+
+  <section id="spring-mvc">
+    <h2>4. Spring MVC Request Lifecycle</h2>
+    <div class="code-block"><span class="cmt">// Request flow: Browser → DispatcherServlet → HandlerMapping → Interceptor → Controller → ViewResolver</span>
+
+<span class="ann">@RestController</span>
+<span class="ann">@RequestMapping</span>(<span class="str">"/api/v1/orders"</span>)
+<span class="kw">public class</span> <span class="cls">OrderController</span> {
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">OrderDto</span>&gt; <span class="met">getOrder</span>(<span class="ann">@PathVariable</span> <span class="cls">Long</span> id) {
+        <span class="kw">return</span> service.<span class="met">findById</span>(id)
+            .<span class="met">map</span>(<span class="cls">ResponseEntity</span>::<span class="met">ok</span>)
+            .<span class="met">orElseThrow</span>(() -&gt; <span class="kw">new</span> <span class="cls">OrderNotFoundException</span>(id));
+    }
+
+    <span class="ann">@PostMapping</span>
+    <span class="ann">@ResponseStatus</span>(<span class="cls">HttpStatus</span>.CREATED)
+    <span class="kw">public</span> <span class="cls">OrderDto</span> <span class="met">createOrder</span>(<span class="ann">@Valid @RequestBody</span> <span class="cls">CreateOrderRequest</span> req) {
+        <span class="kw">return</span> service.<span class="met">create</span>(req);
+    }
+
+    <span class="ann">@GetMapping</span>
+    <span class="kw">public</span> <span class="cls">Page</span>&lt;<span class="cls">OrderDto</span>&gt; <span class="met">listOrders</span>(
+            <span class="ann">@RequestParam</span>(defaultValue = <span class="str">"0"</span>) <span class="kw">int</span> page,
+            <span class="ann">@RequestParam</span>(defaultValue = <span class="str">"20"</span>) <span class="kw">int</span> size,
+            <span class="ann">@RequestParam</span>(<span class="kw">required</span> = <span class="kw">false</span>) <span class="cls">String</span> status) {
+        <span class="kw">return</span> service.<span class="met">findAll</span>(<span class="cls">PageRequest</span>.<span class="met">of</span>(page, size), status);
+    }
+}
+
+<span class="cmt">// Global exception handler</span>
+<span class="ann">@RestControllerAdvice</span>
+<span class="kw">public class</span> <span class="cls">GlobalExceptionHandler</span> {
+    <span class="ann">@ExceptionHandler</span>(<span class="cls">OrderNotFoundException</span>.<span class="kw">class</span>)
+    <span class="ann">@ResponseStatus</span>(<span class="cls">HttpStatus</span>.NOT_FOUND)
+    <span class="kw">public</span> <span class="cls">ErrorResponse</span> <span class="met">handleNotFound</span>(<span class="cls">OrderNotFoundException</span> ex) {
+        <span class="kw">return new</span> <span class="cls">ErrorResponse</span>(<span class="str">"ORDER_NOT_FOUND"</span>, ex.<span class="met">getMessage</span>());
+    }
+
+    <span class="ann">@ExceptionHandler</span>(<span class="cls">MethodArgumentNotValidException</span>.<span class="kw">class</span>)
+    <span class="ann">@ResponseStatus</span>(<span class="cls">HttpStatus</span>.BAD_REQUEST)
+    <span class="kw">public</span> <span class="cls">ErrorResponse</span> <span class="met">handleValidation</span>(<span class="cls">MethodArgumentNotValidException</span> ex) {
+        <span class="kw">var</span> errors = ex.<span class="met">getBindingResult</span>().<span class="met">getFieldErrors</span>().<span class="met">stream</span>()
+            .<span class="met">map</span>(e -&gt; e.<span class="met">getField</span>() + <span class="str">": "</span> + e.<span class="met">getDefaultMessage</span>())
+            .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">joining</span>(<span class="str">", "</span>));
+        <span class="kw">return new</span> <span class="cls">ErrorResponse</span>(<span class="str">"VALIDATION_FAILED"</span>, errors);
+    }
+}</div>
+  </section>
+
+  <section id="aop">
+    <h2>5. AOP — Aspect-Oriented Programming</h2>
+    <p>AOP allows cross-cutting concerns (logging, security, transactions) to be modularized. Spring AOP uses JDK dynamic proxies (for interfaces) or CGLIB proxies (for classes).</p>
+    <div class="code-block"><span class="ann">@Aspect</span>
+<span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">PerformanceAspect</span> {
+
+    <span class="cmt">// Pointcut expression — all public methods in service package</span>
+    <span class="ann">@Pointcut</span>(<span class="str">"execution(public * com.example.service.*.*(..))"</span>)
+    <span class="kw">public void</span> <span class="met">serviceMethods</span>() {}
+
+    <span class="cmt">// Around advice — wraps method execution (most powerful)</span>
+    <span class="ann">@Around</span>(<span class="str">"serviceMethods()"</span>)
+    <span class="kw">public</span> <span class="cls">Object</span> <span class="met">measureTime</span>(<span class="cls">ProceedingJoinPoint</span> pjp) <span class="kw">throws</span> <span class="cls">Throwable</span> {
+        <span class="kw">long</span> start = <span class="cls">System</span>.<span class="met">currentTimeMillis</span>();
+        <span class="kw">try</span> {
+            <span class="kw">return</span> pjp.<span class="met">proceed</span>();  <span class="cmt">// MUST call proceed() to invoke real method</span>
+        } <span class="kw">finally</span> {
+            <span class="kw">long</span> elapsed = <span class="cls">System</span>.<span class="met">currentTimeMillis</span>() - start;
+            log.<span class="met">info</span>(<span class="str">"{} took {}ms"</span>, pjp.<span class="met">getSignature</span>().<span class="met">toShortString</span>(), elapsed);
+        }
+    }
+
+    <span class="cmt">// Annotation-based pointcut</span>
+    <span class="ann">@Around</span>(<span class="str">"@annotation(com.example.annotation.Audited)"</span>)
+    <span class="kw">public</span> <span class="cls">Object</span> <span class="met">audit</span>(<span class="cls">ProceedingJoinPoint</span> pjp) <span class="kw">throws</span> <span class="cls">Throwable</span> {
+        <span class="cls">Audited</span> annotation = <span class="met">getAnnotation</span>(pjp, <span class="cls">Audited</span>.<span class="kw">class</span>);
+        <span class="cls">Object</span> result = pjp.<span class="met">proceed</span>();
+        auditLog.<span class="met">record</span>(pjp, result, annotation.<span class="met">action</span>());
+        <span class="kw">return</span> result;
+    }
+}
+
+<span class="cmt">// AOP LIMITATION: self-invocation bypasses proxy!</span>
+<span class="ann">@Service</span>
+<span class="kw">class</span> <span class="cls">OrderService</span> {
+    <span class="kw">public void</span> <span class="met">placeOrder</span>(<span class="cls">Order</span> o) {
+        <span class="kw">this</span>.<span class="met">validate</span>(o);  <span class="cmt">// @Transactional on validate() BYPASSED — called on 'this', not proxy</span>
+    }
+    <span class="ann">@Transactional</span>
+    <span class="kw">public void</span> <span class="met">validate</span>(<span class="cls">Order</span> o) { ... }  <span class="cmt">// not called through proxy here</span>
+}</div>
+  </section>
+
+  <section id="spring-data">
+    <h2>6. Spring Data JPA</h2>
+    <div class="code-block"><span class="kw">public interface</span> <span class="cls">OrderRepository</span> <span class="kw">extends</span> <span class="cls">JpaRepository</span>&lt;<span class="cls">Order</span>, <span class="cls">Long</span>&gt; {
+    <span class="cmt">// Derived queries — method name → JPQL</span>
+    <span class="cls">List</span>&lt;<span class="cls">Order</span>&gt; <span class="met">findByStatusAndCreatedDateAfter</span>(<span class="cls">OrderStatus</span> status, <span class="cls">LocalDate</span> date);
+
+    <span class="cmt">// @Query — explicit JPQL (type-safe, IDE support)</span>
+    <span class="ann">@Query</span>(<span class="str">"SELECT o FROM Order o WHERE o.customerId = :cid AND o.total &gt; :min"</span>)
+    <span class="cls">List</span>&lt;<span class="cls">Order</span>&gt; <span class="met">findHighValueOrders</span>(<span class="ann">@Param</span>(<span class="str">"cid"</span>) <span class="cls">Long</span> customerId, <span class="ann">@Param</span>(<span class="str">"min"</span>) <span class="cls">BigDecimal</span> min);
+
+    <span class="cmt">// Native SQL — when you need DB-specific features</span>
+    <span class="ann">@Query</span>(value = <span class="str">"SELECT * FROM orders WHERE total &gt; ?1 LIMIT ?2"</span>, nativeQuery = <span class="kw">true</span>)
+    <span class="cls">List</span>&lt;<span class="cls">Order</span>&gt; <span class="met">findTopOrders</span>(<span class="cls">BigDecimal</span> min, <span class="kw">int</span> limit);
+
+    <span class="cmt">// Projections — select only needed fields (avoids over-fetching)</span>
+    <span class="cls">List</span>&lt;<span class="cls">OrderSummary</span>&gt; <span class="met">findByCustomerId</span>(<span class="cls">Long</span> customerId);
+
+    <span class="cmt">// @Modifying for UPDATE/DELETE</span>
+    <span class="ann">@Modifying @Transactional</span>
+    <span class="ann">@Query</span>(<span class="str">"UPDATE Order o SET o.status = :status WHERE o.id = :id"</span>)
+    <span class="kw">int</span> <span class="met">updateStatus</span>(<span class="ann">@Param</span>(<span class="str">"id"</span>) <span class="cls">Long</span> id, <span class="ann">@Param</span>(<span class="str">"status"</span>) <span class="cls">OrderStatus</span> status);
+}
+
+<span class="cmt">// Projection interface — Spring generates implementation</span>
+<span class="kw">interface</span> <span class="cls">OrderSummary</span> {
+    <span class="cls">Long</span> <span class="met">getId</span>();
+    <span class="cls">OrderStatus</span> <span class="met">getStatus</span>();
+    <span class="cls">BigDecimal</span> <span class="met">getTotal</span>();
+}</div>
+  </section>
+
+  <section id="spring-security">
+    <h2>7. Spring Security</h2>
+    <div class="code-block"><span class="ann">@Configuration</span>
+<span class="ann">@EnableWebSecurity</span>
+<span class="kw">public class</span> <span class="cls">SecurityConfig</span> {
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">SecurityFilterChain</span> <span class="met">filterChain</span>(<span class="cls">HttpSecurity</span> http) <span class="kw">throws</span> <span class="cls">Exception</span> {
+        <span class="kw">return</span> http
+            .<span class="met">csrf</span>(csrf -&gt; csrf.<span class="met">csrfTokenRepository</span>(<span class="cls">CookieCsrfTokenRepository</span>.<span class="met">withHttpOnlyFalse</span>()))
+            .<span class="met">sessionManagement</span>(s -&gt; s.<span class="met">sessionCreationPolicy</span>(<span class="cls">SessionCreationPolicy</span>.STATELESS))
+            .<span class="met">authorizeHttpRequests</span>(auth -&gt; auth
+                .<span class="met">requestMatchers</span>(<span class="str">"/api/v1/auth/**"</span>).<span class="met">permitAll</span>()
+                .<span class="met">requestMatchers</span>(<span class="cls">HttpMethod</span>.GET, <span class="str">"/api/v1/products/**"</span>).<span class="met">permitAll</span>()
+                .<span class="met">requestMatchers</span>(<span class="str">"/api/v1/admin/**"</span>).<span class="met">hasRole</span>(<span class="str">"ADMIN"</span>)
+                .<span class="met">anyRequest</span>().<span class="met">authenticated</span>()
+            )
+            .<span class="met">addFilterBefore</span>(<span class="met">jwtFilter</span>(), <span class="cls">UsernamePasswordAuthenticationFilter</span>.<span class="kw">class</span>)
+            .<span class="met">build</span>();
+    }
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">PasswordEncoder</span> <span class="met">passwordEncoder</span>() {
+        <span class="kw">return new</span> <span class="cls">BCryptPasswordEncoder</span>(<span class="num">12</span>);  <span class="cmt">// cost factor 12</span>
+    }
+}</div>
+  </section>
+
+  <section id="actuator">
+    <h2>8. Actuator &amp; Observability</h2>
+    <div class="code-block"><span class="cmt"># application.yml — expose endpoints</span>
+<span class="cmt">management:</span>
+<span class="cmt">  endpoints.web.exposure.include: health,info,metrics,prometheus</span>
+<span class="cmt">  endpoint.health.show-details: when-authorized</span>
+<span class="cmt">  metrics.distribution.percentiles-histogram.http.server.requests: true</span>
+
+<span class="cmt">// Custom health indicator</span>
+<span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">ExternalApiHealthIndicator</span> <span class="kw">implements</span> <span class="cls">HealthIndicator</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="cls">Health</span> <span class="met">health</span>() {
+        <span class="kw">try</span> {
+            externalApi.<span class="met">ping</span>();
+            <span class="kw">return</span> <span class="cls">Health</span>.<span class="met">up</span>().<span class="met">withDetail</span>(<span class="str">"latency"</span>, latencyMs).<span class="met">build</span>();
+        } <span class="kw">catch</span> (<span class="cls">Exception</span> e) {
+            <span class="kw">return</span> <span class="cls">Health</span>.<span class="met">down</span>().<span class="met">withException</span>(e).<span class="met">build</span>();
+        }
+    }
+}</div>
+  </section>
+
+  <section id="interview-qa">
+    <h2>9. Interview Q&amp;A</h2>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between @Component, @Service, @Repository, and @Controller?</div>
+      <div class="qa-a">
+        All four are specializations of @Component and trigger Spring bean creation via component scanning. The differences are semantic and functional:<br><br>
+        <strong>@Repository</strong> adds exception translation — Spring wraps persistence-related exceptions (SQLException, Hibernate exceptions) into Spring's DataAccessException hierarchy, so higher layers don't need to know about the DB technology.<br><br>
+        <strong>@Controller</strong> marks a class to handle HTTP requests. @RestController combines @Controller + @ResponseBody.<br><br>
+        <strong>@Service</strong> has no extra functionality currently — it serves as documentation that this is a business service layer.<br><br>
+        <strong>@Component</strong> is generic — use it for anything that doesn't fit the above three.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">How does Spring @Transactional work and what are its gotchas?</div>
+      <div class="qa-a">
+        @Transactional works via AOP proxy. When a @Transactional method is called, the proxy intercepts the call, starts a transaction (or joins an existing one based on propagation), calls the real method, then commits or rolls back.<br><br>
+        <strong>Key gotchas:</strong><br>
+        1. <strong>Self-invocation</strong> — calling @Transactional from within the same class bypasses the proxy entirely. Fix: inject self, or restructure.<br>
+        2. <strong>Default rollback only on RuntimeException</strong> — checked exceptions don't trigger rollback by default. Use rollbackFor = Exception.class to change this.<br>
+        3. <strong>@Transactional on private methods</strong> — ignored by Spring AOP (CGLIB can't proxy private methods). Must be public.<br>
+        4. <strong>Propagation.REQUIRES_NEW</strong> — creates a new transaction even if one exists. Useful for audit logging that must succeed even if outer tx rolls back.<br>
+        5. <strong>LazyInitializationException</strong> — accessing a lazy-loaded association after the transaction closes. Fix: fetch joins, @Transactional on service method, or use DTOs.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">Explain Spring Boot auto-configuration and how you would debug it.</div>
+      <div class="qa-a">
+        Auto-configuration reads classes listed in spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports on the classpath. Each auto-config class is conditional — it only applies if certain classes are present (@ConditionalOnClass), beans are missing (@ConditionalOnMissingBean), or properties match (@ConditionalOnProperty).<br><br>
+        <strong>Debug steps:</strong><br>
+        1. <code>--debug</code> flag or <code>debug=true</code> in application.properties — prints a "Conditions Evaluation Report" showing every auto-config class and WHY it was applied or excluded.<br>
+        2. Actuator <code>/actuator/conditions</code> endpoint shows the same at runtime.<br>
+        3. Add <code>@SpringBootTest(properties = "spring.autoconfigure.exclude=...")</code> to exclude specific configs in tests.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">How would you implement caching in a Spring Boot application?</div>
+      <div class="qa-a">
+        Spring provides an abstraction via @EnableCaching and @Cacheable/@CacheEvict/@CachePut annotations. The backing store can be in-memory (ConcurrentHashMap), Caffeine, Redis, Hazelcast, etc.<br><br>
+        <strong>Pattern:</strong><br>
+        1. Add @EnableCaching to a @Configuration class<br>
+        2. Configure CacheManager bean (RedissonCacheManager, CaffeineCacheManager, etc.)<br>
+        3. Annotate methods with @Cacheable(value = "users", key = "#id")<br>
+        4. Use @CacheEvict(value = "users", key = "#user.id") on update/delete methods<br><br>
+        <strong>For production:</strong> Use Redis for distributed caching. Define TTL per cache. Add cache statistics metrics. Handle cache stampede with probabilistic early expiration or locking.
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="06-design-patterns.html" class="btn">← Design Patterns</a>
+    <a href="08-microservices.html" class="btn next">Microservices →</a>
+  </div>
+</main>
+</body>
+</html>

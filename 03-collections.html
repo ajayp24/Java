@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collections & Data Structures — Java Interview Prep</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#00d4aa;--accent2:#6c63ff;--accent3:#ff6b6b;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:var(--accent);font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(0,212,170,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:960px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .page-header{margin-bottom:40px}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  h4{font-size:15px;font-weight:600;margin:20px 0 8px}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul,ol{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(0,212,170,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent)}
+  .note::before{content:'💡 '}
+  .warn{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent3)}
+  .warn::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  tr:hover td{background:rgba(255,255,255,0.02)}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#000;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP & SOLID</a>
+  <a href="03-collections.html" class="active"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database & JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM & Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Collections &amp; Data Structures</div>
+  <div class="page-header">
+    <div class="topic-badge">📦 Topic 03</div>
+    <h1>Collections &amp; Data Structures</h1>
+    <p class="page-desc">Deep understanding of Java Collections Framework internals — HashMap hashing, TreeMap ordering, ConcurrentHashMap thread safety, and choosing the right structure for every scenario.</p>
+  </div>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#hierarchy">Collection Hierarchy</a></li>
+      <li><a href="#list">List Implementations</a></li>
+      <li><a href="#hashmap">HashMap Internals</a></li>
+      <li><a href="#map-types">Map Implementations</a></li>
+      <li><a href="#set">Set Implementations</a></li>
+      <li><a href="#queue">Queue &amp; Deque</a></li>
+      <li><a href="#concurrent">Concurrent Collections</a></li>
+      <li><a href="#choosing">Choosing the Right Collection</a></li>
+      <li><a href="#interview-qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <section id="hierarchy">
+    <h2>1. Collection Hierarchy</h2>
+    <div class="code-block"><span class="cls">Iterable</span>
+└── <span class="cls">Collection</span>
+    ├── <span class="cls">List</span>          → ArrayList, LinkedList, Vector, Stack
+    ├── <span class="cls">Set</span>           → HashSet, LinkedHashSet, TreeSet
+    └── <span class="cls">Queue</span>         → LinkedList, PriorityQueue, ArrayDeque
+        └── <span class="cls">Deque</span>     → ArrayDeque, LinkedList
+
+<span class="cls">Map</span> (not Collection)
+├── HashMap, LinkedHashMap, TreeMap
+├── Hashtable (legacy, synchronized)
+└── ConcurrentHashMap</div>
+  </section>
+
+  <section id="list">
+    <h2>2. List Implementations</h2>
+    <table>
+      <tr><th>Feature</th><th>ArrayList</th><th>LinkedList</th></tr>
+      <tr><td>Backing structure</td><td>Dynamic array</td><td>Doubly linked list</td></tr>
+      <tr><td>Random access (get)</td><td>O(1)</td><td>O(n)</td></tr>
+      <tr><td>Insert/delete at end</td><td>O(1) amortized</td><td>O(1)</td></tr>
+      <tr><td>Insert/delete at middle</td><td>O(n) — shifts elements</td><td>O(n) — traversal + O(1) insert</td></tr>
+      <tr><td>Memory</td><td>Compact (array)</td><td>High (node + 2 pointers per element)</td></tr>
+      <tr><td>Cache performance</td><td>Excellent (contiguous)</td><td>Poor (scattered nodes)</td></tr>
+      <tr><td>Use when</td><td>Frequent reads, rare inserts</td><td>Frequent insert/delete at head/tail</td></tr>
+    </table>
+
+    <h3>ArrayList Growth Strategy</h3>
+    <div class="code-block"><span class="cmt">// ArrayList grows by 50% when capacity exceeded</span>
+<span class="cmt">// new capacity = (oldCapacity * 3) / 2 + 1</span>
+
+<span class="cmt">// Initial capacity = 10 (default)</span>
+<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; list = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;&gt;();
+
+<span class="cmt">// If you know the size, provide initial capacity to avoid resizing</span>
+<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; list = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;&gt;(<span class="num">1000</span>);
+
+<span class="cmt">// Trim wasted space after bulk operations</span>
+((ArrayList&lt;String&gt;) list).trimToSize();</div>
+  </section>
+
+  <section id="hashmap">
+    <h2>3. HashMap Internals (Critical Interview Topic)</h2>
+    <p>HashMap is backed by an array of "buckets" (linked lists/trees). Understanding its internals is essential for senior interviews.</p>
+
+    <h3>How HashMap Works</h3>
+    <div class="code-block"><span class="cmt">// Step 1: hash(key) — spreads hash to reduce collisions</span>
+<span class="kw">static final int</span> <span class="met">hash</span>(<span class="cls">Object</span> key) {
+    <span class="kw">int</span> h;
+    <span class="kw">return</span> (key == <span class="kw">null</span>) ? <span class="num">0</span> : (h = key.<span class="met">hashCode</span>()) ^ (h &gt;&gt;&gt; <span class="num">16</span>);
+}
+
+<span class="cmt">// Step 2: bucket index = hash & (capacity - 1)  (faster than modulo)</span>
+<span class="kw">int</span> index = hash & (capacity - <span class="num">1</span>);
+
+<span class="cmt">// Step 3: store in bucket (linked list until 8 entries → treeify to RedBlackTree)</span>
+<span class="cmt">// Step 4: on get, compute same index, traverse list/tree comparing equals()</span>
+
+<span class="cmt">// Key parameters:</span>
+<span class="kw">int</span> DEFAULT_INITIAL_CAPACITY = <span class="num">16</span>;   <span class="cmt">// must be power of 2</span>
+<span class="kw">float</span> DEFAULT_LOAD_FACTOR = <span class="num">0.75f</span>;   <span class="cmt">// resize when 75% full</span>
+<span class="kw">int</span> TREEIFY_THRESHOLD = <span class="num">8</span>;           <span class="cmt">// list → Red-Black Tree at 8 nodes</span>
+<span class="kw">int</span> UNTREEIFY_THRESHOLD = <span class="num">6</span>;         <span class="cmt">// tree → list when shrinks to 6</span></div>
+
+    <h3>Rehashing</h3>
+    <div class="code-block"><span class="cmt">// When size > capacity * loadFactor → rehash</span>
+<span class="cmt">// Default: rehash when 16 * 0.75 = 12 entries stored</span>
+<span class="cmt">// New capacity = old * 2 (always power of 2)</span>
+<span class="cmt">// All entries recomputed and redistributed — O(n) operation</span>
+
+<span class="cmt">// Performance tips:</span>
+<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">User</span>&gt; map = <span class="kw">new</span> <span class="cls">HashMap</span>&lt;&gt;(<span class="num">64</span>, <span class="num">0.75f</span>);
+<span class="cmt">// If you expect ~40 entries: capacity = 40/0.75 = 54, round up to 64 (next power of 2)</span></div>
+
+    <div class="warn">If two objects are equal (equals() returns true), they MUST have the same hashCode(). Violating this breaks HashMap — you'll store successfully but never be able to retrieve the entry.</div>
+
+    <h3>null Keys and Values</h3>
+    <div class="code-block"><span class="cls">HashMap</span>&lt;<span class="cls">String</span>, <span class="cls">String</span>&gt; map = <span class="kw">new</span> <span class="cls">HashMap</span>&lt;&gt;();
+map.<span class="met">put</span>(<span class="kw">null</span>, <span class="str">"value"</span>);   <span class="cmt">// allowed — null key stored at bucket 0</span>
+map.<span class="met">put</span>(<span class="str">"key"</span>, <span class="kw">null</span>);   <span class="cmt">// allowed — null values allowed</span>
+
+<span class="cmt">// Hashtable (legacy): no null keys or values → NullPointerException</span>
+<span class="cmt">// ConcurrentHashMap: no null keys or values → NullPointerException</span></div>
+  </section>
+
+  <section id="map-types">
+    <h2>4. Map Implementations Compared</h2>
+    <table>
+      <tr><th>Map Type</th><th>Order</th><th>Null Key</th><th>Thread Safe</th><th>Performance</th></tr>
+      <tr><td>HashMap</td><td>None</td><td>Yes (1)</td><td>No</td><td>O(1) avg</td></tr>
+      <tr><td>LinkedHashMap</td><td>Insertion order</td><td>Yes (1)</td><td>No</td><td>O(1) avg, slightly slower</td></tr>
+      <tr><td>TreeMap</td><td>Sorted (natural/comparator)</td><td>No</td><td>No</td><td>O(log n)</td></tr>
+      <tr><td>Hashtable</td><td>None</td><td>No</td><td>Yes (synchronized)</td><td>Slow</td></tr>
+      <tr><td>ConcurrentHashMap</td><td>None</td><td>No</td><td>Yes (segment locks)</td><td>High concurrency</td></tr>
+      <tr><td>EnumMap</td><td>Enum declaration order</td><td>No</td><td>No</td><td>Very fast (array)</td></tr>
+    </table>
+
+    <h3>LinkedHashMap for LRU Cache</h3>
+    <div class="code-block"><span class="cmt">// LinkedHashMap with accessOrder=true → LRU Cache pattern</span>
+<span class="kw">int</span> maxSize = <span class="num">100</span>;
+<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">User</span>&gt; lruCache = <span class="kw">new</span> <span class="cls">LinkedHashMap</span>&lt;&gt;(maxSize, <span class="num">0.75f</span>, <span class="kw">true</span>) {
+    <span class="ann">@Override</span>
+    <span class="kw">protected boolean</span> <span class="met">removeEldestEntry</span>(<span class="cls">Map.Entry</span>&lt;<span class="cls">String</span>, <span class="cls">User</span>&gt; eldest) {
+        <span class="kw">return</span> size() &gt; maxSize; <span class="cmt">// auto-evict oldest when full</span>
+    }
+};</div>
+
+    <h3>TreeMap Operations</h3>
+    <div class="code-block"><span class="cls">TreeMap</span>&lt;<span class="cls">Integer</span>, <span class="cls">String</span>&gt; treeMap = <span class="kw">new</span> <span class="cls">TreeMap</span>&lt;&gt;();
+treeMap.<span class="met">put</span>(<span class="num">3</span>, <span class="str">"c"</span>); treeMap.<span class="met">put</span>(<span class="num">1</span>, <span class="str">"a"</span>); treeMap.<span class="met">put</span>(<span class="num">2</span>, <span class="str">"b"</span>);
+
+treeMap.<span class="met">firstKey</span>();          <span class="cmt">// 1</span>
+treeMap.<span class="met">lastKey</span>();           <span class="cmt">// 3</span>
+treeMap.<span class="met">headMap</span>(<span class="num">2</span>);          <span class="cmt">// {1=a} — keys &lt; 2</span>
+treeMap.<span class="met">tailMap</span>(<span class="num">2</span>);          <span class="cmt">// {2=b, 3=c} — keys >= 2</span>
+treeMap.<span class="met">subMap</span>(<span class="num">1</span>, <span class="num">3</span>);        <span class="cmt">// {1=a, 2=b} — keys in [1,3)</span>
+treeMap.<span class="met">floorKey</span>(<span class="num">2</span>);         <span class="cmt">// 2 — greatest key ≤ 2</span>
+treeMap.<span class="met">ceilingKey</span>(<span class="num">2</span>);       <span class="cmt">// 2 — smallest key ≥ 2</span></div>
+  </section>
+
+  <section id="set">
+    <h2>5. Set Implementations</h2>
+    <table>
+      <tr><th>Set Type</th><th>Backing</th><th>Order</th><th>Performance</th></tr>
+      <tr><td>HashSet</td><td>HashMap (key only)</td><td>None</td><td>O(1) add/contains/remove</td></tr>
+      <tr><td>LinkedHashSet</td><td>LinkedHashMap</td><td>Insertion order</td><td>O(1) slightly slower</td></tr>
+      <tr><td>TreeSet</td><td>TreeMap (Red-Black Tree)</td><td>Natural/Comparator sorted</td><td>O(log n)</td></tr>
+      <tr><td>EnumSet</td><td>Bit vector</td><td>Enum declaration order</td><td>Extremely fast</td></tr>
+    </table>
+
+    <div class="code-block"><span class="cmt">// TreeSet — useful for range queries and sorted uniqueness</span>
+<span class="cls">TreeSet</span>&lt;<span class="cls">Integer</span>&gt; ts = <span class="kw">new</span> <span class="cls">TreeSet</span>&lt;&gt;(<span class="cls">Arrays</span>.<span class="met">asList</span>(<span class="num">5</span>, <span class="num">2</span>, <span class="num">8</span>, <span class="num">1</span>, <span class="num">9</span>));
+ts.<span class="met">floor</span>(<span class="num">7</span>);   <span class="cmt">// 5 — largest ≤ 7</span>
+ts.<span class="met">ceiling</span>(<span class="num">7</span>); <span class="cmt">// 8 — smallest ≥ 7</span>
+ts.<span class="met">headSet</span>(<span class="num">5</span>); <span class="cmt">// [1, 2] — elements &lt; 5</span>
+ts.<span class="met">tailSet</span>(<span class="num">5</span>); <span class="cmt">// [5, 8, 9] — elements ≥ 5</span>
+
+<span class="cmt">// EnumSet — use for flag sets, dramatically faster than HashSet&lt;Enum&gt;</span>
+<span class="kw">enum</span> <span class="cls">Day</span> { MON, TUE, WED, THU, FRI, SAT, SUN }
+<span class="cls">EnumSet</span>&lt;<span class="cls">Day</span>&gt; weekdays = <span class="cls">EnumSet</span>.<span class="met">range</span>(<span class="cls">Day</span>.MON, <span class="cls">Day</span>.FRI);
+<span class="cls">EnumSet</span>&lt;<span class="cls">Day</span>&gt; weekend  = <span class="cls">EnumSet</span>.<span class="met">of</span>(<span class="cls">Day</span>.SAT, <span class="cls">Day</span>.SUN);</div>
+  </section>
+
+  <section id="queue">
+    <h2>6. Queue &amp; Deque</h2>
+    <table>
+      <tr><th>Interface</th><th>Implementations</th><th>Behavior</th></tr>
+      <tr><td>Queue</td><td>LinkedList, ArrayDeque, PriorityQueue</td><td>FIFO</td></tr>
+      <tr><td>Deque</td><td>ArrayDeque, LinkedList</td><td>Both ends</td></tr>
+      <tr><td>PriorityQueue</td><td>Heap-based</td><td>Natural order / comparator</td></tr>
+    </table>
+
+    <div class="code-block"><span class="cmt">// Queue methods — two flavors:</span>
+<span class="cmt">// Throws exception: add(), remove(), element()</span>
+<span class="cmt">// Returns null/false: offer(), poll(), peek()</span>
+
+<span class="cls">Queue</span>&lt;<span class="cls">String</span>&gt; q = <span class="kw">new</span> <span class="cls">ArrayDeque</span>&lt;&gt;();
+q.<span class="met">offer</span>(<span class="str">"first"</span>);  <span class="cmt">// add to tail</span>
+q.<span class="met">peek</span>();          <span class="cmt">// view head without removing</span>
+q.<span class="met">poll</span>();          <span class="cmt">// remove and return head</span>
+
+<span class="cmt">// PriorityQueue — min-heap by default</span>
+<span class="cls">PriorityQueue</span>&lt;<span class="cls">Integer</span>&gt; minHeap = <span class="kw">new</span> <span class="cls">PriorityQueue</span>&lt;&gt;();
+<span class="cls">PriorityQueue</span>&lt;<span class="cls">Integer</span>&gt; maxHeap = <span class="kw">new</span> <span class="cls">PriorityQueue</span>&lt;&gt;(<span class="cls">Collections</span>.reverseOrder());
+
+<span class="cmt">// Use ArrayDeque as Stack (faster than Stack class)</span>
+<span class="cls">Deque</span>&lt;<span class="cls">String</span>&gt; stack = <span class="kw">new</span> <span class="cls">ArrayDeque</span>&lt;&gt;();
+stack.<span class="met">push</span>(<span class="str">"a"</span>);   <span class="cmt">// push to head</span>
+stack.<span class="met">pop</span>();      <span class="cmt">// remove from head (LIFO)</span>
+stack.<span class="met">peek</span>();     <span class="cmt">// view head</span></div>
+    <div class="note">Prefer ArrayDeque over LinkedList for Queue/Stack operations — it's faster (no node allocation overhead) and uses less memory.</div>
+  </section>
+
+  <section id="concurrent">
+    <h2>7. Concurrent Collections</h2>
+    <table>
+      <tr><th>Collection</th><th>Thread Safety</th><th>How</th><th>Notes</th></tr>
+      <tr><td>ConcurrentHashMap</td><td>Yes</td><td>Segment/bucket-level locks (Java 8: CAS)</td><td>Best concurrent map</td></tr>
+      <tr><td>CopyOnWriteArrayList</td><td>Yes</td><td>Copy array on every write</td><td>Reads cheap, writes expensive</td></tr>
+      <tr><td>CopyOnWriteArraySet</td><td>Yes</td><td>Same as above</td><td>Small sets with rare writes</td></tr>
+      <tr><td>ConcurrentLinkedQueue</td><td>Yes</td><td>Lock-free CAS</td><td>High concurrency, no blocking</td></tr>
+      <tr><td>BlockingQueue (LinkedBlockingQueue)</td><td>Yes</td><td>ReentrantLock</td><td>Producer-consumer pattern</td></tr>
+      <tr><td>Collections.synchronizedList</td><td>Yes (coarse)</td><td>Single lock on entire structure</td><td>Poor concurrency, avoid</td></tr>
+    </table>
+
+    <h3>ConcurrentHashMap vs synchronizedMap</h3>
+    <div class="code-block"><span class="cmt">// ConcurrentHashMap — Java 8+ uses CAS + synchronized on individual bins</span>
+<span class="cmt">// Multiple reads/writes can happen concurrently without full lock</span>
+<span class="cls">ConcurrentHashMap</span>&lt;<span class="cls">String</span>, <span class="cls">Integer</span>&gt; chm = <span class="kw">new</span> <span class="cls">ConcurrentHashMap</span>&lt;&gt;();
+
+<span class="cmt">// Atomic operations — key methods</span>
+chm.<span class="met">putIfAbsent</span>(<span class="str">"key"</span>, <span class="num">1</span>);                  <span class="cmt">// atomic</span>
+chm.<span class="met">computeIfAbsent</span>(<span class="str">"key"</span>, k -&gt; <span class="met">compute</span>(k)); <span class="cmt">// atomic compute</span>
+chm.<span class="met">merge</span>(<span class="str">"key"</span>, <span class="num">1</span>, <span class="cls">Integer</span>::sum);          <span class="cmt">// atomic merge/update</span>
+chm.<span class="met">getOrDefault</span>(<span class="str">"key"</span>, <span class="num">0</span>);                 <span class="cmt">// read with default</span>
+
+<span class="cmt">// Collections.synchronizedMap — wraps entire map with single lock</span>
+<span class="cmt">// All operations serialized — poor throughput under contention</span>
+<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">String</span>&gt; syncMap = <span class="cls">Collections</span>.<span class="met">synchronizedMap</span>(<span class="kw">new</span> <span class="cls">HashMap</span>&lt;&gt;());</div>
+
+    <h3>BlockingQueue for Producer-Consumer</h3>
+    <div class="code-block"><span class="cls">BlockingQueue</span>&lt;<span class="cls">Task</span>&gt; queue = <span class="kw">new</span> <span class="cls">LinkedBlockingQueue</span>&lt;&gt;(<span class="num">100</span>); <span class="cmt">// bounded</span>
+
+<span class="cmt">// Producer thread</span>
+queue.<span class="met">put</span>(task);     <span class="cmt">// blocks if queue full</span>
+queue.<span class="met">offer</span>(task, <span class="num">5</span>, <span class="cls">TimeUnit</span>.SECONDS); <span class="cmt">// timeout</span>
+
+<span class="cmt">// Consumer thread</span>
+<span class="cls">Task</span> t = queue.<span class="met">take</span>(); <span class="cmt">// blocks if queue empty</span>
+<span class="cls">Task</span> t = queue.<span class="met">poll</span>(<span class="num">5</span>, <span class="cls">TimeUnit</span>.SECONDS); <span class="cmt">// timeout</span></div>
+  </section>
+
+  <section id="choosing">
+    <h2>8. Choosing the Right Collection</h2>
+    <table>
+      <tr><th>Requirement</th><th>Best Choice</th><th>Why</th></tr>
+      <tr><td>Ordered, duplicates allowed</td><td>ArrayList</td><td>Fast random access, compact</td></tr>
+      <tr><td>Frequent insert/delete at head</td><td>ArrayDeque</td><td>O(1) both ends, no null</td></tr>
+      <tr><td>Unique elements, fast lookup</td><td>HashSet</td><td>O(1) contains</td></tr>
+      <tr><td>Unique, insertion order</td><td>LinkedHashSet</td><td>Ordered + fast lookup</td></tr>
+      <tr><td>Unique, sorted</td><td>TreeSet</td><td>O(log n) all ops</td></tr>
+      <tr><td>Key-value, fast lookup</td><td>HashMap</td><td>O(1) average</td></tr>
+      <tr><td>Key-value, sorted keys</td><td>TreeMap</td><td>NavigableMap API</td></tr>
+      <tr><td>Key-value, insertion order</td><td>LinkedHashMap</td><td>Predictable iteration</td></tr>
+      <tr><td>Concurrent key-value</td><td>ConcurrentHashMap</td><td>Fine-grained locking</td></tr>
+      <tr><td>Concurrent read-heavy list</td><td>CopyOnWriteArrayList</td><td>Lock-free reads</td></tr>
+      <tr><td>Producer-consumer</td><td>LinkedBlockingQueue</td><td>Built-in blocking</td></tr>
+      <tr><td>Priority processing</td><td>PriorityQueue</td><td>Min-heap, O(log n) poll</td></tr>
+    </table>
+  </section>
+
+  <section id="interview-qa">
+    <h2>9. Interview Q&amp;A</h2>
+    <div class="qa-block">
+      <div class="qa-q">How does HashMap handle collisions in Java 8+?</div>
+      <div class="qa-a">
+        In Java 8+, when a bucket exceeds <strong>8 entries</strong> (TREEIFY_THRESHOLD), the linked list is converted to a <strong>Red-Black Tree</strong>, reducing worst-case lookup from O(n) to O(log n). When entries drop below 6 (UNTREEIFY_THRESHOLD), it converts back to a linked list.<br><br>
+        Before Java 8, buckets were always linked lists, making a pathological attack with many hash collisions O(n) per operation. The treeification in Java 8 mitigates this to O(log n).
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What happens if you use a mutable object as a HashMap key and then mutate it?</div>
+      <div class="qa-a">
+        The entry becomes <strong>unretrievable</strong>. When you put the entry, HashMap computes hashCode() and stores it in the correct bucket. After mutation, hashCode() returns a different value, so get() looks in a different bucket and finds nothing.<br><br>
+        The entry still exists in the map (at the old bucket location) but you can never find it via normal get(). This causes a memory leak.<br><br>
+        <strong>Best practice:</strong> Only use immutable objects (String, Integer, enums, records) as HashMap keys.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between fail-fast and fail-safe iterators?</div>
+      <div class="qa-a">
+        <strong>Fail-fast</strong>: Throws ConcurrentModificationException if the collection is structurally modified during iteration (except through the iterator's own remove()). Works by checking a modCount counter. Used by ArrayList, HashMap, HashSet iterators.<br><br>
+        <strong>Fail-safe</strong>: Operates on a snapshot/copy of the collection, so modifications during iteration are safe (but you won't see new changes). Used by CopyOnWriteArrayList, ConcurrentHashMap iterators. Higher memory cost.<br><br>
+        <strong>Key point:</strong> Fail-fast is a best-effort mechanism — not a guarantee. Never rely on it for correctness; use proper synchronization or concurrent collections instead.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">When would you choose LinkedList over ArrayList?</div>
+      <div class="qa-a">
+        <strong>Almost never in practice.</strong> Despite LinkedList's O(1) insert at head/middle in theory, the real-world performance is usually worse than ArrayList due to:<br>
+        1. <strong>Cache misses</strong> — ArrayList elements are contiguous in memory (cache-friendly); LinkedList nodes are scattered<br>
+        2. <strong>Object overhead</strong> — each node has prev/next pointers + object header (~48 bytes per Integer vs ~4 bytes in ArrayList)<br>
+        3. <strong>GC pressure</strong> — many small node objects<br><br>
+        <strong>Use ArrayDeque</strong> instead of LinkedList for stack/queue operations. The only real use case for LinkedList is when you need both List and Deque interfaces from the same reference.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">How does ConcurrentHashMap achieve thread safety without locking the entire map?</div>
+      <div class="qa-a">
+        Java 8+ implementation uses a combination of:<br>
+        1. <strong>Volatile reads</strong> for simple gets (no locking needed for reads of already-written values)<br>
+        2. <strong>CAS (Compare-And-Swap)</strong> for bucket initialization and certain updates<br>
+        3. <strong>synchronized on individual bin (bucket)</strong> only when modifying a bucket, not the whole table<br><br>
+        This allows concurrent reads from any bucket and concurrent writes to <em>different</em> buckets, significantly improving throughput compared to a single-lock approach. Reads are effectively lock-free. The size() method uses distributed counters (LongAdder pattern) to avoid contention.
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="02-oop-solid.html" class="btn">← OOP &amp; SOLID</a>
+    <a href="04-concurrency.html" class="btn next">Concurrency →</a>
+  </div>
+</main>
+</body>
+</html>

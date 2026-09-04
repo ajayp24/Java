@@ -1,0 +1,1420 @@
+
+<title>Java Team Lead — Round 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root {
+  --bg: #F4F7FC;
+  --surface: #FFFFFF;
+  --surface-2: #EDF1F9;
+  --border: #DCE3EF;
+  --text: #0F1829;
+  --text-2: #374151;
+  --muted: #6B7A99;
+  --accent: #E85420;
+  --accent-dim: #FEF0EB;
+  --blue: #2563EB;
+  --blue-dim: #EFF4FF;
+  --green: #059669;
+  --green-dim: #ECFDF5;
+  --amber: #B45309;
+  --amber-dim: #FFFBEB;
+  --purple: #7C3AED;
+  --purple-dim: #F5F3FF;
+  --teal: #0D9488;
+  --teal-dim: #F0FDFA;
+  --sidebar-w: 260px;
+  --header-h: 52px;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --radius: 8px;
+  --code-bg: #0D1117;
+  --kw: #FF7B57;
+  --str: #7EE787;
+  --cm: #6E7F95;
+  --ty: #79C0FF;
+  --num: #F2CC60;
+  --an: #D2A8FF;
+  --fn: #E3B341;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #090D18; --surface: #111827; --surface-2: #1A2236;
+    --border: #1F2D42; --text: #E1E7F5; --text-2: #94A3B8;
+    --muted: #5D7096; --accent: #FF6B35; --accent-dim: #1F1008;
+    --blue: #60A5FA; --blue-dim: #0C1A35;
+    --green-dim: #051A0F; --amber-dim: #1A1005; --purple-dim: #14082E; --teal-dim: #041A18;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #090D18; --surface: #111827; --surface-2: #1A2236;
+  --border: #1F2D42; --text: #E1E7F5; --text-2: #94A3B8;
+  --muted: #5D7096; --accent: #FF6B35; --accent-dim: #1F1008;
+  --blue: #60A5FA; --blue-dim: #0C1A35;
+  --green-dim: #051A0F; --amber-dim: #1A1005; --purple-dim: #14082E; --teal-dim: #041A18;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 15px; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.65; min-height: 100vh; }
+
+/* TOPBAR */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--header-h); background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.5rem; gap: 1rem;
+}
+.topbar-left { display: flex; align-items: center; gap: 0.75rem; }
+.logo { font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: var(--accent); letter-spacing: -0.5px; }
+.topbar-divider { width: 1px; height: 20px; background: var(--border); }
+.topbar-title { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500; color: var(--text-2); }
+.topbar-right { display: flex; align-items: center; gap: 1rem; }
+.round-steps { display: flex; align-items: center; gap: 4px; }
+.round-step {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+  background: var(--surface-2); color: var(--muted);
+  border: 1px solid var(--border); text-decoration: none; transition: all 0.15s;
+}
+.round-step.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.round-step:not(.active):hover { border-color: var(--accent); color: var(--accent); }
+.theme-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--surface-2);
+  color: var(--muted); cursor: pointer; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+}
+.theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* LAYOUT */
+.layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  position: sticky; top: var(--header-h);
+  height: calc(100vh - var(--header-h)); overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: var(--surface); padding: 1.25rem 0;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.nav-group { margin-bottom: 1.5rem; }
+.nav-group-label {
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); padding: 0 1.25rem 0.5rem;
+}
+.nav-link {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.3rem 1.25rem; font-size: 0.82rem; color: var(--text-2);
+  text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s;
+}
+.nav-link:hover { color: var(--text); background: var(--surface-2); }
+.nav-link.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+.nav-badge {
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+  padding: 1px 5px; border-radius: 3px; opacity: 0.85; white-space: nowrap;
+}
+.badge-core { background: var(--accent-dim); color: var(--accent); }
+.badge-imp  { background: var(--blue-dim);   color: var(--blue); }
+.badge-adv  { background: var(--purple-dim); color: var(--purple); }
+.badge-sec  { background: var(--green-dim);  color: var(--green); }
+
+/* CONTENT */
+.content { flex: 1; max-width: 920px; padding: 2rem 2.5rem 4rem; min-width: 0; }
+
+/* INTRO CARD */
+.intro-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2rem; margin-bottom: 2.5rem;
+  border-top: 3px solid var(--accent);
+}
+.intro-eyebrow {
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 0.5rem;
+}
+.intro-card h1 { font-family: var(--font-mono); font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.2; text-wrap: balance; margin-bottom: 0.75rem; }
+.intro-card p { color: var(--text-2); font-size: 0.95rem; max-width: 62ch; margin-bottom: 1.5rem; }
+.intro-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-val { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 700; color: var(--text); }
+.stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* TOPIC SECTION */
+.topic-section { margin-bottom: 3rem; scroll-margin-top: calc(var(--header-h) + 1rem); }
+.section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.section-eyebrow { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.section-header h2 { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 700; color: var(--text); text-wrap: balance; }
+.diff-badge { margin-left: auto; font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.diff-core { background: var(--accent-dim); color: var(--accent); }
+.diff-imp  { background: var(--blue-dim);   color: var(--blue); }
+.diff-adv  { background: var(--purple-dim); color: var(--purple); }
+.diff-sec  { background: var(--green-dim);  color: var(--green); }
+
+.section-body { display: flex; flex-direction: column; gap: 1.25rem; }
+.section-body > p { color: var(--text-2); font-size: 0.93rem; max-width: 74ch; }
+.section-body > p strong { color: var(--text); }
+
+/* KEY POINTS */
+.key-points { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; }
+.key-points-label { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.65rem; }
+.key-points ul { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+.key-points li { font-size: 0.875rem; color: var(--text-2); padding-left: 1rem; position: relative; }
+.key-points li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.key-points li strong { color: var(--text); }
+.key-points code { font-family: var(--font-mono); font-size: 0.8rem; background: var(--surface-2); padding: 1px 5px; border-radius: 3px; color: var(--text); }
+
+/* CODE BLOCK */
+.code-block { border-radius: var(--radius); overflow: hidden; border: 1px solid #1A2030; }
+.code-header { background: #161B2A; padding: 0.55rem 1rem; display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid #1A2030; }
+.lang-tag { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; background: #252D42; color: #79C0FF; padding: 2px 7px; border-radius: 3px; letter-spacing: 0.05em; }
+.code-desc { font-family: var(--font-mono); font-size: 0.7rem; color: #6E7F95; }
+.code-block pre { background: var(--code-bg); margin: 0; padding: 1.1rem 1.25rem; overflow-x: auto; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.7; color: #C9D1D9; }
+.code-block code { font-family: inherit; }
+.kw  { color: var(--kw); font-weight: 600; }
+.ty  { color: var(--ty); }
+.str { color: var(--str); }
+.cm  { color: var(--cm); font-style: italic; }
+.num { color: var(--num); }
+.an  { color: var(--an); }
+.fn  { color: var(--fn); }
+
+/* CALLOUTS */
+.callout { border-radius: var(--radius); padding: 1rem 1.25rem; border: 1px solid; font-size: 0.875rem; }
+.callout-label { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+.callout-tip  { background: var(--blue-dim);   border-color: var(--blue);   color: var(--text-2); }
+.callout-tip .callout-label  { color: var(--blue); }
+.callout-warn { background: var(--amber-dim);  border-color: var(--amber);  color: var(--text-2); }
+.callout-warn .callout-label { color: var(--amber); }
+.callout-key  { background: var(--accent-dim); border-color: var(--accent); color: var(--text-2); }
+.callout-key .callout-label  { color: var(--accent); }
+.callout-sec  { background: var(--green-dim);  border-color: var(--green);  color: var(--text-2); }
+.callout-sec .callout-label  { color: var(--green); }
+.callout ul { list-style: none; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.callout li { padding-left: 1rem; position: relative; }
+.callout li::before { content: '→'; position: absolute; left: 0; font-weight: 700; }
+.callout-tip li::before  { color: var(--blue); }
+.callout-warn li::before { color: var(--amber); }
+.callout-key li::before  { color: var(--accent); }
+.callout-sec li::before  { color: var(--green); }
+.callout code { font-family: var(--font-mono); font-size: 0.8rem; background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 3px; }
+
+/* COMPARE TABLE */
+.compare-table { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+.compare-table table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.compare-table th { background: var(--surface-2); padding: 0.6rem 0.85rem; text-align: left; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; color: var(--muted); border-bottom: 1px solid var(--border); }
+.compare-table td { padding: 0.55rem 0.85rem; border-bottom: 1px solid var(--border); color: var(--text-2); vertical-align: top; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: var(--surface-2); }
+.compare-table code { font-family: var(--font-mono); font-size: 0.78rem; background: var(--surface-2); padding: 1px 5px; border-radius: 3px; color: var(--text); }
+.compare-table td strong { color: var(--text); }
+
+/* ANNO GRID */
+.anno-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem; }
+.anno-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; }
+.anno-card-name { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem; }
+.anno-card-desc { font-size: 0.82rem; color: var(--text-2); line-height: 1.5; }
+.anno-card-desc strong { color: var(--text); }
+
+.section-divider { height: 1px; background: var(--border); margin: 2.5rem 0; }
+@media (max-width: 768px) { .sidebar { display: none; } .content { padding: 1.25rem; } }
+</style>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo">Java∙TL</span>
+    <div class="topbar-divider"></div>
+    <span class="topbar-title">Round 3 — Spring &amp; Spring Boot</span>
+  </div>
+  <div class="topbar-right">
+    <div class="round-steps">
+      <a class="round-step" href="round1.html" title="Core Java &amp; JVM">1</a>
+      <a class="round-step" href="round2.html" title="Multithreading &amp; JVM">2</a>
+      <a class="round-step active" title="Spring &amp; Spring Boot">3</a>
+      <a class="round-step" title="System Design">4</a>
+      <a class="round-step" title="Leadership">5</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">◐</button>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="nav-group">
+    <div class="nav-group-label">Spring Core</div>
+    <a class="nav-link active" href="#ioc">Spring IoC <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#di">Dependency Injection <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#lifecycle">Bean Lifecycle <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#scopes">Bean Scopes <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#stereotypes">Stereotype Annotations <span class="nav-badge badge-core">Core</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Spring Boot</div>
+    <a class="nav-link" href="#autoconfig">Auto Configuration <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#profiles">Config &amp; Profiles <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Web Layer</div>
+    <a class="nav-link" href="#mvc">Spring MVC <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#rest">REST APIs <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#validation">Validation <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#exceptions">Exception Handling <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Security</div>
+    <a class="nav-link" href="#security">Spring Security <span class="nav-badge badge-sec">Sec</span></a>
+    <a class="nav-link" href="#jwt">JWT <span class="nav-badge badge-sec">Sec</span></a>
+    <a class="nav-link" href="#oauth2">OAuth2 <span class="nav-badge badge-sec">Sec</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Observability</div>
+    <a class="nav-link" href="#actuator">Actuator <span class="nav-badge badge-adv">Adv</span></a>
+    <a class="nav-link" href="#logging">Logging <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Testing</div>
+    <a class="nav-link" href="#testing">Testing <span class="nav-badge badge-adv">Adv</span></a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="content" id="mainContent">
+
+  <!-- INTRO -->
+  <div class="intro-card">
+    <div class="intro-eyebrow">Round 3 of 5</div>
+    <h1>Spring &amp; Spring Boot</h1>
+    <p>Spring is the default enterprise Java platform — understanding the container deeply separates senior engineers from team leads. This round covers the full stack: IoC to security, REST to observability, and the testing strategies that make it production-safe.</p>
+    <div class="intro-stats">
+      <div class="stat"><span class="stat-val">21</span><span class="stat-label">Topics</span></div>
+      <div class="stat"><span class="stat-val">~6h</span><span class="stat-label">Prep Time</span></div>
+      <div class="stat"><span class="stat-val">Spring 6 / Boot 3</span><span class="stat-label">Coverage</span></div>
+    </div>
+  </div>
+
+  <!-- ─── 1. SPRING IOC ─── -->
+  <section class="topic-section" id="ioc">
+    <div class="section-header">
+      <span class="section-eyebrow">Spring Core</span>
+      <h2>Spring IoC Container</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>The <strong>Inversion of Control (IoC)</strong> container is Spring's central engine. Instead of your code creating and wiring objects, the container manages the entire lifecycle and graph of application objects (beans). You describe what you need; the container provides it. The primary interface is <code>ApplicationContext</code>, which extends <code>BeanFactory</code> with enterprise features: event publishing, internationalization, AOP, and eager bean instantiation.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">IoC Container Hierarchy</div>
+        <ul>
+          <li><strong>BeanFactory</strong>: basic IoC — lazy instantiation, minimal footprint. Rarely used directly.</li>
+          <li><strong>ApplicationContext</strong>: full-featured — eager singleton instantiation, AOP, events, i18n. Use this.</li>
+          <li><strong>AnnotationConfigApplicationContext</strong>: reads <code>@Configuration</code> classes — used in standalone apps.</li>
+          <li><strong>SpringApplication (Boot)</strong>: bootstraps <code>ApplicationContext</code> automatically; type depends on classpath (Servlet, Reactive, None).</li>
+          <li>The container is built from <strong>BeanDefinitions</strong>: metadata describing class, scope, constructor args, property values.</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">ApplicationContext bootstrap + event listening</span></div>
+        <pre><code><span class="an">@SpringBootApplication</span>
+<span class="kw">public class</span> <span class="ty">App</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="ty">String</span>[] args) {
+        <span class="cm">// SpringApplication builds and refreshes the ApplicationContext</span>
+        <span class="ty">ConfigurableApplicationContext</span> ctx = <span class="ty">SpringApplication</span>.<span class="fn">run</span>(<span class="ty">App</span>.<span class="kw">class</span>, args);
+
+        <span class="cm">// Retrieve bean programmatically (rarely needed — prefer injection)</span>
+        <span class="ty">OrderService</span> svc = ctx.<span class="fn">getBean</span>(<span class="ty">OrderService</span>.<span class="kw">class</span>);
+    }
+}
+
+<span class="cm">// Listen to context events</span>
+<span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">StartupListener</span> <span class="kw">implements</span> <span class="ty">ApplicationListener</span>&lt;<span class="ty">ContextRefreshedEvent</span>&gt; {
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">onApplicationEvent</span>(<span class="ty">ContextRefreshedEvent</span> event) {
+        <span class="cm">// Runs once container is fully initialized</span>
+    }
+}
+
+<span class="cm">// Or use functional approach (Spring 5+)</span>
+<span class="an">@EventListener</span>(<span class="ty">ApplicationReadyEvent</span>.<span class="kw">class</span>)
+<span class="kw">public void</span> <span class="fn">onReady</span>() { <span class="cm">/* warm up caches, start background tasks */</span> }</code></pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">Interview Focus</div>
+        <ul>
+          <li>"What is IoC?" — The container owns object creation and wiring; code asks for collaborators rather than creating them.</li>
+          <li>Difference between <code>BeanFactory</code> and <code>ApplicationContext</code> — lazy vs eager, feature set.</li>
+          <li>Spring 6 requires Java 17+ and Jakarta EE 9+ (namespace <code>jakarta.*</code> not <code>javax.*</code>).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 2. DEPENDENCY INJECTION ─── -->
+  <section class="topic-section" id="di">
+    <div class="section-header">
+      <span class="section-eyebrow">Spring Core</span>
+      <h2>Dependency Injection</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>DI is the mechanism IoC uses: the container <em>injects</em> dependencies into beans rather than beans fetching them. Spring supports three injection styles: <strong>constructor</strong> (preferred), <strong>setter</strong>, and <strong>field</strong>. Constructor injection is favored because it enforces immutability, makes dependencies explicit, and enables easy unit testing without a Spring context.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Style</th><th>Mechanism</th><th>Immutable?</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Constructor</strong></td><td>Via constructor params</td><td>Yes (final fields)</td><td>Required, mandatory deps. Preferred.</td></tr>
+            <tr><td><strong>Setter</strong></td><td><code>@Autowired</code> on setter</td><td>No</td><td>Optional/reconfigurable deps.</td></tr>
+            <tr><td><strong>Field</strong></td><td><code>@Autowired</code> on field</td><td>No</td><td>Avoid — hides deps, breaks unit tests.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Constructor DI (preferred) vs field DI (avoid)</span></div>
+        <pre><code><span class="cm">// PREFERRED: constructor injection — immutable, testable, no Spring needed in tests</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">OrderService</span> {
+    <span class="kw">private final</span> <span class="ty">OrderRepository</span> repo;
+    <span class="kw">private final</span> <span class="ty">PaymentGateway</span> payment;
+
+    <span class="cm">// @Autowired is optional when only one constructor exists (Spring 4.3+)</span>
+    <span class="kw">public</span> <span class="ty">OrderService</span>(<span class="ty">OrderRepository</span> repo, <span class="ty">PaymentGateway</span> payment) {
+        <span class="kw">this</span>.repo    = repo;
+        <span class="kw">this</span>.payment = payment;
+    }
+}
+
+<span class="cm">// AVOID: field injection — Spring must be present to test, can't make fields final</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">BadService</span> {
+    <span class="an">@Autowired</span> <span class="kw">private</span> <span class="ty">OrderRepository</span> repo; <span class="cm">// ← avoid</span>
+}
+
+<span class="cm">// Disambiguation: multiple beans of same type</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">NotificationService</span> {
+    <span class="kw">public</span> <span class="ty">NotificationService</span>(
+            <span class="an">@Qualifier</span>(<span class="str">"emailChannel"</span>) <span class="ty">NotificationChannel</span> email,
+            <span class="an">@Qualifier</span>(<span class="str">"smsChannel"</span>)   <span class="ty">NotificationChannel</span> sms) { ... }
+}
+
+<span class="cm">// Optional dependency</span>
+<span class="kw">public</span> <span class="ty">ReportService</span>(<span class="ty">ReportRepository</span> repo,
+        <span class="an">@Autowired</span>(required = <span class="kw">false</span>) <span class="ty">CacheManager</span> cache) { ... }</code></pre>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-label">Circular Dependency</div>
+        <ul>
+          <li>Constructor injection with circular deps throws <code>BeanCurrentlyInCreationException</code> at startup — fail-fast, which is correct behavior.</li>
+          <li>Fix: refactor to break the cycle (introduce a third collaborator or event), or use <code>@Lazy</code> on one injection point as a last resort.</li>
+          <li>Field injection silently defers resolution, masking the design problem.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 3. BEAN LIFECYCLE ─── -->
+  <section class="topic-section" id="lifecycle">
+    <div class="section-header">
+      <span class="section-eyebrow">Spring Core</span>
+      <h2>Bean Lifecycle</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Spring beans go through a well-defined lifecycle managed by the container: instantiation → property injection → awareness callbacks → initialization → in-use → destruction. Knowing the order of these phases is critical for integration tasks, connection pools, and graceful shutdown.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Lifecycle Phases (in order)</div>
+        <ul>
+          <li><strong>1. Instantiation</strong>: container calls constructor.</li>
+          <li><strong>2. Dependency injection</strong>: properties / constructor args set.</li>
+          <li><strong>3. Aware interfaces</strong>: <code>BeanNameAware</code>, <code>ApplicationContextAware</code> etc. called.</li>
+          <li><strong>4. BeanPostProcessor.postProcessBeforeInitialization</strong>: AOP proxies, custom processing.</li>
+          <li><strong>5. @PostConstruct</strong>: called after all dependencies injected — preferred init hook.</li>
+          <li><strong>6. InitializingBean.afterPropertiesSet()</strong>: alternative init hook (legacy).</li>
+          <li><strong>7. @Bean(initMethod)</strong>: XML/Java config custom init.</li>
+          <li><strong>8. BeanPostProcessor.postProcessAfterInitialization</strong>: AOP proxy wrapping.</li>
+          <li><strong>9. In use</strong> by the application.</li>
+          <li><strong>10. @PreDestroy</strong>: cleanup before container shuts down — preferred destroy hook.</li>
+          <li><strong>11. DisposableBean.destroy()</strong>: alternative (legacy). Close connections, stop threads.</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">@PostConstruct / @PreDestroy lifecycle hooks</span></div>
+        <pre><code><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">ConnectionPool</span> {
+    <span class="kw">private</span> <span class="ty">DataSource</span> ds;
+
+    <span class="an">@PostConstruct</span>
+    <span class="kw">public void</span> <span class="fn">init</span>() {
+        <span class="cm">// All dependencies injected — safe to use them here</span>
+        ds = <span class="fn">createDataSource</span>();
+        <span class="fn">warmUp</span>(ds);
+    }
+
+    <span class="an">@PreDestroy</span>
+    <span class="kw">public void</span> <span class="fn">shutdown</span>() {
+        <span class="cm">// Called before container destroys this bean</span>
+        <span class="kw">if</span> (ds <span class="kw">instanceof</span> <span class="ty">Closeable</span> c) <span class="fn">c.close</span>();
+    }
+}
+
+<span class="cm">// SmartLifecycle: ordered startup/shutdown for infrastructure beans</span>
+<span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">KafkaConsumerManager</span> <span class="kw">implements</span> <span class="ty">SmartLifecycle</span> {
+    <span class="kw">private volatile boolean</span> running = <span class="kw">false</span>;
+
+    <span class="an">@Override</span> <span class="kw">public void</span> <span class="fn">start</span>()   { running = <span class="kw">true</span>;  <span class="cm">/* start consumers */</span> }
+    <span class="an">@Override</span> <span class="kw">public void</span> <span class="fn">stop</span>()    { running = <span class="kw">false</span>; <span class="cm">/* drain and stop */</span> }
+    <span class="an">@Override</span> <span class="kw">public boolean</span> <span class="fn">isRunning</span>() { <span class="kw">return</span> running; }
+    <span class="an">@Override</span> <span class="kw">public int</span> <span class="fn">getPhase</span>()     { <span class="kw">return</span> <span class="num">0</span>; } <span class="cm">// lower = starts later, stops first</span>
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 4. BEAN SCOPES ─── -->
+  <section class="topic-section" id="scopes">
+    <div class="section-header">
+      <span class="section-eyebrow">Spring Core</span>
+      <h2>Bean Scopes</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>A bean's <strong>scope</strong> determines how many instances the container creates and how long they live. The default is <code>singleton</code> — one instance per container, shared across all threads. Injecting a <code>prototype</code> bean into a <code>singleton</code> is a classic trap: the singleton holds one prototype instance forever, defeating its purpose.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Scope</th><th>Instances</th><th>Context</th></tr></thead>
+          <tbody>
+            <tr><td><code>singleton</code></td><td>One per container</td><td>Default. Stateless services, repositories.</td></tr>
+            <tr><td><code>prototype</code></td><td>New per injection/getBean()</td><td>Stateful beans. Container does not manage destroy.</td></tr>
+            <tr><td><code>request</code></td><td>One per HTTP request</td><td>Web: per-request state (e.g. auth context holder).</td></tr>
+            <tr><td><code>session</code></td><td>One per HTTP session</td><td>Web: per-user session data.</td></tr>
+            <tr><td><code>application</code></td><td>One per ServletContext</td><td>Web: shared across sessions in same app.</td></tr>
+            <tr><td><code>websocket</code></td><td>One per WebSocket session</td><td>WebSocket-scoped beans.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Prototype in singleton — the correct fix with ObjectProvider</span></div>
+        <pre><code><span class="cm">// PROBLEM: singleton holds one prototype forever</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">BadService</span> {
+    <span class="an">@Autowired</span>
+    <span class="kw">private</span> <span class="ty">PrototypeBean</span> pb; <span class="cm">// same instance every time — scope defeated</span>
+}
+
+<span class="cm">// FIX: inject ObjectProvider — fetches a new instance each time</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">GoodService</span> {
+    <span class="kw">private final</span> <span class="ty">ObjectProvider</span>&lt;<span class="ty">PrototypeBean</span>&gt; provider;
+
+    <span class="kw">public</span> <span class="ty">GoodService</span>(<span class="ty">ObjectProvider</span>&lt;<span class="ty">PrototypeBean</span>&gt; provider) {
+        <span class="kw">this</span>.provider = provider;
+    }
+
+    <span class="kw">public void</span> <span class="fn">doWork</span>() {
+        <span class="ty">PrototypeBean</span> fresh = provider.<span class="fn">getObject</span>(); <span class="cm">// new instance each call</span>
+        fresh.<span class="fn">execute</span>();
+    }
+}
+
+<span class="cm">// Web scopes require proxy — singleton proxy delegates to per-request instance</span>
+<span class="an">@Component</span>
+<span class="an">@Scope</span>(value = <span class="str">"request"</span>, proxyMode = <span class="ty">ScopedProxyMode</span>.TARGET_CLASS)
+<span class="kw">public class</span> <span class="ty">RequestContext</span> {
+    <span class="kw">private</span> <span class="ty">String</span> traceId;
+    <span class="cm">// ... injected into singletons safely via proxy</span>
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 5. STEREOTYPE ANNOTATIONS ─── -->
+  <section class="topic-section" id="stereotypes">
+    <div class="section-header">
+      <span class="section-eyebrow">Spring Core</span>
+      <h2>Stereotype Annotations</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Stereotype annotations mark classes for component scanning. All are specializations of <code>@Component</code> and result in the class being registered as a Spring bean. The distinctions communicate architectural role and enable targeted AOP/post-processing.</p>
+
+      <div class="anno-grid">
+        <div class="anno-card">
+          <div class="anno-card-name">@Component</div>
+          <div class="anno-card-desc">Generic Spring-managed bean. Base annotation — all others inherit from it. Use when none of the specific stereotypes fits.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-name">@Service</div>
+          <div class="anno-card-desc">Business logic layer. Semantically signals service role. No extra behavior over <code>@Component</code> in stock Spring — but clearly communicates intent and enables targeted AOP.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-name">@Repository</div>
+          <div class="anno-card-desc"><strong>Extra behavior</strong>: persistence exceptions (e.g., <code>SQLException</code>) are translated to Spring's <code>DataAccessException</code> hierarchy via <code>PersistenceExceptionTranslationPostProcessor</code>.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-name">@Controller</div>
+          <div class="anno-card-desc">Spring MVC handler. Detected by <code>DispatcherServlet</code>. Returns view names (Thymeleaf, JSP). Methods annotated with <code>@RequestMapping</code> and variants.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-name">@RestController</div>
+          <div class="anno-card-desc"><strong>= @Controller + @ResponseBody</strong>. Every handler method serializes the return value directly to the HTTP response body (JSON/XML via Jackson/JAXB). No view resolution.</div>
+        </div>
+        <div class="anno-card">
+          <div class="anno-card-name">@Configuration</div>
+          <div class="anno-card-desc">Declares <code>@Bean</code> factory methods. Proxied by CGLIB — inter-bean method calls return the singleton instance, not a new object. Use <code>@Configuration(proxyBeanMethods=false)</code> for lite mode.</div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Layer-appropriate stereotype usage</span></div>
+        <pre><code><span class="an">@Repository</span>
+<span class="kw">public class</span> <span class="ty">JpaOrderRepository</span> <span class="kw">implements</span> <span class="ty">OrderRepository</span> {
+    <span class="cm">// SQLException → DataAccessException translation automatic</span>
+}
+
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">OrderService</span> {
+    <span class="cm">// Business rules here, delegates to repository</span>
+}
+
+<span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="str">"/api/orders"</span>)
+<span class="kw">public class</span> <span class="ty">OrderController</span> {
+    <span class="kw">private final</span> <span class="ty">OrderService</span> service;
+    <span class="kw">public</span> <span class="ty">OrderController</span>(<span class="ty">OrderService</span> service) { <span class="kw">this</span>.service = service; }
+
+    <span class="an">@GetMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">OrderDto</span>&gt; <span class="fn">get</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(service.<span class="fn">findById</span>(id));
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 6. AUTO CONFIGURATION ─── -->
+  <section class="topic-section" id="autoconfig">
+    <div class="section-header">
+      <span class="section-eyebrow">Spring Boot</span>
+      <h2>Auto Configuration</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Spring Boot's auto-configuration scans the classpath and conditionally registers beans based on what's present — you get a configured <code>DataSource</code> because <code>spring-boot-starter-data-jpa</code> is on the classpath. Each auto-configuration class uses <code>@Conditional*</code> annotations so it backs off when you provide your own bean.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">How It Works</div>
+        <ul>
+          <li><code>@SpringBootApplication</code> = <code>@EnableAutoConfiguration</code> + <code>@ComponentScan</code> + <code>@Configuration</code>.</li>
+          <li>Boot reads <code>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</code> (Boot 3) — lists all auto-config classes.</li>
+          <li>Each auto-config class is annotated with <code>@ConditionalOnClass</code>, <code>@ConditionalOnMissingBean</code>, <code>@ConditionalOnProperty</code> etc.</li>
+          <li>If you define your own <code>DataSource</code> bean, <code>DataSourceAutoConfiguration</code> backs off entirely.</li>
+          <li>Debug with: <code>--debug</code> flag or <code>spring.autoconfigure.report=true</code> — prints "positive matches" and "negative matches".</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Writing a custom auto-configuration</span></div>
+        <pre><code><span class="cm">// Custom starter auto-config — registered in AutoConfiguration.imports</span>
+<span class="an">@AutoConfiguration</span>
+<span class="an">@ConditionalOnClass</span>(<span class="ty">AuditClient</span>.<span class="kw">class</span>)          <span class="cm">// only if library is on classpath</span>
+<span class="an">@ConditionalOnMissingBean</span>(<span class="ty">AuditClient</span>.<span class="kw">class</span>)   <span class="cm">// back off if user provided one</span>
+<span class="an">@EnableConfigurationProperties</span>(<span class="ty">AuditProperties</span>.<span class="kw">class</span>)
+<span class="kw">public class</span> <span class="ty">AuditAutoConfiguration</span> {
+
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="ty">AuditClient</span> <span class="fn">auditClient</span>(<span class="ty">AuditProperties</span> props) {
+        <span class="kw">return new</span> <span class="ty">AuditClient</span>(props.<span class="fn">getEndpoint</span>(), props.<span class="fn">getApiKey</span>());
+    }
+}
+
+<span class="cm">// Type-safe configuration binding</span>
+<span class="an">@ConfigurationProperties</span>(prefix = <span class="str">"audit"</span>)
+<span class="an">@Validated</span>
+<span class="kw">public class</span> <span class="ty">AuditProperties</span> {
+    <span class="an">@NotBlank</span> <span class="kw">private</span> <span class="ty">String</span> endpoint;
+    <span class="an">@NotBlank</span> <span class="kw">private</span> <span class="ty">String</span> apiKey;
+    <span class="cm">// getters + setters</span>
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 7. CONFIGURATION / PROFILES ─── -->
+  <section class="topic-section" id="profiles">
+    <div class="section-header">
+      <span class="section-eyebrow">Spring Boot</span>
+      <h2>Configuration &amp; Profiles</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Spring Boot externalizes configuration into <strong>property sources</strong> with a strict priority order — command-line args override env vars, which override <code>application.yml</code>. <strong>Profiles</strong> activate environment-specific beans and property files (<code>application-prod.yml</code>) without touching application code.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Property Source Priority (highest first)</div>
+        <ul>
+          <li>Command-line arguments: <code>--server.port=9090</code>.</li>
+          <li>Java system properties: <code>-Dserver.port=9090</code>.</li>
+          <li>OS environment variables: <code>SERVER_PORT=9090</code> (relaxed binding).</li>
+          <li>Profile-specific: <code>application-{profile}.yml</code> inside / outside jar.</li>
+          <li><code>application.yml</code> inside / outside jar.</li>
+          <li><code>@PropertySource</code> annotations on <code>@Configuration</code> classes.</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">YAML</span><span class="code-desc">application.yml multi-profile with groups</span></div>
+        <pre><code><span class="cm"># application.yml — active profile from env or arg</span>
+spring:
+  profiles:
+    active: <span class="str">${SPRING_PROFILES_ACTIVE:local}</span>
+    group:
+      prod: <span class="str">"prod,monitoring,security"</span>   <span class="cm"># activate group → activates all 3</span>
+
+<span class="an">---</span>
+spring.config.activate.on-profile: local
+<span class="kw">datasource:</span>
+  url: <span class="str">jdbc:h2:mem:testdb</span>
+
+<span class="an">---</span>
+spring.config.activate.on-profile: prod
+<span class="kw">datasource:</span>
+  url: <span class="str">${DB_URL}</span>
+  username: <span class="str">${DB_USER}</span>
+  password: <span class="str">${DB_PASS}</span></code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">@Profile on beans, @ConfigurationProperties</span></div>
+        <pre><code><span class="cm">// Bean active only in prod profile</span>
+<span class="an">@Service</span>
+<span class="an">@Profile</span>(<span class="str">"prod"</span>)
+<span class="kw">public class</span> <span class="ty">ProdEmailService</span> <span class="kw">implements</span> <span class="ty">EmailService</span> { ... }
+
+<span class="an">@Service</span>
+<span class="an">@Profile</span>(<span class="str">"!prod"</span>)     <span class="cm">// active when NOT prod</span>
+<span class="kw">public class</span> <span class="ty">StubEmailService</span> <span class="kw">implements</span> <span class="ty">EmailService</span> { ... }
+
+<span class="cm">// Type-safe binding with nested objects</span>
+<span class="an">@ConfigurationProperties</span>(prefix = <span class="str">"app.cache"</span>)
+<span class="kw">public record</span> <span class="ty">CacheConfig</span>(<span class="an">@DurationUnit</span>(<span class="ty">ChronoUnit</span>.MINUTES) <span class="ty">Duration</span> ttl,
+                            <span class="ty">int</span> maxSize) {}
+
+<span class="cm">// Inject directly</span>
+<span class="an">@Value</span>(<span class="str">"${app.feature.enabled:false}"</span>)   <span class="cm">// with default</span>
+<span class="kw">private boolean</span> featureEnabled;</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 8. SPRING MVC ─── -->
+  <section class="topic-section" id="mvc">
+    <div class="section-header">
+      <span class="section-eyebrow">Web Layer</span>
+      <h2>Spring MVC</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Spring MVC is built on the <strong>Front Controller</strong> pattern. A single <code>DispatcherServlet</code> receives all requests, delegates to <code>HandlerMapping</code> to find the right controller method, invokes it, and routes the result through <code>ViewResolver</code> (or <code>HttpMessageConverter</code> for REST). Spring WebFlux is the reactive alternative — non-blocking, built on Project Reactor.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Request Processing Pipeline</div>
+        <ul>
+          <li><strong>DispatcherServlet</strong> → <strong>HandlerMapping</strong> (find controller method) → <strong>HandlerAdapter</strong> (invoke it).</li>
+          <li><strong>HandlerInterceptor</strong>: pre/post/afterCompletion hooks around handler execution.</li>
+          <li><strong>HttpMessageConverter</strong>: serializes/deserializes HTTP body — Jackson for JSON, JAXB for XML.</li>
+          <li><strong>ContentNegotiation</strong>: picks converter based on <code>Accept</code> header or URL extension.</li>
+          <li><strong>ModelAndView</strong>: returned by traditional controllers for view rendering.</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">HandlerInterceptor for request tracing</span></div>
+        <pre><code><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">TraceInterceptor</span> <span class="kw">implements</span> <span class="ty">HandlerInterceptor</span> {
+
+    <span class="an">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">preHandle</span>(<span class="ty">HttpServletRequest</span> req, <span class="ty">HttpServletResponse</span> res, <span class="ty">Object</span> handler) {
+        <span class="ty">String</span> traceId = <span class="ty">UUID</span>.<span class="fn">randomUUID</span>().<span class="fn">toString</span>();
+        <span class="ty">MDC</span>.<span class="fn">put</span>(<span class="str">"traceId"</span>, traceId);
+        res.<span class="fn">setHeader</span>(<span class="str">"X-Trace-Id"</span>, traceId);
+        <span class="kw">return true</span>; <span class="cm">// continue chain</span>
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">afterCompletion</span>(<span class="ty">HttpServletRequest</span> req, <span class="ty">HttpServletResponse</span> res,
+                                  <span class="ty">Object</span> handler, <span class="ty">Exception</span> ex) {
+        <span class="ty">MDC</span>.<span class="fn">clear</span>(); <span class="cm">// prevent ThreadLocal leak in thread pool</span>
+    }
+}
+
+<span class="an">@Configuration</span>
+<span class="kw">public class</span> <span class="ty">WebConfig</span> <span class="kw">implements</span> <span class="ty">WebMvcConfigurer</span> {
+    <span class="kw">private final</span> <span class="ty">TraceInterceptor</span> traceInterceptor;
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">addInterceptors</span>(<span class="ty">InterceptorRegistry</span> registry) {
+        registry.<span class="fn">addInterceptor</span>(traceInterceptor)
+                .<span class="fn">addPathPatterns</span>(<span class="str">"/api/**"</span>);
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 9. REST APIs ─── -->
+  <section class="topic-section" id="rest">
+    <div class="section-header">
+      <span class="section-eyebrow">Web Layer</span>
+      <h2>REST APIs</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>REST APIs in Spring are built with <code>@RestController</code>. Design centers on: proper HTTP methods and status codes, meaningful resource URLs, consistent request/response models, and clean error contracts. <code>ResponseEntity&lt;T&gt;</code> gives full control over status, headers, and body.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">REST controller — full CRUD with proper status codes</span></div>
+        <pre><code><span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="str">"/api/v1/orders"</span>)
+<span class="an">@RequiredArgsConstructor</span>
+<span class="kw">public class</span> <span class="ty">OrderController</span> {
+    <span class="kw">private final</span> <span class="ty">OrderService</span> service;
+
+    <span class="an">@GetMapping</span>
+    <span class="kw">public</span> <span class="ty">Page</span>&lt;<span class="ty">OrderDto</span>&gt; <span class="fn">list</span>(<span class="an">@PageableDefault</span>(size = <span class="num">20</span>) <span class="ty">Pageable</span> p) {
+        <span class="kw">return</span> service.<span class="fn">findAll</span>(p);             <span class="cm">// 200 OK</span>
+    }
+
+    <span class="an">@GetMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">OrderDto</span>&gt; <span class="fn">get</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        <span class="kw">return</span> service.<span class="fn">findById</span>(id)
+            .<span class="fn">map</span>(<span class="ty">ResponseEntity</span>::ok)
+            .<span class="fn">orElse</span>(<span class="ty">ResponseEntity</span>.<span class="fn">notFound</span>().<span class="fn">build</span>()); <span class="cm">// 200 or 404</span>
+    }
+
+    <span class="an">@PostMapping</span>
+    <span class="an">@ResponseStatus</span>(<span class="ty">HttpStatus</span>.CREATED)
+    <span class="kw">public</span> <span class="ty">OrderDto</span> <span class="fn">create</span>(<span class="an">@RequestBody</span> <span class="an">@Valid</span> <span class="ty">CreateOrderRequest</span> req) {
+        <span class="kw">return</span> service.<span class="fn">create</span>(req);              <span class="cm">// 201 Created</span>
+    }
+
+    <span class="an">@PutMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">OrderDto</span>&gt; <span class="fn">update</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id,
+            <span class="an">@RequestBody</span> <span class="an">@Valid</span> <span class="ty">UpdateOrderRequest</span> req) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(service.<span class="fn">update</span>(id, req));
+    }
+
+    <span class="an">@DeleteMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="an">@ResponseStatus</span>(<span class="ty">HttpStatus</span>.NO_CONTENT)
+    <span class="kw">public void</span> <span class="fn">delete</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        service.<span class="fn">delete</span>(id);                      <span class="cm">// 204 No Content</span>
+    }
+}</code></pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">API Design Principles</div>
+        <ul>
+          <li>Version in URL path (<code>/api/v1/</code>) or <code>Accept</code> header — URL versioning is more visible and cache-friendly.</li>
+          <li>Use <code>Location</code> header in 201 response pointing to the new resource.</li>
+          <li>Paginate collections — never return unbounded lists; use <code>Pageable</code> with Spring Data.</li>
+          <li>Return consistent error bodies — use <code>ProblemDetail</code> (RFC 7807, built into Spring 6) for machine-readable errors.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 10. VALIDATION ─── -->
+  <section class="topic-section" id="validation">
+    <div class="section-header">
+      <span class="section-eyebrow">Web Layer</span>
+      <h2>Validation</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Spring integrates <strong>Jakarta Bean Validation (Hibernate Validator)</strong>. Annotate fields with constraints; add <code>@Valid</code> or <code>@Validated</code> on the controller parameter to trigger validation. <code>MethodValidationPostProcessor</code> enables validation on service layer methods too.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Request DTO constraints + custom validator</span></div>
+        <pre><code><span class="kw">public record</span> <span class="ty">CreateOrderRequest</span>(
+    <span class="an">@NotBlank</span>(<span class="str">message = "customerId required"</span>)
+    <span class="ty">String</span> customerId,
+
+    <span class="an">@NotEmpty</span> <span class="an">@Size</span>(max = <span class="num">50</span>)
+    <span class="ty">List</span>&lt;<span class="ty">LineItem</span>&gt; items,
+
+    <span class="an">@Future</span>
+    <span class="ty">LocalDate</span> deliveryDate,
+
+    <span class="an">@DecimalMin</span>(<span class="str">"0.01"</span>) <span class="an">@Digits</span>(integer = <span class="num">8</span>, fraction = <span class="num">2</span>)
+    <span class="ty">BigDecimal</span> totalAmount
+) {}
+
+<span class="cm">// Custom constraint annotation</span>
+<span class="an">@Target</span>({<span class="ty">ElementType</span>.FIELD})
+<span class="an">@Retention</span>(<span class="ty">RetentionPolicy</span>.RUNTIME)
+<span class="an">@Constraint</span>(validatedBy = <span class="ty">SkuValidator</span>.<span class="kw">class</span>)
+<span class="kw">public @interface</span> <span class="ty">ValidSku</span> {
+    <span class="ty">String</span> <span class="fn">message</span>() <span class="kw">default</span> <span class="str">"Invalid SKU format"</span>;
+    <span class="ty">Class</span>&lt;?&gt;[] <span class="fn">groups</span>()   <span class="kw">default</span> {};
+    <span class="ty">Class</span>&lt;?&gt;[] <span class="fn">payload</span>() <span class="kw">default</span> {};
+}
+
+<span class="kw">public class</span> <span class="ty">SkuValidator</span> <span class="kw">implements</span> <span class="ty">ConstraintValidator</span>&lt;<span class="ty">ValidSku</span>, <span class="ty">String</span>&gt; {
+    <span class="kw">private static final</span> <span class="ty">Pattern</span> PATTERN = <span class="ty">Pattern</span>.<span class="fn">compile</span>(<span class="str">"[A-Z]{3}-\\d{4}"</span>);
+
+    <span class="an">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">isValid</span>(<span class="ty">String</span> value, <span class="ty">ConstraintValidatorContext</span> ctx) {
+        <span class="kw">return</span> value != <span class="kw">null</span> &amp;&amp; PATTERN.<span class="fn">matcher</span>(value).<span class="fn">matches</span>();
+    }
+}</code></pre>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-label">Validation Error Handling</div>
+        <ul>
+          <li><code>@Valid</code> failure → <code>MethodArgumentNotValidException</code>; handle in <code>@ControllerAdvice</code> to return structured 400 body.</li>
+          <li><code>@Validated</code> with groups lets you apply different constraints at create vs update.</li>
+          <li>Never rely solely on frontend validation — always validate at the API boundary.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 11. EXCEPTION HANDLING ─── -->
+  <section class="topic-section" id="exceptions">
+    <div class="section-header">
+      <span class="section-eyebrow">Web Layer</span>
+      <h2>Exception Handling</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p><code>@ControllerAdvice</code> / <code>@RestControllerAdvice</code> provides a global exception handling layer across all controllers. Methods annotated with <code>@ExceptionHandler</code> map exception types to HTTP responses. Spring 6 introduces <code>ProblemDetail</code> (RFC 7807) for standardized error bodies.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Global exception handler with ProblemDetail</span></div>
+        <pre><code><span class="an">@RestControllerAdvice</span>
+<span class="kw">public class</span> <span class="ty">GlobalExceptionHandler</span> {
+
+    <span class="an">@ExceptionHandler</span>(<span class="ty">ResourceNotFoundException</span>.<span class="kw">class</span>)
+    <span class="kw">public</span> <span class="ty">ProblemDetail</span> <span class="fn">handleNotFound</span>(<span class="ty">ResourceNotFoundException</span> ex) {
+        <span class="ty">ProblemDetail</span> pd = <span class="ty">ProblemDetail</span>.<span class="fn">forStatusAndDetail</span>(<span class="ty">HttpStatus</span>.NOT_FOUND, ex.<span class="fn">getMessage</span>());
+        pd.<span class="fn">setTitle</span>(<span class="str">"Resource Not Found"</span>);
+        pd.<span class="fn">setProperty</span>(<span class="str">"resourceId"</span>, ex.<span class="fn">getId</span>());
+        <span class="kw">return</span> pd;
+    }
+
+    <span class="an">@ExceptionHandler</span>(<span class="ty">MethodArgumentNotValidException</span>.<span class="kw">class</span>)
+    <span class="kw">public</span> <span class="ty">ProblemDetail</span> <span class="fn">handleValidation</span>(<span class="ty">MethodArgumentNotValidException</span> ex) {
+        <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; errors = ex.<span class="fn">getBindingResult</span>().<span class="fn">getFieldErrors</span>()
+            .<span class="fn">stream</span>()
+            .<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">toMap</span>(
+                <span class="ty">FieldError</span>::<span class="fn">getField</span>,
+                e -> <span class="ty">Objects</span>.<span class="fn">requireNonNullElse</span>(e.<span class="fn">getDefaultMessage</span>(), <span class="str">"invalid"</span>)
+            ));
+        <span class="ty">ProblemDetail</span> pd = <span class="ty">ProblemDetail</span>.<span class="fn">forStatus</span>(<span class="ty">HttpStatus</span>.BAD_REQUEST);
+        pd.<span class="fn">setTitle</span>(<span class="str">"Validation Failed"</span>);
+        pd.<span class="fn">setProperty</span>(<span class="str">"errors"</span>, errors);
+        <span class="kw">return</span> pd;
+    }
+
+    <span class="an">@ExceptionHandler</span>(<span class="ty">Exception</span>.<span class="kw">class</span>)
+    <span class="an">@ResponseStatus</span>(<span class="ty">HttpStatus</span>.INTERNAL_SERVER_ERROR)
+    <span class="kw">public</span> <span class="ty">ProblemDetail</span> <span class="fn">handleGeneric</span>(<span class="ty">Exception</span> ex) {
+        log.<span class="fn">error</span>(<span class="str">"Unhandled exception"</span>, ex);
+        <span class="kw">return</span> <span class="ty">ProblemDetail</span>.<span class="fn">forStatusAndDetail</span>(<span class="ty">HttpStatus</span>.INTERNAL_SERVER_ERROR,
+            <span class="str">"An unexpected error occurred"</span>); <span class="cm">// never expose internal details</span>
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 12. SPRING SECURITY ─── -->
+  <section class="topic-section" id="security">
+    <div class="section-header">
+      <span class="section-eyebrow">Security</span>
+      <h2>Spring Security</h2>
+      <span class="diff-badge diff-sec">Security</span>
+    </div>
+    <div class="section-body">
+      <p>Spring Security is a servlet <strong>filter chain</strong>: requests pass through a series of <code>SecurityFilter</code>s before reaching the controller. The key filters: <code>SecurityContextPersistenceFilter</code>, <code>UsernamePasswordAuthenticationFilter</code>, <code>ExceptionTranslationFilter</code>, <code>FilterSecurityInterceptor</code>. Spring Security 6 uses a lambda DSL and removes the deprecated <code>WebSecurityConfigurerAdapter</code>.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Spring Security 6 — SecurityFilterChain DSL</span></div>
+        <pre><code><span class="an">@Configuration</span>
+<span class="an">@EnableWebSecurity</span>
+<span class="an">@EnableMethodSecurity</span>    <span class="cm">// enables @PreAuthorize, @PostAuthorize</span>
+<span class="kw">public class</span> <span class="ty">SecurityConfig</span> {
+
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="ty">SecurityFilterChain</span> <span class="fn">filterChain</span>(<span class="ty">HttpSecurity</span> http) <span class="kw">throws</span> <span class="ty">Exception</span> {
+        <span class="kw">return</span> http
+            .<span class="fn">csrf</span>(<span class="ty">AbstractHttpConfigurer</span>::disable)          <span class="cm">// stateless REST: disable CSRF</span>
+            .<span class="fn">sessionManagement</span>(s -> s
+                .<span class="fn">sessionCreationPolicy</span>(<span class="ty">SessionCreationPolicy</span>.STATELESS))
+            .<span class="fn">authorizeHttpRequests</span>(a -> a
+                .<span class="fn">requestMatchers</span>(<span class="str">"/actuator/health"</span>, <span class="str">"/api/auth/**"</span>).<span class="fn">permitAll</span>()
+                .<span class="fn">requestMatchers</span>(<span class="str">"/api/admin/**"</span>).<span class="fn">hasRole</span>(<span class="str">"ADMIN"</span>)
+                .<span class="fn">anyRequest</span>().<span class="fn">authenticated</span>())
+            .<span class="fn">addFilterBefore</span>(jwtFilter, <span class="ty">UsernamePasswordAuthenticationFilter</span>.<span class="kw">class</span>)
+            .<span class="fn">exceptionHandling</span>(e -> e
+                .<span class="fn">authenticationEntryPoint</span>((<span class="ty">req</span>, <span class="ty">res</span>, <span class="ty">ex</span>) ->
+                    res.<span class="fn">sendError</span>(<span class="ty">HttpStatus</span>.UNAUTHORIZED.<span class="fn">value</span>())))
+            .<span class="fn">build</span>();
+    }
+
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="ty">PasswordEncoder</span> <span class="fn">passwordEncoder</span>() {
+        <span class="kw">return new</span> <span class="ty">BCryptPasswordEncoder</span>();   <span class="cm">// never store plain-text passwords</span>
+    }
+}
+
+<span class="cm">// Method-level security</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">AdminService</span> {
+    <span class="an">@PreAuthorize</span>(<span class="str">"hasRole('ADMIN') and #userId == authentication.principal.id"</span>)
+    <span class="kw">public void</span> <span class="fn">deleteUser</span>(<span class="ty">Long</span> userId) { ... }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 13. JWT ─── -->
+  <section class="topic-section" id="jwt">
+    <div class="section-header">
+      <span class="section-eyebrow">Security</span>
+      <h2>JWT (JSON Web Token)</h2>
+      <span class="diff-badge diff-sec">Security</span>
+    </div>
+    <div class="section-body">
+      <p>A JWT is a compact, self-contained token: <strong>header.payload.signature</strong>. The server validates the signature without a database round-trip. <strong>Access tokens</strong> are short-lived (15 min); <strong>refresh tokens</strong> are long-lived and stored securely. JWTs can't be revoked mid-lifetime — plan for this.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">JWT Structure</div>
+        <ul>
+          <li><strong>Header</strong>: algorithm (<code>HS256</code>, <code>RS256</code>) and token type.</li>
+          <li><strong>Payload</strong>: claims — <code>sub</code> (subject), <code>exp</code> (expiry), <code>iat</code> (issued at), custom claims.</li>
+          <li><strong>Signature</strong>: HMAC-SHA256 of base64(header) + "." + base64(payload) with secret key.</li>
+          <li><strong>RS256 vs HS256</strong>: RS256 uses private key to sign, public key to verify — better for microservices (services don't need the secret).</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">JWT filter — validate token on every request</span></div>
+        <pre><code><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">JwtAuthFilter</span> <span class="kw">extends</span> <span class="ty">OncePerRequestFilter</span> {
+    <span class="kw">private final</span> <span class="ty">JwtService</span> jwtService;
+    <span class="kw">private final</span> <span class="ty">UserDetailsService</span> userDetailsService;
+
+    <span class="an">@Override</span>
+    <span class="kw">protected void</span> <span class="fn">doFilterInternal</span>(<span class="ty">HttpServletRequest</span> req,
+            <span class="ty">HttpServletResponse</span> res, <span class="ty">FilterChain</span> chain) <span class="kw">throws</span> <span class="ty">IOException</span>, <span class="ty">ServletException</span> {
+
+        <span class="ty">String</span> header = req.<span class="fn">getHeader</span>(<span class="str">"Authorization"</span>);
+        <span class="kw">if</span> (header == <span class="kw">null</span> || !header.<span class="fn">startsWith</span>(<span class="str">"Bearer "</span>)) {
+            chain.<span class="fn">doFilter</span>(req, res); <span class="kw">return</span>;
+        }
+
+        <span class="ty">String</span> token = header.<span class="fn">substring</span>(<span class="num">7</span>);
+        <span class="ty">String</span> username = jwtService.<span class="fn">extractUsername</span>(token); <span class="cm">// throws if invalid/expired</span>
+
+        <span class="kw">if</span> (username != <span class="kw">null</span> &amp;&amp; <span class="ty">SecurityContextHolder</span>.<span class="fn">getContext</span>().<span class="fn">getAuthentication</span>() == <span class="kw">null</span>) {
+            <span class="ty">UserDetails</span> user = userDetailsService.<span class="fn">loadUserByUsername</span>(username);
+            <span class="kw">if</span> (jwtService.<span class="fn">isTokenValid</span>(token, user)) {
+                <span class="ty">UsernamePasswordAuthenticationToken</span> auth =
+                    <span class="kw">new</span> <span class="ty">UsernamePasswordAuthenticationToken</span>(user, <span class="kw">null</span>, user.<span class="fn">getAuthorities</span>());
+                auth.<span class="fn">setDetails</span>(<span class="kw">new</span> <span class="ty">WebAuthenticationDetailsSource</span>().<span class="fn">buildDetails</span>(req));
+                <span class="ty">SecurityContextHolder</span>.<span class="fn">getContext</span>().<span class="fn">setAuthentication</span>(auth);
+            }
+        }
+        chain.<span class="fn">doFilter</span>(req, res);
+    }
+}</code></pre>
+      </div>
+
+      <div class="callout callout-sec">
+        <div class="callout-label">Security Considerations</div>
+        <ul>
+          <li>Never store JWTs in <code>localStorage</code> — vulnerable to XSS. Use <code>HttpOnly</code> cookies.</li>
+          <li>Short access token TTL (15 min) + refresh token rotation limits blast radius of stolen tokens.</li>
+          <li>Add JTI claim + server-side blocklist for immediate revocation (rare, but required for logout/compromise).</li>
+          <li>Use Spring Security's built-in <code>NimbusJwtDecoder</code> (<code>spring-security-oauth2-resource-server</code>) rather than rolling your own JWT parsing.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 14. OAUTH2 ─── -->
+  <section class="topic-section" id="oauth2">
+    <div class="section-header">
+      <span class="section-eyebrow">Security</span>
+      <h2>OAuth2 &amp; OpenID Connect</h2>
+      <span class="diff-badge diff-sec">Security</span>
+    </div>
+    <div class="section-body">
+      <p>OAuth2 is an authorization framework; <strong>OpenID Connect (OIDC)</strong> adds authentication (identity) on top. Spring Security provides both client (your app delegates login) and resource server (your API validates tokens) support. The <strong>Authorization Code + PKCE</strong> flow is the current standard for web apps.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Roles</div>
+        <ul>
+          <li><strong>Resource Owner</strong>: the user.</li>
+          <li><strong>Authorization Server</strong>: issues tokens — Keycloak, Auth0, Google, Okta, or Spring Authorization Server.</li>
+          <li><strong>Resource Server</strong>: your API that validates access tokens.</li>
+          <li><strong>Client</strong>: your web/mobile app that requests tokens on the user's behalf.</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Resource server JWT validation + scope-based authorization</span></div>
+        <pre><code><span class="cm"># application.yml — resource server validates against OIDC provider</span>
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://auth.example.com/realms/myrealm</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Resource server security config with JWT scopes</span></div>
+        <pre><code><span class="an">@Bean</span>
+<span class="kw">public</span> <span class="ty">SecurityFilterChain</span> <span class="fn">resourceServer</span>(<span class="ty">HttpSecurity</span> http) <span class="kw">throws</span> <span class="ty">Exception</span> {
+    <span class="kw">return</span> http
+        .<span class="fn">authorizeHttpRequests</span>(a -> a
+            .<span class="fn">requestMatchers</span>(<span class="ty">HttpMethod</span>.GET,  <span class="str">"/api/**"</span>).<span class="fn">hasAuthority</span>(<span class="str">"SCOPE_read"</span>)
+            .<span class="fn">requestMatchers</span>(<span class="ty">HttpMethod</span>.POST, <span class="str">"/api/**"</span>).<span class="fn">hasAuthority</span>(<span class="str">"SCOPE_write"</span>)
+            .<span class="fn">anyRequest</span>().<span class="fn">authenticated</span>())
+        .<span class="fn">oauth2ResourceServer</span>(oauth2 -> oauth2
+            .<span class="fn">jwt</span>(jwt -> jwt
+                .<span class="fn">jwtAuthenticationConverter</span>(<span class="fn">keycloakRolesConverter</span>())))  <span class="cm">// custom claims</span>
+        .<span class="fn">build</span>();
+}
+
+<span class="cm">// Extract roles from Keycloak's nested claim structure</span>
+<span class="kw">private</span> <span class="ty">JwtAuthenticationConverter</span> <span class="fn">keycloakRolesConverter</span>() {
+    <span class="ty">JwtGrantedAuthoritiesConverter</span> gac = <span class="kw">new</span> <span class="ty">JwtGrantedAuthoritiesConverter</span>();
+    gac.<span class="fn">setAuthoritiesClaimName</span>(<span class="str">"realm_access.roles"</span>);
+    gac.<span class="fn">setAuthorityPrefix</span>(<span class="str">"ROLE_"</span>);
+    <span class="ty">JwtAuthenticationConverter</span> conv = <span class="kw">new</span> <span class="ty">JwtAuthenticationConverter</span>();
+    conv.<span class="fn">setJwtGrantedAuthoritiesConverter</span>(gac);
+    <span class="kw">return</span> conv;
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 15. ACTUATOR ─── -->
+  <section class="topic-section" id="actuator">
+    <div class="section-header">
+      <span class="section-eyebrow">Observability</span>
+      <h2>Spring Boot Actuator</h2>
+      <span class="diff-badge diff-adv">Advanced</span>
+    </div>
+    <div class="section-body">
+      <p>Actuator exposes production-ready HTTP endpoints for health, metrics, info, and operational management — critical for Kubernetes probes, Prometheus scraping, and incident response. By default, only <code>/health</code> and <code>/info</code> are exposed over HTTP; exposing others requires explicit configuration.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">YAML</span><span class="code-desc">Actuator configuration — Kubernetes + Prometheus</span></div>
+        <pre><code>management:
+  endpoints:
+    web:
+      exposure:
+        include: <span class="str">health,info,metrics,prometheus,loggers</span>
+  endpoint:
+    health:
+      show-details: <span class="str">when-authorized</span>  <span class="cm"># don't leak internals publicly</span>
+      probes:
+        enabled: <span class="kw">true</span>               <span class="cm"># /actuator/health/liveness + /actuator/health/readiness</span>
+  metrics:
+    export:
+      prometheus:
+        enabled: <span class="kw">true</span>
+  server:
+    port: <span class="num">8081</span>                      <span class="cm"># separate management port — don't expose on public port</span></code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Custom HealthIndicator + custom metric</span></div>
+        <pre><code><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">DatabaseHealthIndicator</span> <span class="kw">implements</span> <span class="ty">HealthIndicator</span> {
+    <span class="kw">private final</span> <span class="ty">DataSource</span> ds;
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">Health</span> <span class="fn">health</span>() {
+        <span class="kw">try</span> (<span class="ty">Connection</span> c = ds.<span class="fn">getConnection</span>()) {
+            c.<span class="fn">isValid</span>(<span class="num">1</span>);
+            <span class="kw">return</span> <span class="ty">Health</span>.<span class="fn">up</span>()
+                .<span class="fn">withDetail</span>(<span class="str">"pool-size"</span>, <span class="fn">poolSize</span>())
+                .<span class="fn">build</span>();
+        } <span class="kw">catch</span> (<span class="ty">SQLException</span> e) {
+            <span class="kw">return</span> <span class="ty">Health</span>.<span class="fn">down</span>().<span class="fn">withException</span>(e).<span class="fn">build</span>();
+        }
+    }
+}
+
+<span class="cm">// Custom metric via Micrometer</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">OrderService</span> {
+    <span class="kw">private final</span> <span class="ty">Counter</span> orderCounter;
+    <span class="kw">private final</span> <span class="ty">Timer</span> processingTimer;
+
+    <span class="kw">public</span> <span class="ty">OrderService</span>(<span class="ty">MeterRegistry</span> registry) {
+        orderCounter   = registry.<span class="fn">counter</span>(<span class="str">"orders.created"</span>, <span class="str">"env"</span>, <span class="str">"prod"</span>);
+        processingTimer = registry.<span class="fn">timer</span>(<span class="str">"orders.processing.time"</span>);
+    }
+
+    <span class="kw">public</span> <span class="ty">Order</span> <span class="fn">create</span>(<span class="ty">CreateOrderRequest</span> req) {
+        <span class="kw">return</span> processingTimer.<span class="fn">record</span>(() -> {
+            <span class="ty">Order</span> o = <span class="fn">doCreate</span>(req);
+            orderCounter.<span class="fn">increment</span>();
+            <span class="kw">return</span> o;
+        });
+    }
+}</code></pre>
+      </div>
+
+      <div class="callout callout-key">
+        <div class="callout-label">Kubernetes Probe Mapping</div>
+        <ul>
+          <li><code>/actuator/health/liveness</code> → <code>livenessProbe</code>: is the app alive? Restart if dead.</li>
+          <li><code>/actuator/health/readiness</code> → <code>readinessProbe</code>: is the app ready to serve traffic? Remove from service if not.</li>
+          <li>Keep liveness independent of external deps — a DB outage should mark readiness DOWN, not liveness (avoid restart loop).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 16. LOGGING ─── -->
+  <section class="topic-section" id="logging">
+    <div class="section-header">
+      <span class="section-eyebrow">Observability</span>
+      <h2>Logging</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Spring Boot defaults to <strong>Logback</strong> via SLF4J facade. The facade (<code>LoggerFactory</code>) decouples code from the logging implementation — swap Logback for Log4j2 without changing business code. <strong>Structured logging</strong> (JSON output) and <strong>MDC</strong> (trace context propagation) are essential for distributed system observability.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">SLF4J best practices + MDC context</span></div>
+        <pre><code><span class="cm">// Always use SLF4J — never use java.util.logging or log4j directly</span>
+<span class="kw">private static final</span> <span class="ty">Logger</span> log = <span class="ty">LoggerFactory</span>.<span class="fn">getLogger</span>(<span class="ty">OrderService</span>.<span class="kw">class</span>);
+<span class="cm">// Or with Lombok: @Slf4j on the class</span>
+
+<span class="kw">public</span> <span class="ty">Order</span> <span class="fn">processOrder</span>(<span class="ty">Long</span> orderId) {
+    <span class="cm">// Parameterized — no string concat unless log level enabled</span>
+    log.<span class="fn">debug</span>(<span class="str">"Processing order id={}"</span>, orderId);
+
+    <span class="cm">// Guard expensive argument computation</span>
+    <span class="kw">if</span> (log.<span class="fn">isDebugEnabled</span>()) {
+        log.<span class="fn">debug</span>(<span class="str">"Order details: {}"</span>, <span class="fn">expensiveToString</span>(orderId));
+    }
+
+    <span class="kw">try</span> {
+        <span class="ty">Order</span> o = repo.<span class="fn">findById</span>(orderId).<span class="fn">orElseThrow</span>();
+        log.<span class="fn">info</span>(<span class="str">"Order processed: id={} customer={} amount={}"</span>,
+            o.<span class="fn">getId</span>(), o.<span class="fn">getCustomerId</span>(), o.<span class="fn">getTotal</span>());
+        <span class="kw">return</span> o;
+    } <span class="kw">catch</span> (<span class="ty">Exception</span> e) {
+        log.<span class="fn">error</span>(<span class="str">"Order processing failed: id={}"</span>, orderId, e); <span class="cm">// exception as last arg</span>
+        <span class="kw">throw</span> e;
+    }
+}</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">YAML</span><span class="code-desc">Structured JSON logging for production</span></div>
+        <pre><code><span class="cm"># application.yml — Spring Boot 3.4+ native JSON logging</span>
+logging:
+  structured:
+    format:
+      console: <span class="str">ecs</span>          <span class="cm"># Elastic Common Schema JSON</span>
+  level:
+    root: INFO
+    com.acme.orders: DEBUG  <span class="cm"># package-level override</span>
+    org.springframework.web: WARN
+
+<span class="cm"># Logback MDC pattern for plain-text (non-JSON)</span>
+<span class="cm"># pattern: "%d{ISO8601} [%thread] [%X{traceId}] %-5level %logger - %msg%n"</span></code></pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">Team Lead Guidance</div>
+        <ul>
+          <li>Mandate structured JSON in production — log aggregators (Splunk, Loki, ELK) parse it without fragile regex.</li>
+          <li>Always propagate <code>traceId</code> + <code>spanId</code> via MDC — enables tracing a single request across dozens of log lines and services.</li>
+          <li>Never log passwords, PII, or auth tokens — use <code>@JsonIgnore</code> on sensitive fields and audit your log output.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 17. TESTING ─── -->
+  <section class="topic-section" id="testing">
+    <div class="section-header">
+      <span class="section-eyebrow">Testing</span>
+      <h2>Testing Spring Applications</h2>
+      <span class="diff-badge diff-adv">Advanced</span>
+    </div>
+    <div class="section-body">
+      <p>Effective Spring testing uses a <strong>test pyramid</strong>: many fast unit tests, moderate integration tests with sliced contexts, few end-to-end tests. The key insight: a test that loads the full <code>ApplicationContext</code> is 10–100× slower than a pure unit test. Choose the lightest tool that verifies the behavior.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Annotation</th><th>Loads</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td><code>@SpringBootTest</code></td><td>Full context</td><td>Integration/E2E — use <code>webEnvironment=RANDOM_PORT</code> for HTTP tests.</td></tr>
+            <tr><td><code>@WebMvcTest</code></td><td>Web layer only</td><td>Controller tests — no service/repo beans loaded.</td></tr>
+            <tr><td><code>@DataJpaTest</code></td><td>JPA + H2</td><td>Repository tests — transactional, rolled back after each test.</td></tr>
+            <tr><td><code>@JsonTest</code></td><td>Jackson only</td><td>Serialization/deserialization tests.</td></tr>
+            <tr><td><em>No annotation</em></td><td>None</td><td>Unit tests — fastest; mock with Mockito.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Unit test (Mockito) + slice test (@WebMvcTest)</span></div>
+        <pre><code><span class="cm">// Pure unit test — no Spring context, instant</span>
+<span class="an">@ExtendWith</span>(<span class="ty">MockitoExtension</span>.<span class="kw">class</span>)
+<span class="kw">class</span> <span class="ty">OrderServiceTest</span> {
+    <span class="an">@Mock</span>    <span class="ty">OrderRepository</span> repo;
+    <span class="an">@Mock</span>    <span class="ty">PaymentGateway</span>  payment;
+    <span class="an">@InjectMocks</span> <span class="ty">OrderService</span> service;
+
+    <span class="an">@Test</span>
+    <span class="kw">void</span> <span class="fn">createOrder_chargesPayment</span>() {
+        <span class="ty">Order</span> saved = <span class="kw">new</span> <span class="ty">Order</span>(<span class="num">1L</span>, <span class="ty">BigDecimal</span>.<span class="fn">TEN</span>);
+        <span class="fn">when</span>(repo.<span class="fn">save</span>(<span class="fn">any</span>())).<span class="fn">thenReturn</span>(saved);
+
+        service.<span class="fn">create</span>(<span class="kw">new</span> <span class="ty">CreateOrderRequest</span>(<span class="str">"c1"</span>, <span class="ty">BigDecimal</span>.<span class="fn">TEN</span>));
+
+        <span class="fn">verify</span>(payment).<span class="fn">charge</span>(<span class="fn">eq</span>(<span class="str">"c1"</span>), <span class="fn">eq</span>(<span class="ty">BigDecimal</span>.<span class="fn">TEN</span>));
+    }
+}
+
+<span class="cm">// Slice test — only web layer loaded, service mocked</span>
+<span class="an">@WebMvcTest</span>(<span class="ty">OrderController</span>.<span class="kw">class</span>)
+<span class="kw">class</span> <span class="ty">OrderControllerTest</span> {
+    <span class="an">@Autowired</span>  <span class="ty">MockMvc</span>        mvc;
+    <span class="an">@MockBean</span>   <span class="ty">OrderService</span>   service;
+    <span class="an">@Autowired</span>  <span class="ty">ObjectMapper</span>   mapper;
+
+    <span class="an">@Test</span>
+    <span class="kw">void</span> <span class="fn">getOrder_returns200</span>() <span class="kw">throws</span> <span class="ty">Exception</span> {
+        <span class="fn">given</span>(service.<span class="fn">findById</span>(<span class="num">1L</span>)).<span class="fn">willReturn</span>(<span class="ty">Optional</span>.<span class="fn">of</span>(<span class="fn">anOrder</span>()));
+
+        mvc.<span class="fn">perform</span>(<span class="fn">get</span>(<span class="str">"/api/v1/orders/1"</span>)
+                .<span class="fn">with</span>(<span class="fn">jwt</span>()))                         <span class="cm">// SecurityMockMvcRequestPostProcessors</span>
+           .<span class="fn">andExpect</span>(<span class="fn">status</span>().<span class="fn">isOk</span>())
+           .<span class="fn">andExpect</span>(<span class="fn">jsonPath</span>(<span class="str">"$.id"</span>).<span class="fn">value</span>(<span class="num">1</span>))
+           .<span class="fn">andExpect</span>(<span class="fn">jsonPath</span>(<span class="str">"$.status"</span>).<span class="fn">value</span>(<span class="str">"PENDING"</span>));
+    }
+}
+
+<span class="cm">// Integration test with Testcontainers</span>
+<span class="an">@SpringBootTest</span>(webEnvironment = <span class="ty">WebEnvironment</span>.RANDOM_PORT)
+<span class="an">@Testcontainers</span>
+<span class="kw">class</span> <span class="ty">OrderIntegrationTest</span> {
+    <span class="an">@Container</span>
+    <span class="kw">static</span> <span class="ty">PostgreSQLContainer</span>&lt;?&gt; postgres = <span class="kw">new</span> <span class="ty">PostgreSQLContainer</span>&lt;&gt;(<span class="str">"postgres:16"</span>);
+
+    <span class="an">@DynamicPropertySource</span>
+    <span class="kw">static void</span> <span class="fn">props</span>(<span class="ty">DynamicPropertyRegistry</span> r) {
+        r.<span class="fn">add</span>(<span class="str">"spring.datasource.url"</span>, postgres::getJdbcUrl);
+    }
+    <span class="cm">// ... full stack test against real Postgres</span>
+}</code></pre>
+      </div>
+
+      <div class="callout callout-key">
+        <div class="callout-label">Team Lead Testing Standards</div>
+        <ul>
+          <li>Treat <code>@SpringBootTest</code> as expensive — cache the context by sharing config across test classes (<code>@SpringBootTest</code> on a base class).</li>
+          <li>Testcontainers for database/broker tests — no more fragile H2 compatibility shims.</li>
+          <li>Aim for fast feedback: unit tests &lt;100ms, slice tests &lt;5s, integration tests &lt;30s.</li>
+          <li>Test the behavior, not the implementation — assert on outcomes, not on which mock methods were called.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <div style="text-align:center; padding: 1rem 0 2rem; color: var(--muted); font-size: 0.78rem; font-family: var(--font-mono);">
+    Round 3 complete · 21 topics · Next: Round 4 — System Design
+  </div>
+
+</main>
+</div>
+
+<script>
+const btn  = document.getElementById('themeBtn');
+const root = document.documentElement;
+const saved = localStorage.getItem('theme');
+if (saved) root.setAttribute('data-theme', saved);
+btn.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+
+const sections = document.querySelectorAll('.topic-section');
+const links    = document.querySelectorAll('.nav-link');
+function onScroll() {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY + 80 >= s.offsetTop) current = s.id; });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+</script>

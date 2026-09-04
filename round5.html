@@ -1,0 +1,1289 @@
+
+<title>Java Team Lead — Round 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root {
+  --bg: #F4F7FC; --surface: #FFFFFF; --surface-2: #EDF1F9;
+  --border: #DCE3EF; --text: #0F1829; --text-2: #374151; --muted: #6B7A99;
+  --accent: #E85420; --accent-dim: #FEF0EB;
+  --blue: #2563EB; --blue-dim: #EFF4FF;
+  --green: #059669; --green-dim: #ECFDF5;
+  --amber: #B45309; --amber-dim: #FFFBEB;
+  --purple: #7C3AED; --purple-dim: #F5F3FF;
+  --teal: #0D9488; --teal-dim: #F0FDFA;
+  --rose: #BE185D; --rose-dim: #FFF1F2;
+  --sidebar-w: 260px; --header-h: 52px;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --radius: 8px; --code-bg: #0D1117;
+  --kw: #FF7B57; --str: #7EE787; --cm: #6E7F95;
+  --ty: #79C0FF; --num: #F2CC60; --an: #D2A8FF; --fn: #E3B341;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#090D18;--surface:#111827;--surface-2:#1A2236;--border:#1F2D42;
+    --text:#E1E7F5;--text-2:#94A3B8;--muted:#5D7096;--accent:#FF6B35;--accent-dim:#1F1008;
+    --blue:#60A5FA;--blue-dim:#0C1A35;--green-dim:#051A0F;--amber-dim:#1A1005;
+    --purple-dim:#14082E;--teal-dim:#041A18;--rose-dim:#1A050D;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#090D18;--surface:#111827;--surface-2:#1A2236;--border:#1F2D42;
+  --text:#E1E7F5;--text-2:#94A3B8;--muted:#5D7096;--accent:#FF6B35;--accent-dim:#1F1008;
+  --blue:#60A5FA;--blue-dim:#0C1A35;--green-dim:#051A0F;--amber-dim:#1A1005;
+  --purple-dim:#14082E;--teal-dim:#041A18;--rose-dim:#1A050D;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:15px;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.65;min-height:100vh;}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--header-h);
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem;}
+.topbar-left{display:flex;align-items:center;gap:0.75rem;}
+.logo{font-family:var(--font-mono);font-weight:700;font-size:1rem;color:var(--accent);letter-spacing:-0.5px;}
+.topbar-divider{width:1px;height:20px;background:var(--border);}
+.topbar-title{font-family:var(--font-mono);font-size:0.85rem;font-weight:500;color:var(--text-2);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.round-steps{display:flex;align-items:center;gap:4px;}
+.round-step{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:0.7rem;font-weight:700;
+  background:var(--surface-2);color:var(--muted);border:1px solid var(--border);
+  text-decoration:none;transition:all 0.15s;}
+.round-step.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.round-step:not(.active):hover{border-color:var(--accent);color:var(--accent);}
+.theme-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);
+  background:var(--surface-2);color:var(--muted);cursor:pointer;font-size:0.85rem;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+.layout{display:flex;padding-top:var(--header-h);min-height:100vh;}
+
+.sidebar{width:var(--sidebar-w);flex-shrink:0;position:sticky;top:var(--header-h);
+  height:calc(100vh - var(--header-h));overflow-y:auto;
+  border-right:1px solid var(--border);background:var(--surface);padding:1.25rem 0;}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.nav-group{margin-bottom:1.5rem;}
+.nav-group-label{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0 1.25rem 0.5rem;}
+.nav-link{display:flex;align-items:center;justify-content:space-between;
+  padding:0.3rem 1.25rem;font-size:0.82rem;color:var(--text-2);
+  text-decoration:none;border-left:2px solid transparent;transition:all 0.15s;}
+.nav-link:hover{color:var(--text);background:var(--surface-2);}
+.nav-link.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-dim);}
+.nav-badge{font-family:var(--font-mono);font-size:0.6rem;font-weight:700;
+  padding:1px 5px;border-radius:3px;opacity:0.85;white-space:nowrap;}
+.badge-core{background:var(--accent-dim);color:var(--accent);}
+.badge-imp{background:var(--blue-dim);color:var(--blue);}
+.badge-adv{background:var(--purple-dim);color:var(--purple);}
+.badge-pat{background:var(--teal-dim);color:var(--teal);}
+.badge-res{background:var(--green-dim);color:var(--green);}
+
+.content{flex:1;max-width:940px;padding:2rem 2.5rem 4rem;min-width:0;}
+
+.intro-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:2rem;margin-bottom:2.5rem;border-top:3px solid var(--accent);}
+.intro-eyebrow{font-family:var(--font-mono);font-size:0.7rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+.intro-card h1{font-family:var(--font-mono);font-size:2rem;font-weight:700;color:var(--text);
+  line-height:1.2;text-wrap:balance;margin-bottom:0.75rem;}
+.intro-card p{color:var(--text-2);font-size:0.95rem;max-width:62ch;margin-bottom:1.5rem;}
+.intro-stats{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.stat{display:flex;flex-direction:column;gap:2px;}
+.stat-val{font-family:var(--font-mono);font-size:1.2rem;font-weight:700;color:var(--text);}
+.stat-label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+
+.topic-section{margin-bottom:3rem;scroll-margin-top:calc(var(--header-h) + 1rem);}
+.section-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.section-eyebrow{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.section-header h2{font-family:var(--font-mono);font-size:1.35rem;font-weight:700;color:var(--text);text-wrap:balance;}
+.diff-badge{margin-left:auto;font-family:var(--font-mono);font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:4px;}
+.diff-core{background:var(--accent-dim);color:var(--accent);}
+.diff-imp{background:var(--blue-dim);color:var(--blue);}
+.diff-adv{background:var(--purple-dim);color:var(--purple);}
+.diff-pat{background:var(--teal-dim);color:var(--teal);}
+.diff-res{background:var(--green-dim);color:var(--green);}
+
+.section-body{display:flex;flex-direction:column;gap:1.25rem;}
+.section-body>p{color:var(--text-2);font-size:0.93rem;max-width:74ch;}
+.section-body>p strong{color:var(--text);}
+
+.key-points{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;}
+.key-points-label{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.65rem;}
+.key-points ul{list-style:none;display:flex;flex-direction:column;gap:0.45rem;}
+.key-points li{font-size:0.875rem;color:var(--text-2);padding-left:1rem;position:relative;}
+.key-points li::before{content:'›';position:absolute;left:0;color:var(--accent);font-weight:700;}
+.key-points li strong{color:var(--text);}
+.key-points code{font-family:var(--font-mono);font-size:0.8rem;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--text);}
+
+.code-block{border-radius:var(--radius);overflow:hidden;border:1px solid #1A2030;}
+.code-header{background:#161B2A;padding:0.55rem 1rem;display:flex;align-items:center;gap:0.75rem;border-bottom:1px solid #1A2030;}
+.lang-tag{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;background:#252D42;
+  color:#79C0FF;padding:2px 7px;border-radius:3px;letter-spacing:0.05em;}
+.code-desc{font-family:var(--font-mono);font-size:0.7rem;color:#6E7F95;}
+.code-block pre{background:var(--code-bg);margin:0;padding:1.1rem 1.25rem;overflow-x:auto;
+  font-family:var(--font-mono);font-size:0.8rem;line-height:1.7;color:#C9D1D9;}
+.code-block code{font-family:inherit;}
+.kw{color:var(--kw);font-weight:600;} .ty{color:var(--ty);} .str{color:var(--str);}
+.cm{color:var(--cm);font-style:italic;} .num{color:var(--num);} .an{color:var(--an);} .fn{color:var(--fn);}
+
+.callout{border-radius:var(--radius);padding:1rem 1.25rem;border:1px solid;font-size:0.875rem;}
+.callout-label{font-family:var(--font-mono);font-size:0.62rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;}
+.callout-tip{background:var(--blue-dim);border-color:var(--blue);color:var(--text-2);}
+.callout-tip .callout-label{color:var(--blue);}
+.callout-warn{background:var(--amber-dim);border-color:var(--amber);color:var(--text-2);}
+.callout-warn .callout-label{color:var(--amber);}
+.callout-key{background:var(--accent-dim);border-color:var(--accent);color:var(--text-2);}
+.callout-key .callout-label{color:var(--accent);}
+.callout-pat{background:var(--teal-dim);border-color:var(--teal);color:var(--text-2);}
+.callout-pat .callout-label{color:var(--teal);}
+.callout-res{background:var(--green-dim);border-color:var(--green);color:var(--text-2);}
+.callout-res .callout-label{color:var(--green);}
+.callout ul{list-style:none;margin-top:0.5rem;display:flex;flex-direction:column;gap:0.35rem;}
+.callout li{padding-left:1rem;position:relative;}
+.callout li::before{content:'→';position:absolute;left:0;font-weight:700;}
+.callout-tip li::before{color:var(--blue);}
+.callout-warn li::before{color:var(--amber);}
+.callout-key li::before{color:var(--accent);}
+.callout-pat li::before{color:var(--teal);}
+.callout-res li::before{color:var(--green);}
+.callout code{font-family:var(--font-mono);font-size:0.8rem;background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:3px;}
+
+.compare-table{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);}
+.compare-table table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.compare-table th{background:var(--surface-2);padding:0.6rem 0.85rem;text-align:left;
+  font-family:var(--font-mono);font-size:0.7rem;font-weight:700;letter-spacing:0.04em;
+  color:var(--muted);border-bottom:1px solid var(--border);}
+.compare-table td{padding:0.55rem 0.85rem;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top;}
+.compare-table tr:last-child td{border-bottom:none;}
+.compare-table tr:hover td{background:var(--surface-2);}
+.compare-table code{font-family:var(--font-mono);font-size:0.78rem;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--text);}
+.compare-table td strong{color:var(--text);}
+
+.ascii-diagram{background:var(--code-bg);border:1px solid #1A2030;border-radius:var(--radius);
+  padding:1.1rem 1.25rem;font-family:var(--font-mono);font-size:0.78rem;line-height:1.6;
+  color:#8B9DC3;overflow-x:auto;white-space:pre;}
+.ascii-diagram .hi{color:#79C0FF;}
+.ascii-diagram .accent{color:#FF7B57;}
+.ascii-diagram .ok{color:#7EE787;}
+.ascii-diagram .warn{color:#F2CC60;}
+
+.section-divider{height:1px;background:var(--border);margin:2.5rem 0;}
+@media(max-width:768px){.sidebar{display:none;}.content{padding:1.25rem;}}
+</style>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo">Java∙TL</span>
+    <div class="topbar-divider"></div>
+    <span class="topbar-title">Round 5 — Microservices</span>
+  </div>
+  <div class="topbar-right">
+    <div class="round-steps">
+      <a class="round-step" href="round1.html" title="Core Java &amp; JVM">1</a>
+      <a class="round-step" href="round2.html" title="Multithreading &amp; JVM">2</a>
+      <a class="round-step" href="round3.html" title="Spring &amp; Spring Boot">3</a>
+      <a class="round-step" href="round4.html" title="Database &amp; Persistence">4</a>
+      <a class="round-step active" title="Microservices">5</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">◐</button>
+  </div>
+</div>
+
+<div class="layout">
+
+<nav class="sidebar" id="sidebar">
+  <div class="nav-group">
+    <div class="nav-group-label">Architecture</div>
+    <a class="nav-link active" href="#msarch">Microservice Architecture <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#gateway">API Gateway <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#discovery">Service Discovery <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Communication</div>
+    <a class="nav-link" href="#rest">REST <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#grpc">gRPC <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Messaging</div>
+    <a class="nav-link" href="#kafka">Kafka <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#rabbitmq">RabbitMQ <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#eda">Event-Driven Architecture <span class="nav-badge badge-adv">Adv</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Patterns</div>
+    <a class="nav-link" href="#saga">Saga <span class="nav-badge badge-pat">Pat</span></a>
+    <a class="nav-link" href="#outbox">Outbox Pattern <span class="nav-badge badge-pat">Pat</span></a>
+    <a class="nav-link" href="#cqrs">CQRS <span class="nav-badge badge-pat">Pat</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Resilience</div>
+    <a class="nav-link" href="#circuitbreaker">Circuit Breaker <span class="nav-badge badge-res">Res</span></a>
+    <a class="nav-link" href="#retry">Retry <span class="nav-badge badge-res">Res</span></a>
+    <a class="nav-link" href="#ratelimit">Rate Limiting <span class="nav-badge badge-res">Res</span></a>
+    <a class="nav-link" href="#idempotency">Idempotency <span class="nav-badge badge-res">Res</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Consistency</div>
+    <a class="nav-link" href="#disttx">Distributed Transactions <span class="nav-badge badge-adv">Adv</span></a>
+    <a class="nav-link" href="#tracing">Distributed Tracing <span class="nav-badge badge-adv">Adv</span></a>
+  </div>
+</nav>
+
+<main class="content" id="mainContent">
+
+  <div class="intro-card">
+    <div class="intro-eyebrow">Round 5 of 5</div>
+    <h1>Microservices</h1>
+    <p>The final round covers the distributed systems landscape a senior Java engineer and team lead operates in: decomposition, inter-service communication, event-driven patterns, data consistency, and the resilience primitives that keep systems alive under partial failures. These topics dominate system design interviews and cross-team architectural reviews.</p>
+    <div class="intro-stats">
+      <div class="stat"><span class="stat-val">17</span><span class="stat-label">Topics</span></div>
+      <div class="stat"><span class="stat-val">~5h</span><span class="stat-label">Prep Time</span></div>
+      <div class="stat"><span class="stat-val">Series Complete</span><span class="stat-label">5 / 5 Rounds</span></div>
+    </div>
+  </div>
+
+  <!-- ─── 1. MICROSERVICE ARCHITECTURE ─── -->
+  <section class="topic-section" id="msarch">
+    <div class="section-header">
+      <span class="section-eyebrow">Architecture</span>
+      <h2>Microservice Architecture</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Microservices decompose a system into small, independently deployable services each owning a bounded context. The key architectural drivers are <strong>independent deployability</strong> (change one service without touching others), <strong>technology heterogeneity</strong> (each service picks its own stack), and <strong>organizational alignment</strong> (Conway's Law — your architecture mirrors your team structure). The tradeoffs are real: distributed systems introduce network failures, partial consistency, and operational overhead that a monolith simply doesn't have.</p>
+
+      <div class="ascii-diagram"><span class="hi">Monolith vs Microservices</span>
+
+<span class="accent">Monolith</span>                          <span class="ok">Microservices</span>
+┌──────────────────────┐           ┌───────────┐  ┌───────────┐
+│  UI + API            │           │  Order    │  │  Inventory│
+│  Order logic         │           │  Service  │  │  Service  │
+│  Inventory logic     │    →      └─────┬─────┘  └─────┬─────┘
+│  Payment logic       │                 │  async        │
+│  User logic          │           ┌─────┴─────┐  ┌─────┴─────┐
+│  [shared DB]         │           │  Payment  │  │  User     │
+└──────────────────────┘           │  Service  │  │  Service  │
+                                   └───────────┘  └───────────┘
+                                   [each service owns its own DB]</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Design Principles</div>
+        <ul>
+          <li><strong>Single Responsibility</strong>: one service = one bounded context. When a service grows past what a single team can own, split it.</li>
+          <li><strong>Own your data</strong>: no shared databases between services — shared schema creates deployment coupling.</li>
+          <li><strong>Design for failure</strong>: any downstream call can fail. Services must degrade gracefully (fallback, circuit break, retry).</li>
+          <li><strong>API versioning</strong>: services evolve independently — clients must not break when a service changes its contract.</li>
+          <li><strong>Strangler Fig</strong>: migrate a monolith incrementally — route traffic for one feature at a time to the new service; don't big-bang rewrite.</li>
+        </ul>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-label">Distributed Monolith Anti-Pattern</div>
+        <ul>
+          <li>Services that share a database, call each other synchronously for every request, or deploy in lockstep are a distributed monolith — all the complexity, none of the benefits.</li>
+          <li>Team lead red flag in code review: service A's repository imports service B's entity classes.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 2. API GATEWAY ─── -->
+  <section class="topic-section" id="gateway">
+    <div class="section-header">
+      <span class="section-eyebrow">Architecture</span>
+      <h2>API Gateway</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>An API Gateway is the single entry point for all client traffic. It handles cross-cutting concerns so individual services don't have to: routing, authentication/authorization, SSL termination, rate limiting, request aggregation, and response transformation. <strong>Spring Cloud Gateway</strong> is the standard Java implementation, built on Project Reactor (non-blocking).</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">YAML</span><span class="code-desc">Spring Cloud Gateway — routes + filters</span></div>
+        <pre><code>spring:
+  cloud:
+    gateway:
+      routes:
+        - id: order-service
+          uri: lb://order-service          <span class="cm"># lb:// = load-balanced via Eureka/Consul</span>
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - StripPrefix=1                <span class="cm"># remove /api prefix before forwarding</span>
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 100
+                redis-rate-limiter.burstCapacity: 200
+                redis-rate-limiter.requestedTokens: 1
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Global JWT auth filter in Spring Cloud Gateway</span></div>
+        <pre><code><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">JwtAuthFilter</span> <span class="kw">implements</span> <span class="ty">GlobalFilter</span>, <span class="ty">Ordered</span> {
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">Mono</span>&lt;<span class="ty">Void</span>&gt; <span class="fn">filter</span>(<span class="ty">ServerWebExchange</span> exchange, <span class="ty">GatewayFilterChain</span> chain) {
+        <span class="ty">String</span> token = exchange.getRequest().getHeaders()
+            .<span class="fn">getFirst</span>(<span class="ty">HttpHeaders</span>.AUTHORIZATION);
+
+        <span class="kw">if</span> (token == <span class="kw">null</span> || !token.<span class="fn">startsWith</span>(<span class="str">"Bearer "</span>)) {
+            exchange.getResponse().<span class="fn">setStatusCode</span>(<span class="ty">HttpStatus</span>.UNAUTHORIZED);
+            <span class="kw">return</span> exchange.getResponse().<span class="fn">setComplete</span>();
+        }
+        <span class="cm">// Validate JWT, extract claims, forward downstream as header</span>
+        <span class="ty">Claims</span> claims = jwtUtil.<span class="fn">parse</span>(token.<span class="fn">substring</span>(<span class="num">7</span>));
+        <span class="ty">ServerHttpRequest</span> mutated = exchange.getRequest().mutate()
+            .<span class="fn">header</span>(<span class="str">"X-User-Id"</span>, claims.<span class="fn">getSubject</span>())
+            .<fn>build</fn>();
+        <span class="kw">return</span> chain.<span class="fn">filter</span>(exchange.<span class="fn">mutate</span>().<span class="fn">request</span>(mutated).<span class="fn">build</span>());
+    }
+
+    <span class="an">@Override</span> <span class="kw">public int</span> <span class="fn">getOrder</span>() { <span class="kw">return</span> -<span class="num">1</span>; } <span class="cm">// run before routing</span>
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 3. SERVICE DISCOVERY ─── -->
+  <section class="topic-section" id="discovery">
+    <div class="section-header">
+      <span class="section-eyebrow">Architecture</span>
+      <h2>Service Discovery</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>In a dynamic environment where service instances start and stop, you can't hardcode IPs. A <strong>service registry</strong> keeps track of live instances. Instances register themselves on startup and heartbeat continuously; on failure they are evicted. Clients (or the gateway) look up the registry before each call. <strong>Eureka</strong> (Netflix/Spring Cloud) and <strong>Consul</strong> are the two most common choices; on Kubernetes, the cluster's DNS + Service objects serve the same role natively.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Approach</th><th>Client-Side LB</th><th>Server-Side LB</th><th>k8s Native</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Eureka + Spring Cloud LoadBalancer</strong></td><td>Yes — client queries registry, picks instance</td><td>No</td><td>No</td></tr>
+            <tr><td><strong>Consul</strong></td><td>Possible</td><td>Yes (DNS)</td><td>No (but integrates)</td></tr>
+            <tr><td><strong>Kubernetes Service + CoreDNS</strong></td><td>No</td><td>kube-proxy (iptables/IPVS)</td><td>Yes — built-in</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">YAML</span><span class="code-desc">Eureka client registration + Spring Cloud LoadBalancer call</span></div>
+        <pre><code><span class="cm"># application.yml — Eureka client</span>
+spring:
+  application:
+    name: order-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+  instance:
+    prefer-ip-address: <span class="kw">true</span>
+    lease-renewal-interval-in-seconds: <span class="num">10</span></code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">@LoadBalanced RestClient — resolves service name via registry</span></div>
+        <pre><code><span class="an">@Configuration</span>
+<span class="kw">public class</span> <span class="ty">HttpConfig</span> {
+    <span class="an">@Bean</span> <span class="an">@LoadBalanced</span>     <span class="cm">// intercepts calls, resolves "inventory-service" via Eureka</span>
+    <span class="kw">public</span> <span class="ty">RestClient</span>.<span class="ty">Builder</span> <span class="fn">restClientBuilder</span>() {
+        <span class="kw">return</span> <span class="ty">RestClient</span>.<span class="fn">builder</span>();
+    }
+}
+
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">OrderService</span> {
+    <span class="kw">private final</span> <span class="ty">RestClient</span> restClient;
+
+    <span class="kw">public</span> <span class="ty">OrderService</span>(<span class="ty">RestClient</span>.<span class="ty">Builder</span> builder) {
+        <span class="kw">this</span>.restClient = builder.<span class="fn">baseUrl</span>(<span class="str">"http://inventory-service"</span>).<span class="fn">build</span>();
+    }
+
+    <span class="kw">public</span> <span class="ty">StockLevel</span> <span class="fn">getStock</span>(<span class="ty">String</span> sku) {
+        <span class="kw">return</span> restClient.<span class="fn">get</span>().<span class="fn">uri</span>(<span class="str">"/stock/{sku}"</span>, sku)
+            .<span class="fn">retrieve</span>().<span class="fn">body</span>(<span class="ty">StockLevel</span>.<span class="kw">class</span>);
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 4. REST ─── -->
+  <section class="topic-section" id="rest">
+    <div class="section-header">
+      <span class="section-eyebrow">Communication</span>
+      <h2>REST</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>REST is the dominant synchronous HTTP API style. Key constraints: <strong>stateless</strong> (server holds no client session), <strong>uniform interface</strong> (HTTP verbs + resource URIs), <strong>cacheable</strong> (responses declare their cacheability). In a microservices context, REST is appropriate for query-heavy, request-response flows where the client needs an immediate answer. For high-throughput or fire-and-forget scenarios, asynchronous messaging is usually better.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">REST API Design Rules</div>
+        <ul>
+          <li><strong>Resources, not verbs</strong>: <code>/orders/{id}</code> not <code>/getOrder?id=</code>. The HTTP method is the verb.</li>
+          <li><strong>HTTP semantics</strong>: <code>GET</code> (idempotent read), <code>POST</code> (create/non-idempotent), <code>PUT</code> (idempotent full replace), <code>PATCH</code> (partial update), <code>DELETE</code> (idempotent delete).</li>
+          <li><strong>Status codes matter</strong>: <code>200</code> OK, <code>201</code> Created (POST), <code>204</code> No Content (DELETE), <code>400</code> Bad Request, <code>401</code> Unauthenticated, <code>403</code> Forbidden, <code>404</code> Not Found, <code>409</code> Conflict, <code>422</code> Unprocessable, <code>429</code> Too Many Requests, <code>503</code> Service Unavailable.</li>
+          <li><strong>Versioning</strong>: URI versioning (<code>/v1/orders</code>) is most visible; header versioning (<code>Accept: application/vnd.acme.v1+json</code>) is more REST-pure but harder to debug.</li>
+          <li><strong>HATEOAS</strong>: responses include links to related actions — useful for hypermedia APIs, overkill for internal service-to-service calls.</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">REST controller with ProblemDetail (RFC 7807) error responses</span></div>
+        <pre><code><span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="str">"/v1/orders"</span>)
+<span class="kw">public class</span> <span class="ty">OrderController</span> {
+
+    <span class="an">@PostMapping</span>
+    <span class="an">@ResponseStatus</span>(<span class="ty">HttpStatus</span>.CREATED)
+    <span class="kw">public</span> <span class="ty">OrderResponse</span> <span class="fn">create</span>(<span class="an">@RequestBody</span> <span class="an">@Valid</span> <span class="ty">CreateOrderRequest</span> req) {
+        <span class="kw">return</span> service.<span class="fn">create</span>(req);
+    }
+
+    <span class="an">@GetMapping</span>(<span class="str">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">OrderResponse</span>&gt; <span class="fn">get</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        <span class="kw">return</span> service.<span class="fn">findById</span>(id)
+            .<span class="fn">map</span>(<span class="ty">ResponseEntity</span>::ok)
+            .<span class="fn">orElse</span>(<span class="ty">ResponseEntity</span>.<span class="fn">notFound</span>().<span class="fn">build</span>());
+    }
+}
+
+<span class="an">@RestControllerAdvice</span>
+<span class="kw">public class</span> <span class="ty">ProblemDetailAdvice</span> {
+    <span class="cm">// Spring 6 ProblemDetail — RFC 7807 structured error body</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">MethodArgumentNotValidException</span>.<span class="kw">class</span>)
+    <span class="kw">public</span> <span class="ty">ProblemDetail</span> <span class="fn">handleValidation</span>(<span class="ty">MethodArgumentNotValidException</span> ex) {
+        <span class="ty">ProblemDetail</span> pd = <span class="ty">ProblemDetail</span>
+            .<span class="fn">forStatusAndDetail</span>(<span class="ty">HttpStatus</span>.UNPROCESSABLE_ENTITY, <span class="str">"Validation failed"</span>);
+        pd.<span class="fn">setProperty</span>(<span class="str">"errors"</span>, ex.<span class="fn">getFieldErrors</span>().stream()
+            .<span class="fn">map</span>(e -> e.<span class="fn">getField</span>() + <span class="str">": "</span> + e.<span class="fn">getDefaultMessage</span>())
+            .<span class="fn">toList</span>());
+        <span class="kw">return</span> pd;
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 5. gRPC ─── -->
+  <section class="topic-section" id="grpc">
+    <div class="section-header">
+      <span class="section-eyebrow">Communication</span>
+      <h2>gRPC</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>gRPC is a high-performance RPC framework using <strong>Protocol Buffers</strong> for serialization and <strong>HTTP/2</strong> for transport. Compared to REST+JSON: ~5–10× smaller payload (binary), multiplexed connections (no head-of-line blocking), and strict contract-first design via <code>.proto</code> files. Ideal for internal service-to-service calls, especially high-throughput data streams. Less suitable for browser clients without gRPC-Web proxying.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th></th><th>REST / JSON</th><th>gRPC / Protobuf</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Protocol</strong></td><td>HTTP/1.1 (or 2)</td><td>HTTP/2 (mandatory)</td></tr>
+            <tr><td><strong>Payload</strong></td><td>JSON (text, human-readable)</td><td>Protobuf (binary, compact)</td></tr>
+            <tr><td><strong>Contract</strong></td><td>OpenAPI (optional)</td><td>.proto (mandatory, code-gen)</td></tr>
+            <tr><td><strong>Streaming</strong></td><td>SSE / WebSocket (add-on)</td><td>Native: unary, server, client, bidirectional</td></tr>
+            <tr><td><strong>Browser support</strong></td><td>Native</td><td>Requires gRPC-Web proxy</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">PROTO</span><span class="code-desc">Service definition — orders.proto</span></div>
+        <pre><code>syntax = <span class="str">"proto3"</span>;
+<span class="kw">package</span> orders;
+option java_package = <span class="str">"com.acme.orders.grpc"</span>;
+
+<span class="kw">service</span> <span class="ty">OrderService</span> {
+  rpc <span class="fn">GetOrder</span>   (<span class="ty">GetOrderRequest</span>)   <span class="kw">returns</span> (<span class="ty">OrderResponse</span>);
+  rpc <span class="fn">ListOrders</span> (<span class="ty">ListOrdersRequest</span>) <span class="kw">returns</span> (stream <span class="ty">OrderResponse</span>);  <span class="cm">// server-stream</span>
+}
+
+<span class="kw">message</span> <span class="ty">GetOrderRequest</span>  { int64 id = <span class="num">1</span>; }
+<span class="kw">message</span> <span class="ty">ListOrdersRequest</span> { string customer_id = <span class="num">1</span>; }
+<span class="kw">message</span> <span class="ty">OrderResponse</span> {
+  int64  id          = <span class="num">1</span>;
+  string customer_id = <span class="num">2</span>;
+  double total       = <span class="num">3</span>;
+  string status      = <span class="num">4</span>;
+}</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">gRPC server impl (grpc-spring-boot-starter)</span></div>
+        <pre><code><span class="an">@GrpcService</span>
+<span class="kw">public class</span> <span class="ty">OrderGrpcService</span> <span class="kw">extends</span> <span class="ty">OrderServiceGrpc</span>.<span class="ty">OrderServiceImplBase</span> {
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">getOrder</span>(<span class="ty">GetOrderRequest</span> req, <span class="ty">StreamObserver</span>&lt;<span class="ty">OrderResponse</span>&gt; resp) {
+        orderRepo.<span class="fn">findById</span>(req.<span class="fn">getId</span>())
+            .<span class="fn">ifPresentOrElse</span>(
+                o -> { resp.<span class="fn">onNext</span>(<span class="fn">toProto</span>(o)); resp.<span class="fn">onCompleted</span>(); },
+                () -> resp.<span class="fn">onError</span>(<span class="ty">Status</span>.NOT_FOUND.<span class="fn">asRuntimeException</span>())
+            );
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">listOrders</span>(<span class="ty">ListOrdersRequest</span> req, <span class="ty">StreamObserver</span>&lt;<span class="ty">OrderResponse</span>&gt; resp) {
+        orderRepo.<span class="fn">findByCustomerId</span>(req.<span class="fn">getCustomerId</span>())
+            .<span class="fn">forEach</span>(o -> resp.<span class="fn">onNext</span>(<span class="fn">toProto</span>(o)));   <span class="cm">// streams each row</span>
+        resp.<span class="fn">onCompleted</span>();
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 6. KAFKA ─── -->
+  <section class="topic-section" id="kafka">
+    <div class="section-header">
+      <span class="section-eyebrow">Messaging</span>
+      <h2>Apache Kafka</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Kafka is a distributed, durable, high-throughput <strong>event log</strong>. Messages are appended to <strong>partitions</strong> (ordered within a partition) and retained for a configurable period — consumers replay from any offset. This makes Kafka fundamentally different from a queue: messages are not deleted on consumption, and multiple consumer groups can read the same data independently. It excels at event streaming, audit logs, and decoupling high-volume producers from consumers.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Kafka Concepts</div>
+        <ul>
+          <li><strong>Topic</strong>: named log, divided into partitions. More partitions = more parallelism.</li>
+          <li><strong>Partition</strong>: ordered, immutable sequence. Messages with the same key go to the same partition — ordering guaranteed per key.</li>
+          <li><strong>Consumer Group</strong>: each partition assigned to one consumer in the group. Scale consumers up to partition count.</li>
+          <li><strong>Offset</strong>: position in a partition. Consumer commits offset after processing — on restart, it resumes from the committed offset.</li>
+          <li><strong>at-least-once delivery</strong>: default. Commit after processing, never before — if processing fails before commit, message is redelivered. Idempotent consumers required.</li>
+          <li><strong>exactly-once</strong>: achievable with Kafka transactions (<code>enable.idempotence=true</code> + transactional producer). More complex, avoid unless strictly needed.</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Spring Kafka producer + consumer with manual offset commit</span></div>
+        <pre><code><span class="cm">// Producer — publish order event</span>
+<span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">OrderEventPublisher</span> {
+    <span class="kw">private final</span> <span class="ty">KafkaTemplate</span>&lt;<span class="ty">String</span>, <span class="ty">OrderEvent</span>&gt; kafka;
+
+    <span class="kw">public void</span> <span class="fn">publish</span>(<span class="ty">OrderEvent</span> event) {
+        kafka.<span class="fn">send</span>(<span class="str">"orders"</span>, event.<span class="fn">getOrderId</span>(), event)  <span class="cm">// key → same partition</span>
+             .<span class="fn">whenComplete</span>((result, ex) -> {
+                 <span class="kw">if</span> (ex != <span class="kw">null</span>) log.<span class="fn">error</span>(<span class="str">"Publish failed"</span>, ex);
+             });
+    }
+}
+
+<span class="cm">// Consumer — at-least-once, manual commit after processing</span>
+<span class="an">@KafkaListener</span>(topics = <span class="str">"orders"</span>, groupId = <span class="str">"inventory-group"</span>,
+               containerFactory = <span class="str">"manualAckFactory"</span>)
+<span class="kw">public void</span> <span class="fn">handle</span>(<span class="ty">ConsumerRecord</span>&lt;<span class="ty">String</span>, <span class="ty">OrderEvent</span>&gt; record,
+                    <span class="ty">Acknowledgment</span> ack) {
+    <span class="kw">try</span> {
+        inventory.<span class="fn">reserve</span>(record.<span class="fn">value</span>());
+        ack.<span class="fn">acknowledge</span>();                 <span class="cm">// commit only after success</span>
+    } <span class="kw">catch</span> (<span class="ty">Exception</span> e) {
+        log.<span class="fn">error</span>(<span class="str">"Failed to process {}"</span>, record.<span class="fn">offset</span>(), e);
+        <span class="cm">// do NOT ack → Kafka redelivers; or forward to DLQ</span>
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 7. RABBITMQ ─── -->
+  <section class="topic-section" id="rabbitmq">
+    <div class="section-header">
+      <span class="section-eyebrow">Messaging</span>
+      <h2>RabbitMQ</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>RabbitMQ is a traditional <strong>message broker</strong>: producers publish to <strong>exchanges</strong>, exchanges route messages to <strong>queues</strong> via binding rules, consumers pull from queues. Messages are consumed and removed — no replay. RabbitMQ excels at task distribution, work queues, and complex routing (topic, fanout, direct, headers exchanges). Choose Kafka for event streaming / replay; choose RabbitMQ for task queues, routing, and RPC-style messaging.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th></th><th>Kafka</th><th>RabbitMQ</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Model</strong></td><td>Distributed log (retain &amp; replay)</td><td>Message broker (consume &amp; remove)</td></tr>
+            <tr><td><strong>Ordering</strong></td><td>Per-partition, per-key</td><td>Per-queue (single consumer)</td></tr>
+            <tr><td><strong>Consumer groups</strong></td><td>Multiple groups, independent offsets</td><td>Competing consumers share queue</td></tr>
+            <tr><td><strong>Routing</strong></td><td>Topic (key-based)</td><td>Exchange types: direct, fanout, topic, headers</td></tr>
+            <tr><td><strong>Best for</strong></td><td>Event streaming, audit logs, high throughput</td><td>Task queues, RPC, complex routing</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Spring AMQP — dead-letter queue config + listener</span></div>
+        <pre><code><span class="an">@Configuration</span>
+<span class="kw">public class</span> <span class="ty">RabbitConfig</span> {
+
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="ty">Queue</span> <span class="fn">ordersQueue</span>() {
+        <span class="kw">return</span> <span class="ty">QueueBuilder</span>.<span class="fn">durable</span>(<span class="str">"orders.process"</span>)
+            .<span class="fn">withArgument</span>(<span class="str">"x-dead-letter-exchange"</span>, <span class="str">"orders.dlx"</span>)
+            .<span class="fn">withArgument</span>(<span class="str">"x-message-ttl"</span>, <span class="num">30_000</span>)      <span class="cm">// 30s TTL</span>
+            .<span class="fn">build</span>();
+    }
+
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="ty">TopicExchange</span> <span class="fn">ordersExchange</span>() { <span class="kw">return new</span> <span class="ty">TopicExchange</span>(<span class="str">"orders.topic"</span>); }
+
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="ty">Binding</span> <span class="fn">binding</span>(<span class="ty">Queue</span> ordersQueue, <span class="ty">TopicExchange</span> ordersExchange) {
+        <span class="kw">return</span> <span class="ty">BindingBuilder</span>.<span class="fn">bind</span>(ordersQueue).<span class="fn">to</span>(ordersExchange).<span class="fn">with</span>(<span class="str">"order.#"</span>);
+    }
+}
+
+<span class="an">@RabbitListener</span>(queues = <span class="str">"orders.process"</span>)
+<span class="kw">public void</span> <span class="fn">processOrder</span>(<span class="an">@Payload</span> <span class="ty">OrderEvent</span> event, <span class="ty">Channel</span> channel,
+                          <span class="an">@Header</span>(<span class="ty">AmqpHeaders</span>.DELIVERY_TAG) <span class="ty">long</span> tag)
+    <span class="kw">throws</span> <span class="ty">IOException</span> {
+    <span class="kw">try</span> {
+        inventory.<span class="fn">reserve</span>(event);
+        channel.<span class="fn">basicAck</span>(tag, <span class="kw">false</span>);
+    } <span class="kw">catch</span> (<span class="ty">Exception</span> e) {
+        channel.<span class="fn">basicNack</span>(tag, <span class="kw">false</span>, <span class="kw">false</span>); <span class="cm">// requeue=false → DLQ</span>
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 8. EVENT-DRIVEN ARCHITECTURE ─── -->
+  <section class="topic-section" id="eda">
+    <div class="section-header">
+      <span class="section-eyebrow">Messaging</span>
+      <h2>Event-Driven Architecture</h2>
+      <span class="diff-badge diff-adv">Advanced</span>
+    </div>
+    <div class="section-body">
+      <p>In event-driven architecture (EDA), services communicate by publishing and subscribing to <strong>domain events</strong> — immutable facts about things that happened. Producers don't know who listens; consumers don't know who produced. This achieves <strong>temporal decoupling</strong> (consumer can be offline) and <strong>spatial decoupling</strong> (no hardcoded endpoint). The cost is eventual consistency and harder debugging.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Event Design Rules</div>
+        <ul>
+          <li><strong>Events are facts, not commands</strong>: <code>OrderPlaced</code> (happened) vs <code>PlaceOrder</code> (request). A fact cannot be rejected; a command can.</li>
+          <li><strong>Include enough data</strong>: events should be self-contained — consumers shouldn't need to call back to the producer to enrich them (avoids temporal coupling).</li>
+          <li><strong>Event schema versioning</strong>: add fields, never remove or rename. Use a schema registry (Confluent Schema Registry + Avro/Protobuf) to enforce compatibility.</li>
+          <li><strong>Consumer idempotency</strong>: at-least-once delivery means events may arrive twice — consumers must handle duplicates gracefully (deduplication by event ID).</li>
+        </ul>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">Event-Driven Order Flow</span>
+
+Order Service          Kafka: <span class="accent">orders</span>       Inventory Service     Notification Service
+     │                      │                    │                        │
+     │─── OrderPlaced ──────►│                    │                        │
+     │                      │─── OrderPlaced ────►│                        │
+     │                      │                    │ reserve stock          │
+     │                      │                    │─── StockReserved ──────►│
+     │                      │                    │                        │ send email
+     │                      │                    │                        │
+     │                      │  (each service reads independently from its consumer group)
+     │                      │
+     │  <span class="ok">temporal decoupling</span>: Notification Service can restart and replay missed events</div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 9. SAGA ─── -->
+  <section class="topic-section" id="saga">
+    <div class="section-header">
+      <span class="section-eyebrow">Patterns</span>
+      <h2>Saga Pattern</h2>
+      <span class="diff-badge diff-pat">Pattern</span>
+    </div>
+    <div class="section-body">
+      <p>A <strong>Saga</strong> manages a multi-step business transaction across services where each step has a corresponding <strong>compensating transaction</strong>. If step N fails, steps N-1 through 1 are compensated (rolled back) in reverse. There are two implementations: <strong>Choreography</strong> (services emit events, react to others' events — no central coordinator) and <strong>Orchestration</strong> (a central Saga orchestrator sends commands and waits for replies — easier to reason about, avoids cyclic event dependencies).</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th></th><th>Choreography</th><th>Orchestration</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Control</strong></td><td>Distributed — each service reacts to events</td><td>Centralized — orchestrator drives the flow</td></tr>
+            <tr><td><strong>Coupling</strong></td><td>Services know about each other's events</td><td>Only orchestrator knows the full flow</td></tr>
+            <tr><td><strong>Debugging</strong></td><td>Hard — trace events across services</td><td>Easier — single orchestrator tracks state</td></tr>
+            <tr><td><strong>Tools</strong></td><td>Any event broker</td><td>Axon Framework, Temporal, Conductor</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Choreography-based Saga — OrderService step + compensating event</span></div>
+        <pre><code><span class="cm">// Step 1: Order service publishes OrderPlaced</span>
+<span class="an">@Transactional</span>
+<span class="kw">public</span> <span class="ty">Order</span> <span class="fn">placeOrder</span>(<span class="ty">PlaceOrderCommand</span> cmd) {
+    <span class="ty">Order</span> order = repo.<span class="fn">save</span>(<span class="kw">new</span> <span class="ty">Order</span>(cmd, <span class="ty">OrderStatus</span>.PENDING));
+    outbox.<span class="fn">publish</span>(<span class="kw">new</span> <span class="ty">OrderPlaced</span>(order));  <span class="cm">// Outbox pattern (see next section)</span>
+    <span class="kw">return</span> order;
+}
+
+<span class="cm">// Step 2: Inventory service listens, reserves stock, publishes result</span>
+<span class="an">@KafkaListener</span>(topics = <span class="str">"orders"</span>)
+<span class="kw">public void</span> <span class="fn">onOrderPlaced</span>(<span class="ty">OrderPlaced</span> event) {
+    <span class="kw">try</span> {
+        inventory.<span class="fn">reserve</span>(event.<span class="fn">items</span>());
+        outbox.<span class="fn">publish</span>(<span class="kw">new</span> <span class="ty">StockReserved</span>(event.<span class="fn">orderId</span>()));
+    } <span class="kw">catch</span> (<span class="ty">InsufficientStockException</span> e) {
+        <span class="cm">// Compensate: tell order service to cancel</span>
+        outbox.<span class="fn">publish</span>(<span class="kw">new</span> <span class="ty">StockReservationFailed</span>(event.<span class="fn">orderId</span>(), e.<span class="fn">getMessage</span>()));
+    }
+}
+
+<span class="cm">// Step 3: Order service compensates on failure</span>
+<span class="an">@KafkaListener</span>(topics = <span class="str">"inventory"</span>)
+<span class="kw">public void</span> <span class="fn">onStockFailed</span>(<span class="ty">StockReservationFailed</span> event) {
+    orderService.<span class="fn">cancelOrder</span>(event.<span class="fn">orderId</span>(), event.<span class="fn">getReason</span>());
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 10. OUTBOX PATTERN ─── -->
+  <section class="topic-section" id="outbox">
+    <div class="section-header">
+      <span class="section-eyebrow">Patterns</span>
+      <h2>Outbox Pattern</h2>
+      <span class="diff-badge diff-pat">Pattern</span>
+    </div>
+    <div class="section-body">
+      <p>The Outbox pattern solves the <strong>dual-write problem</strong>: you can't atomically write to a database and publish to Kafka in the same transaction — if the publish fails, you have a committed DB record with no event, or vice versa. The fix: write the event to an <code>outbox</code> table in the <em>same</em> DB transaction as the business data, then a separate <strong>relay process</strong> reads unpublished outbox rows and publishes them to Kafka. Atomicity is guaranteed by the local DB transaction.</p>
+
+      <div class="ascii-diagram"><span class="hi">Outbox Pattern Flow</span>
+
+Application (one DB transaction)               Relay Process         Kafka
+┌────────────────────────────────┐              ┌───────────┐     ┌────────┐
+│  INSERT INTO orders …          │              │           │     │        │
+│  INSERT INTO outbox            │              │  poll     │     │        │
+│    (event_type, payload,       │──────────────►  unpublished───►│ orders │
+│     published_at = NULL)       │              │  outbox   │     │ topic  │
+│  COMMIT                        │              │  rows     │     │        │
+└────────────────────────────────┘              │  mark     │     └────────┘
+                                                │  published│
+                                                └───────────┘
+ <span class="ok">Atomicity guaranteed by local DB TX</span>    <span class="warn">Relay may publish twice → consumers must be idempotent</span></div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">SQL + JAVA</span><span class="code-desc">Outbox table + transactional write + relay</span></div>
+        <pre><code><span class="cm">-- Outbox table</span>
+CREATE TABLE outbox (
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    aggregate_id VARCHAR(36) NOT NULL,
+    event_type   VARCHAR(100) NOT NULL,
+    payload      JSONB NOT NULL,
+    published_at TIMESTAMPTZ,
+    created_at   TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_outbox_unpublished ON outbox (created_at) WHERE published_at IS NULL;</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Atomic write + scheduled relay</span></div>
+        <pre><code><span class="an">@Transactional</span>
+<span class="kw">public</span> <span class="ty">Order</span> <span class="fn">placeOrder</span>(<span class="ty">PlaceOrderCommand</span> cmd) {
+    <span class="ty">Order</span> order = orderRepo.<span class="fn">save</span>(<span class="kw">new</span> <span class="ty">Order</span>(cmd));
+    <span class="cm">// Same TX — if commit fails, outbox row also not saved</span>
+    outboxRepo.<span class="fn">save</span>(<span class="ty">OutboxEvent</span>.<span class="fn">of</span>(<span class="str">"OrderPlaced"</span>, order.<span class="fn">getId</span>(), order));
+    <span class="kw">return</span> order;
+}
+
+<span class="cm">// Relay — runs every 1s, publishes unpublished rows</span>
+<span class="an">@Scheduled</span>(fixedDelay = <span class="num">1000</span>)
+<span class="an">@Transactional</span>
+<span class="kw">public void</span> <span class="fn">relay</span>() {
+    outboxRepo.<span class="fn">findTop100ByPublishedAtIsNull</span>().<span class="fn">forEach</span>(event -> {
+        kafka.<span class="fn">send</span>(event.<span class="fn">getEventType</span>(), event.<span class="fn">getAggregateId</span>(), event.<span class="fn">getPayload</span>());
+        event.<span class="fn">setPublishedAt</span>(<span class="ty">Instant</span>.<span class="fn">now</span>());   <span class="cm">// mark published</span>
+    });
+}
+<span class="cm">// Production: Debezium CDC reads outbox from DB WAL — lower latency, no polling</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 11. CQRS ─── -->
+  <section class="topic-section" id="cqrs">
+    <div class="section-header">
+      <span class="section-eyebrow">Patterns</span>
+      <h2>CQRS</h2>
+      <span class="diff-badge diff-pat">Pattern</span>
+    </div>
+    <div class="section-body">
+      <p><strong>CQRS (Command Query Responsibility Segregation)</strong> separates the write model (commands that change state) from the read model (queries that return data). The read model can be a denormalized, query-optimized projection — a separate table, Elasticsearch index, or Redis cache — updated asynchronously from the write side. This removes the contention between heavy reads and writes sharing the same data model, at the cost of eventual consistency between write and read models.</p>
+
+      <div class="ascii-diagram"><span class="hi">CQRS with Event Sourcing</span>
+
+                   Commands                   Events
+Client ──────────► Command Handler ──────────► Event Store ─────────► Event Bus
+                   (validates, applies)        (append-only)              │
+                                                                          │
+                   Queries                                                ▼
+Client ◄────────── Query Handler  ◄────────── Read Model ◄──────── Projector
+                   (thin read layer)           (denormalized,         (updates
+                                               Postgres/ES/Redis)     read DB)</div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Lightweight CQRS — separate read projection updated by event consumer</span></div>
+        <pre><code><span class="cm">// Write model — normalized, command-optimized</span>
+<span class="an">@Entity</span>
+<span class="kw">public class</span> <span class="ty">Order</span> { <span class="cm">/* normalized domain entity */</span> }
+
+<span class="cm">// Read model — denormalized, query-optimized (separate table)</span>
+<span class="an">@Entity</span>
+<span class="an">@Table</span>(name = <span class="str">"order_summary_view"</span>)
+<span class="kw">public class</span> <span class="ty">OrderSummaryView</span> {
+    <span class="an">@Id</span> <span class="kw">private</span> <span class="ty">Long</span> orderId;
+    <span class="kw">private</span> <span class="ty">String</span>  customerName;  <span class="cm">// denormalized from customer service</span>
+    <span class="kw">private</span> <span class="ty">int</span>     lineCount;
+    <span class="kw">private</span> <span class="ty">BigDecimal</span> total;
+    <span class="kw">private</span> <span class="ty">String</span>  statusLabel;
+}
+
+<span class="cm">// Projector — updates read model when events arrive</span>
+<span class="an">@KafkaListener</span>(topics = {<span class="str">"orders"</span>, <span class="str">"customers"</span>})
+<span class="kw">public void</span> <span class="fn">project</span>(<span class="ty">DomainEvent</span> event) {
+    <span class="kw">switch</span> (event) {
+        <span class="kw">case</span> <span class="ty">OrderPlaced</span>   e -> summaryRepo.<span class="fn">create</span>(e);
+        <span class="kw">case</span> <span class="ty">OrderUpdated</span>  e -> summaryRepo.<span class="fn">update</span>(e);
+        <span class="kw">case</span> <span class="ty">CustomerRenamed</span> e -> summaryRepo.<span class="fn">updateCustomerName</span>(e);
+        <span class="kw">default</span> -> {}
+    }
+}
+
+<span class="cm">// Query handler — reads from optimized read model (no JOIN, no lock)</span>
+<span class="an">@GetMapping</span>(<span class="str">"/orders"</span>)
+<span class="kw">public</span> <span class="ty">Page</span>&lt;<span class="ty">OrderSummaryView</span>&gt; <span class="fn">list</span>(<span class="ty">Pageable</span> p) {
+    <span class="kw">return</span> summaryRepo.<span class="fn">findAll</span>(p);
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 12. CIRCUIT BREAKER ─── -->
+  <section class="topic-section" id="circuitbreaker">
+    <div class="section-header">
+      <span class="section-eyebrow">Resilience</span>
+      <h2>Circuit Breaker</h2>
+      <span class="diff-badge diff-res">Resilience</span>
+    </div>
+    <div class="section-body">
+      <p>A circuit breaker wraps remote calls and monitors for failures. When failure rate exceeds a threshold, the circuit <strong>opens</strong> — subsequent calls immediately return a fallback without hitting the downstream service, allowing it time to recover. After a wait period, the circuit enters <strong>half-open</strong>: a probe request is allowed through. If it succeeds, the circuit closes; if it fails, it opens again. <strong>Resilience4j</strong> is the standard Java library (replacing the deprecated Hystrix).</p>
+
+      <div class="ascii-diagram">Circuit Breaker State Machine
+
+            failure rate &gt; threshold               probe succeeds
+  <span class="ok">CLOSED</span> ────────────────────────────► <span class="accent">OPEN</span> ──────────────────► <span class="warn">HALF-OPEN</span>
+  (normal)       all calls fail fast    (wait)   probe sent       (test)
+     ▲                                                                │
+     │                              probe fails                      │
+     └────────────────────────────────────────────────────────────────┘
+                                 re-opens</div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Resilience4j circuit breaker + fallback</span></div>
+        <pre><code><span class="cm">// application.yml</span>
+resilience4j:
+  circuitbreaker:
+    instances:
+      inventory:
+        slidingWindowSize: <span class="num">10</span>           <span class="cm"># evaluate last 10 calls</span>
+        failureRateThreshold: <span class="num">50</span>         <span class="cm"># open if 50% fail</span>
+        waitDurationInOpenState: <span class="num">10000</span>   <span class="cm"># wait 10s before half-open</span>
+        permittedNumberOfCallsInHalfOpenState: <span class="num">3</span>
+        slowCallDurationThreshold: <span class="num">2000</span>  <span class="cm"># 2s = slow call</span>
+        slowCallRateThreshold: <span class="num">50</span></code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">@CircuitBreaker with fallback method</span></div>
+        <pre><code><span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">OrderService</span> {
+
+    <span class="an">@CircuitBreaker</span>(name = <span class="str">"inventory"</span>, fallbackMethod = <span class="str">"stockFallback"</span>)
+    <span class="an">@Retry</span>(name = <span class="str">"inventory"</span>)
+    <span class="kw">public</span> <span class="ty">StockLevel</span> <span class="fn">checkStock</span>(<span class="ty">String</span> sku) {
+        <span class="kw">return</span> inventoryClient.<span class="fn">getStock</span>(sku);
+    }
+
+    <span class="cm">// Fallback: return cached/default value when circuit is open</span>
+    <span class="kw">private</span> <span class="ty">StockLevel</span> <span class="fn">stockFallback</span>(<span class="ty">String</span> sku, <span class="ty">Throwable</span> t) {
+        log.<span class="fn">warn</span>(<span class="str">"Stock check failed for {}: {}"</span>, sku, t.<span class="fn">getMessage</span>());
+        <span class="kw">return</span> <span class="ty">StockLevel</span>.<span class="fn">unknown</span>(sku);   <span class="cm">// degrade gracefully</span>
+    }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 13. RETRY ─── -->
+  <section class="topic-section" id="retry">
+    <div class="section-header">
+      <span class="section-eyebrow">Resilience</span>
+      <h2>Retry</h2>
+      <span class="diff-badge diff-res">Resilience</span>
+    </div>
+    <div class="section-body">
+      <p>Retries handle <strong>transient failures</strong> — network hiccups, brief service restarts, momentary DB lock timeouts. The key constraints: retry only <strong>idempotent</strong> operations (safe to execute multiple times), use <strong>exponential backoff with jitter</strong> (prevent thundering herd when many clients retry simultaneously), and always set a <strong>max attempts</strong> limit. Never retry indefinitely and never retry without backoff — uncontrolled retries amplify failure.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Retry Design Rules</div>
+        <ul>
+          <li><strong>Only retry transient errors</strong>: retry <code>ConnectTimeout</code>, <code>ServiceUnavailable (503)</code>. Never retry <code>400 Bad Request</code> or <code>404</code> — those won't change.</li>
+          <li><strong>Exponential backoff</strong>: wait = <code>base * 2^attempt</code>. Without backoff, all retrying clients hit the recovering service simultaneously.</li>
+          <li><strong>Jitter</strong>: add random variance to backoff to spread retries in time (AWS: full jitter = <code>random(0, base * 2^attempt)</code>).</li>
+          <li><strong>Retry budget</strong>: track retries as a percentage of total calls. If >10% of calls are retries, it signals a deeper problem — alert on it.</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Resilience4j retry with exponential backoff + Spring @Retryable</span></div>
+        <pre><code><span class="cm">// application.yml — Resilience4j retry</span>
+resilience4j:
+  retry:
+    instances:
+      inventory:
+        maxAttempts: <span class="num">3</span>
+        waitDuration: <span class="num">500</span>ms
+        enableExponentialBackoff: <span class="kw">true</span>
+        exponentialBackoffMultiplier: <span class="num">2</span>   <span class="cm"># 500ms → 1s → 2s</span>
+        randomizedWaitFactor: <span class="num">0.3</span>         <span class="cm"># ±30% jitter</span>
+        retryExceptions:
+          - feign.RetryableException
+          - java.net.ConnectException
+        ignoreExceptions:
+          - com.acme.BadRequestException   <span class="cm"># don't retry 4xx</span>
+
+<span class="cm">// Spring @Retryable alternative (spring-retry)</span>
+<span class="an">@Retryable</span>(
+    retryFor = { <span class="ty">ConnectException</span>.<span class="kw">class</span>, <span class="ty">ServiceUnavailableException</span>.<span class="kw">class</span> },
+    maxAttempts = <span class="num">3</span>,
+    backoff = <span class="an">@Backoff</span>(delay = <span class="num">500</span>, multiplier = <span class="num">2</span>, random = <span class="kw">true</span>)
+)
+<span class="kw">public</span> <span class="ty">StockLevel</span> <span class="fn">checkStock</span>(<span class="ty">String</span> sku) { ... }
+
+<span class="an">@Recover</span>
+<span class="kw">public</span> <span class="ty">StockLevel</span> <span class="fn">stockRecover</span>(<span class="ty">ServiceUnavailableException</span> e, <span class="ty">String</span> sku) {
+    <span class="kw">return</span> <span class="ty">StockLevel</span>.<span class="fn">unknown</span>(sku);   <span class="cm">// called after all retries exhausted</span>
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 14. RATE LIMITING ─── -->
+  <section class="topic-section" id="ratelimit">
+    <div class="section-header">
+      <span class="section-eyebrow">Resilience</span>
+      <h2>Rate Limiting</h2>
+      <span class="diff-badge diff-res">Resilience</span>
+    </div>
+    <div class="section-body">
+      <p>Rate limiting protects a service from being overwhelmed by too many requests — from a single misbehaving client, a traffic spike, or a DDoS. Applied at the gateway for external clients; also applied within services to throttle downstream calls. Common algorithms: <strong>Token Bucket</strong> (burst allowed up to bucket size), <strong>Fixed Window Counter</strong> (count requests per minute, simple but allows burst at window boundary), <strong>Sliding Window</strong> (smoother, no boundary burst), <strong>Leaky Bucket</strong> (output at fixed rate, smooths bursts).</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Algorithm</th><th>Burst</th><th>Accuracy</th><th>Memory</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Token Bucket</strong></td><td>Yes (up to bucket size)</td><td>Good</td><td>Low</td><td>API gateway, most common</td></tr>
+            <tr><td><strong>Fixed Window</strong></td><td>2× burst at boundary</td><td>Poor</td><td>Very Low</td><td>Simple counters, logs</td></tr>
+            <tr><td><strong>Sliding Window Log</strong></td><td>No</td><td>Exact</td><td>High (per request)</td><td>High-precision quota enforcement</td></tr>
+            <tr><td><strong>Leaky Bucket</strong></td><td>No (queued)</td><td>Good</td><td>Low</td><td>Smooth output to downstream</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Resilience4j RateLimiter + Bucket4j (token bucket, Redis-backed)</span></div>
+        <pre><code><span class="cm">// Resilience4j RateLimiter — in-process, per-instance</span>
+resilience4j:
+  ratelimiter:
+    instances:
+      payment:
+        limitForPeriod: <span class="num">100</span>          <span class="cm"># 100 calls per period</span>
+        limitRefreshPeriod: <span class="num">1</span>s
+        timeoutDuration: <span class="num">100</span>ms       <span class="cm"># wait this long for a permit</span>
+
+<span class="an">@RateLimiter</span>(name = <span class="str">"payment"</span>)
+<span class="kw">public</span> <span class="ty">PaymentResult</span> <span class="fn">charge</span>(<span class="ty">ChargeRequest</span> req) { ... }
+
+<span class="cm">// Bucket4j — distributed token bucket backed by Redis (multi-instance)</span>
+<span class="an">@Bean</span>
+<span class="kw">public</span> <span class="ty">BucketProxyManager</span>&lt;<span class="ty">String</span>&gt; <span class="fn">bucketManager</span>(<span class="ty">RedisTemplate</span>&lt;?,?&gt; redis) {
+    <span class="kw">return new</span> <span class="ty">RedissonBasedProxyManager</span>(redissonClient);
+}
+
+<span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;?&gt; <span class="fn">handleRequest</span>(<span class="ty">String</span> clientId, <span class="ty">Request</span> req) {
+    <span class="ty">Bucket</span> bucket = bucketManager.<span class="fn">builder</span>()
+        .<span class="fn">addLimit</span>(<span class="ty">Bandwidth</span>.<span class="fn">classic</span>(<span class="num">100</span>, <span class="ty">Refill</span>.<span class="fn">greedy</span>(<span class="num">100</span>, <span class="ty">Duration</span>.<span class="fn">ofMinutes</span>(<span class="num">1</span>))))
+        .<span class="fn">build</span>(clientId);  <span class="cm">// per-client bucket stored in Redis</span>
+
+    <span class="kw">if</span> (!bucket.<span class="fn">tryConsume</span>(<span class="num">1</span>)) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="num">429</span>)
+            .<span class="fn">header</span>(<span class="str">"Retry-After"</span>, <span class="str">"60"</span>)
+            .<fn>build</fn>();
+    }
+    <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(service.<span class="fn">process</span>(req));
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 15. IDEMPOTENCY ─── -->
+  <section class="topic-section" id="idempotency">
+    <div class="section-header">
+      <span class="section-eyebrow">Resilience</span>
+      <h2>Idempotency</h2>
+      <span class="diff-badge diff-res">Resilience</span>
+    </div>
+    <div class="section-body">
+      <p>An operation is <strong>idempotent</strong> if executing it multiple times has the same effect as executing it once. Critical in distributed systems where retries are inevitable — a payment charged twice is catastrophic. HTTP GET, PUT, DELETE are semantically idempotent. POST is not — but can be made idempotent with an <strong>Idempotency-Key</strong> header: the server stores the result of the first call and returns the cached result on duplicates.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Idempotency key pattern — store first result, return cached on replay</span></div>
+        <pre><code><span class="cm">-- Idempotency key table</span>
+CREATE TABLE idempotency_keys (
+    key         VARCHAR(128) PRIMARY KEY,
+    status_code INT NOT NULL,
+    response    JSONB NOT NULL,
+    created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_idem_created ON idempotency_keys (created_at);
+<span class="cm">-- Expire keys after 24h via scheduled job or TTL trigger</span></code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Idempotency filter — intercepts before controller, returns cached response</span></div>
+        <pre><code><span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">IdempotencyFilter</span> <span class="kw">extends</span> <span class="ty">OncePerRequestFilter</span> {
+
+    <span class="an">@Override</span>
+    <span class="kw">protected void</span> <span class="fn">doFilterInternal</span>(<span class="ty">HttpServletRequest</span> req,
+                                      <span class="ty">HttpServletResponse</span> res,
+                                      <span class="ty">FilterChain</span> chain)
+            <span class="kw">throws</span> <span class="ty">IOException</span>, <span class="ty">ServletException</span> {
+
+        <span class="ty">String</span> key = req.<span class="fn">getHeader</span>(<span class="str">"Idempotency-Key"</span>);
+        <span class="kw">if</span> (key == <span class="kw">null</span> || !req.<span class="fn">getMethod</span>().<span class="fn">equals</span>(<span class="str">"POST"</span>)) {
+            chain.<span class="fn">doFilter</span>(req, res); <span class="kw">return</span>;
+        }
+
+        <span class="ty">Optional</span>&lt;<span class="ty">IdempotencyRecord</span>&gt; cached = idemRepo.<span class="fn">findById</span>(key);
+        <span class="kw">if</span> (cached.<span class="fn">isPresent</span>()) {
+            <span class="ty">IdempotencyRecord</span> r = cached.<span class="fn">get</span>();
+            res.<span class="fn">setStatus</span>(r.<span class="fn">getStatusCode</span>());
+            res.<span class="fn">setContentType</span>(<span class="str">"application/json"</span>);
+            res.<span class="fn">getWriter</span>().<span class="fn">write</span>(r.<span class="fn">getResponse</span>());  <span class="cm">// replay cached response</span>
+            <span class="kw">return</span>;
+        }
+
+        <span class="ty">CachedBodyResponseWrapper</span> wrapper = <span class="kw">new</span> <span class="ty">CachedBodyResponseWrapper</span>(res);
+        chain.<span class="fn">doFilter</span>(req, wrapper);
+
+        <span class="cm">// Store result for future replays</span>
+        idemRepo.<span class="fn">save</span>(<span class="kw">new</span> <span class="ty">IdempotencyRecord</span>(key, wrapper.<span class="fn">getStatus</span>(), wrapper.<span class="fn">getBody</span>()));
+    }
+}</code></pre>
+      </div>
+
+      <div class="callout callout-key">
+        <div class="callout-label">Consumer Idempotency (Kafka / RabbitMQ)</div>
+        <ul>
+          <li>At-least-once delivery means duplicate messages are expected. Consumers must deduplicate by a stable message ID before processing.</li>
+          <li>Pattern: <code>INSERT INTO processed_events (event_id) ON CONFLICT DO NOTHING</code> — if insert succeeds, process; if conflict, skip.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 16. DISTRIBUTED TRANSACTIONS ─── -->
+  <section class="topic-section" id="disttx">
+    <div class="section-header">
+      <span class="section-eyebrow">Consistency</span>
+      <h2>Distributed Transactions</h2>
+      <span class="diff-badge diff-adv">Advanced</span>
+    </div>
+    <div class="section-body">
+      <p>True distributed transactions (2PC / XA) are largely abandoned in microservices — they require all participants to be available simultaneously, create long-held locks, and are operationally fragile. Instead, the industry uses patterns that accept <strong>eventual consistency</strong>: the Saga pattern, Outbox, and idempotent retry. If you need strong consistency across services, you may need to rethink your service boundaries — shared data may belong in the same service.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Approach</th><th>Consistency</th><th>Availability</th><th>Complexity</th><th>Use Today</th></tr></thead>
+          <tbody>
+            <tr><td><strong>2PC (XA)</strong></td><td>Strong (ACID)</td><td>Low — all must be up</td><td>High — coordinator, locks</td><td>Rare — legacy enterprise only</td></tr>
+            <tr><td><strong>Saga (choreography)</strong></td><td>Eventual</td><td>High</td><td>Medium</td><td>Common — Spring + Kafka</td></tr>
+            <tr><td><strong>Saga (orchestration)</strong></td><td>Eventual</td><td>High</td><td>Higher</td><td>Common — Axon, Temporal</td></tr>
+            <tr><td><strong>Outbox + Idempotent</strong></td><td>Eventual (at-least-once)</td><td>High</td><td>Low-Medium</td><td>Very common</td></tr>
+            <tr><td><strong>Redesign boundary</strong></td><td>Strong (local ACID)</td><td>High</td><td>Low</td><td>Preferred when possible</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-label">CAP Theorem in Interviews</div>
+        <ul>
+          <li>A distributed system can only guarantee two of: <strong>Consistency</strong>, <strong>Availability</strong>, <strong>Partition Tolerance</strong>. Partition tolerance is non-negotiable in a real network — so the real choice is CP (consistent, may be unavailable during partition) vs AP (available, may return stale data during partition).</li>
+          <li>Most microservice systems choose AP — they accept eventual consistency in exchange for availability. Say this explicitly in an interview when asked about distributed data.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 17. DISTRIBUTED TRACING ─── -->
+  <section class="topic-section" id="tracing">
+    <div class="section-header">
+      <span class="section-eyebrow">Consistency</span>
+      <h2>Distributed Tracing</h2>
+      <span class="diff-badge diff-adv">Advanced</span>
+    </div>
+    <div class="section-body">
+      <p>A single user request may touch 10 services. Distributed tracing correlates all spans across services into one <strong>trace</strong>, giving you end-to-end latency, identifying which service is slow, and showing the causal relationship between operations. The industry standard is <strong>OpenTelemetry (OTel)</strong>: one API, pluggable exporters (Jaeger, Zipkin, Grafana Tempo, AWS X-Ray). Spring Boot 3 integrates OTel via Micrometer Tracing.</p>
+
+      <div class="ascii-diagram"><span class="hi">Distributed Trace — one request, multiple services</span>
+
+Trace ID: <span class="ok">a3f7c2d</span>
+│
+├── Span: <span class="hi">api-gateway</span>        0ms ────────────────────────── 245ms
+│   │
+│   ├── Span: <span class="hi">order-service</span>   5ms ──────────────────── 220ms
+│   │   │
+│   │   ├── Span: <span class="hi">postgres</span>    8ms ──── 45ms   (findById)
+│   │   │
+│   │   └── Span: <span class="hi">inventory-service</span>  50ms ──────── 180ms
+│   │       │
+│   │       └── Span: <span class="hi">redis</span>   52ms ── 60ms  (cache hit)
+│   │
+│   └── Span: <span class="hi">auth-service</span>    6ms ── 20ms  (jwt validate)
+
+<span class="warn">Bottleneck visible</span>: inventory-service took 130ms — investigate.</div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">YAML + JAVA</span><span class="code-desc">Spring Boot 3 + Micrometer Tracing + OpenTelemetry export to Tempo</span></div>
+        <pre><code><span class="cm"># pom.xml dependencies</span>
+<span class="cm"># io.micrometer:micrometer-tracing-bridge-otel</span>
+<span class="cm"># io.opentelemetry:opentelemetry-exporter-otlp</span>
+<span class="cm"># com.github.loki4j:loki-logback-appender (for log correlation)</span>
+
+<span class="cm"># application.yml</span>
+management:
+  tracing:
+    sampling:
+      probability: <span class="num">1.0</span>         <span class="cm"># 100% in dev; 0.01–0.1 in prod</span>
+  otlp:
+    tracing:
+      endpoint: http://otel-collector:4318/v1/traces
+
+logging:
+  pattern:
+    level: <span class="str">"%5p [${spring.application.name},%X{traceId},%X{spanId}]"</span></code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">JAVA</span><span class="code-desc">Custom span + trace context propagation in Kafka headers</span></div>
+        <pre><code><span class="cm">// Custom span around a critical operation</span>
+<span class="an">@Autowired</span> <span class="ty">Tracer</span> tracer;
+
+<span class="kw">public</span> <span class="ty">Order</span> <span class="fn">processWithSpan</span>(<span class="ty">OrderCommand</span> cmd) {
+    <span class="ty">Span</span> span = tracer.<span class="fn">nextSpan</span>().<span class="fn">name</span>(<span class="str">"order.validate"</span>).<span class="fn">start</span>();
+    <span class="kw">try</span> (<span class="ty">Tracer</span>.<span class="ty">SpanInScope</span> ws = tracer.<span class="fn">withSpan</span>(span)) {
+        span.<span class="fn">tag</span>(<span class="str">"order.customer"</span>, cmd.<span class="fn">getCustomerId</span>());
+        <span class="kw">return</span> validate(cmd);
+    } <span class="kw">catch</span> (<span class="ty">Exception</span> e) {
+        span.<span class="fn">error</span>(e);
+        <span class="kw">throw</span> e;
+    } <span class="kw">finally</span> {
+        span.<span class="fn">end</span>();
+    }
+}
+
+<span class="cm">// Trace context propagates automatically via:</span>
+<span class="cm">//   HTTP: W3C traceparent header  (RestClient / WebClient / Feign)</span>
+<span class="cm">//   Kafka: Spring Kafka propagates trace headers automatically in Spring Boot 3</span>
+<span class="cm">//   Log correlation: traceId/spanId in MDC → logs linkable to trace</span></code></pre>
+      </div>
+
+      <div class="callout callout-pat">
+        <div class="callout-label">Observability Stack — The Three Pillars</div>
+        <ul>
+          <li><strong>Metrics</strong>: Micrometer → Prometheus → Grafana. What is happening at aggregate level (error rate, latency p99, queue depth).</li>
+          <li><strong>Logs</strong>: structured JSON via Logback/Log4j2 → Loki or Elasticsearch. What happened for a specific request. Include <code>traceId</code> in every log line.</li>
+          <li><strong>Traces</strong>: OpenTelemetry → Grafana Tempo / Jaeger. How a request flowed across services and where time was spent.</li>
+          <li>Team lead tip: correlate all three by <code>traceId</code>. A Grafana alert fires on high error rate → click to trace → trace links to logs. That's the loop.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <div style="text-align:center;padding:1rem 0 2rem;color:var(--muted);font-family:var(--font-mono);font-size:0.78rem;">
+    Round 5 complete · 17 topics · All 5 rounds done ·  Good luck
+  </div>
+
+</main>
+</div>
+
+<script>
+const btn  = document.getElementById('themeBtn');
+const root = document.documentElement;
+const saved = localStorage.getItem('theme');
+if (saved) root.setAttribute('data-theme', saved);
+btn.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+
+const sections = document.querySelectorAll('.topic-section');
+const links    = document.querySelectorAll('.nav-link');
+function onScroll() {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY + 80 >= s.offsetTop) current = s.id; });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+</script>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leadership Practices — Java Interview Prep</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#34d399;--accent-dim:#064e3b;--code-bg:#0d1117;--kw:#ff79c6;--cls:#8be9fd;--str:#f1fa8c;--cmt:#6272a4;--num:#bd93f9;--ann:#50fa7b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;flex-shrink:0}
+.sidebar-title{padding:0 20px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);border-bottom:1px solid var(--border);margin-bottom:8px}
+.sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--text-muted);border-left:3px solid transparent;transition:all .2s}
+.sidebar a:hover{color:var(--text);background:var(--surface2);text-decoration:none}
+.sidebar a.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-dim);font-weight:600}
+
+.main{margin-left:260px;flex:1;max-width:960px;padding:40px 48px}
+.breadcrumb{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.breadcrumb span{margin:0 6px}
+.topic-badge{display:inline-block;background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+h1{font-size:32px;font-weight:800;margin-bottom:12px;background:linear-gradient(135deg,var(--accent),#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-desc{color:var(--text-muted);font-size:16px;margin-bottom:32px;max-width:700px}
+
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+.toc h3{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px}
+.toc ol{padding-left:20px}
+.toc li{margin:6px 0;font-size:14px}
+.toc a{color:var(--text-muted)}
+.toc a:hover{color:var(--accent)}
+
+.section{margin-bottom:56px}
+.section-num{display:inline-block;background:var(--accent);color:#000;border-radius:6px;width:28px;height:28px;text-align:center;line-height:28px;font-size:12px;font-weight:800;margin-right:10px;flex-shrink:0}
+h2{font-size:22px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:16px;font-weight:600;margin:24px 0 12px;color:var(--accent)}
+p{margin-bottom:14px;color:var(--text-muted)}
+ul,ol{padding-left:20px;margin-bottom:14px}
+li{margin:6px 0;color:var(--text-muted)}
+
+.code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+.code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:var(--surface2);color:var(--accent);font-weight:700;padding:10px 14px;text-align:left;border:1px solid var(--border)}
+td{padding:10px 14px;border:1px solid var(--border);color:var(--text-muted);vertical-align:top}
+tr:hover td{background:var(--surface)}
+
+.info-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:16px 20px;margin:16px 0}
+.info-box strong{display:block;margin-bottom:6px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent)}
+
+.qa-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:40px}
+.qa-item{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.qa-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.question{font-weight:700;color:var(--accent);margin-bottom:10px;font-size:15px}
+.answer{color:var(--text-muted);font-size:14px}
+
+.scenario-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin:14px 0}
+.scenario-card .label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:8px}
+
+.page-nav{display:flex;justify-content:space-between;margin-top:60px;padding-top:24px;border-top:1px solid var(--border)}
+.nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 20px;font-size:14px;color:var(--text-muted);cursor:pointer;transition:all .2s}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.nav-btn.disabled{opacity:0.4;pointer-events:none}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-title">Java Interview Prep</div>
+  <a href="01-core-java.html">01. Core Java</a>
+  <a href="02-oop-solid.html">02. OOP & SOLID</a>
+  <a href="03-collections.html">03. Collections</a>
+  <a href="04-concurrency.html">04. Concurrency</a>
+  <a href="05-java8-features.html">05. Java 8+ Features</a>
+  <a href="06-design-patterns.html">06. Design Patterns</a>
+  <a href="07-spring-framework.html">07. Spring Framework</a>
+  <a href="08-microservices.html">08. Microservices</a>
+  <a href="09-database-jpa.html">09. Database & JPA</a>
+  <a href="10-system-design.html">10. System Design</a>
+  <a href="11-testing.html">11. Testing</a>
+  <a href="12-jvm-performance.html">12. JVM & Performance</a>
+  <a href="13-security.html">13. Security</a>
+  <a href="14-leadership-practices.html" class="active">14. Leadership</a>
+</nav>
+
+<main class="main">
+  <div class="breadcrumb"><a href="index.html">Home</a><span>›</span>Leadership Practices</div>
+  <div class="topic-badge">Topic 14</div>
+  <h1>Leadership Practices</h1>
+  <p class="page-desc">Code review principles, technical mentoring, architectural decision-making, trade-off analysis, and the behavioral and situational questions that determine who leads teams — not just who codes well.</p>
+
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#code-review">Code Review Principles</a></li>
+      <li><a href="#mentoring">Mentoring &amp; Growing Engineers</a></li>
+      <li><a href="#technical-decisions">Technical Decision-Making</a></li>
+      <li><a href="#architecture-tradeoffs">Architecture Trade-offs</a></li>
+      <li><a href="#team-dynamics">Team Dynamics &amp; Conflict</a></li>
+      <li><a href="#delivery">Delivery &amp; Estimation</a></li>
+      <li><a href="#incidents">Production Incidents</a></li>
+      <li><a href="#qa">Team Lead Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" id="code-review">
+    <h2><span class="section-num">1</span>Code Review Principles</h2>
+    <p>As a team lead, code reviews are your most scalable lever for raising team quality, spreading knowledge, and reinforcing engineering culture. The goal is not gatekeeping — it's continuous improvement.</p>
+
+    <h3>What Good Reviews Focus On</h3>
+    <table>
+      <tr><th>Priority</th><th>Category</th><th>What to Check</th></tr>
+      <tr><td>1 (highest)</td><td><strong>Correctness</strong></td><td>Logic errors, edge cases, concurrency bugs, data races</td></tr>
+      <tr><td>2</td><td><strong>Security</strong></td><td>Input validation, SQL injection risk, secrets in code, auth bypass</td></tr>
+      <tr><td>3</td><td><strong>Design</strong></td><td>SOLID violations, inappropriate coupling, single responsibility</td></tr>
+      <tr><td>4</td><td><strong>Testability</strong></td><td>Are tests present? Do they test behavior, not implementation?</td></tr>
+      <tr><td>5</td><td><strong>Performance</strong></td><td>N+1 queries, unbounded collections, blocking calls in async contexts</td></tr>
+      <tr><td>6 (lowest)</td><td><strong>Style</strong></td><td>Should be automated (Checkstyle, SpotBugs, formatter) — not manual review time</td></tr>
+    </table>
+
+    <h3>Communication in Reviews</h3>
+    <div class="scenario-card">
+      <div class="label">Avoid: Prescriptive &amp; Blaming</div>
+      <p style="margin:0;color:#f87171">"You used a HashMap here instead of a ConcurrentHashMap. This is wrong."</p>
+    </div>
+    <div class="scenario-card">
+      <div class="label">Better: Curious &amp; Collaborative</div>
+      <p style="margin:0;color:#86efac">"This HashMap might have a race condition if accessed from multiple threads (e.g., the scheduler thread and the request handler). Could we use ConcurrentHashMap here, or is there a synchronization guarantee I'm missing?"</p>
+    </div>
+
+    <div class="info-box">
+      <strong>Review Norms to Establish as Team Lead</strong>
+      • Automate style checks in CI — reviewers shouldn't spend cycles on formatting.<br>
+      • Distinguish blocking issues (must fix before merge) from suggestions (consider for later).<br>
+      • Aim for &lt;2 day turnaround on review requests — slow reviews kill flow and breed frustration.<br>
+      • Praise good patterns explicitly — recognition reinforces the behaviors you want repeated.<br>
+      • Large PRs (&gt;500 lines) should be split — review quality degrades severely above that size.
+    </div>
+
+    <h3>Review Checklist for Senior/Team Lead PRs</h3>
+    <div class="code-block"><span class="cmt">// Things juniors miss that seniors must catch:</span>
+
+<span class="cmt">// 1. Missing transaction boundaries</span>
+<span class="kw">public void</span> <span class="met">transferFunds</span>(<span class="cls">Account</span> from, <span class="cls">Account</span> to, <span class="cls">BigDecimal</span> amount) {
+    from.<span class="met">debit</span>(amount);   <span class="cmt">// what if this succeeds but credit() throws?</span>
+    to.<span class="met">credit</span>(amount);   <span class="cmt">// needs @Transactional wrapping both!</span>
+}
+
+<span class="cmt">// 2. Silent exception swallowing</span>
+<span class="kw">try</span> {
+    <span class="met">processPayment</span>(order);
+} <span class="kw">catch</span> (<span class="cls">Exception</span> e) {
+    log.<span class="met">warn</span>(<span class="str">"Payment failed"</span>); <span class="cmt">// loss of exception details, no re-throw — dangerous</span>
+}
+
+<span class="cmt">// 3. Thread-safety issues in shared state</span>
+<span class="kw">private int</span> requestCount = <span class="num">0</span>; <span class="cmt">// non-atomic in a shared service bean</span>
+<span class="kw">public void</span> <span class="met">track</span>() { requestCount++; } <span class="cmt">// not thread-safe, use AtomicInteger</span>
+
+<span class="cmt">// 4. Resource leaks</span>
+<span class="cls">InputStream</span> is = <span class="met">getStream</span>();
+<span class="met">process</span>(is);
+<span class="cmt">// is never closed — should use try-with-resources</span></div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" id="mentoring">
+    <h2><span class="section-num">2</span>Mentoring &amp; Growing Engineers</h2>
+
+    <h3>Coaching vs. Telling</h3>
+    <table>
+      <tr><th>Situation</th><th>Telling (quick, creates dependency)</th><th>Coaching (slower, builds capability)</th></tr>
+      <tr><td>Junior stuck on a bug</td><td>"The problem is in line 42 — you forgot null check"</td><td>"What have you ruled out? What does the stack trace tell you? Let's walk through it."</td></tr>
+      <tr><td>Design choice</td><td>"Use Strategy pattern here"</td><td>"What are the trade-offs between these two approaches? What would make you choose one?"</td></tr>
+      <tr><td>Code quality</td><td>"This violates Single Responsibility"</td><td>"How would you test this class? If it's hard to test, what does that tell you about the design?"</td></tr>
+    </table>
+
+    <h3>Structured Mentoring Framework</h3>
+    <div class="scenario-card">
+      <div class="label">I Do, We Do, You Do</div>
+      <p style="margin:0">1. <strong>I do:</strong> you pair-program the first feature, explaining decisions as you go.<br>
+      2. <strong>We do:</strong> engineer drives, you guide with questions; you step in when stuck.<br>
+      3. <strong>You do:</strong> engineer works independently; you review and give feedback.<br>
+      This progression builds genuine competence rather than learned helplessness.</p>
+    </div>
+
+    <h3>Giving Effective Feedback</h3>
+    <div class="info-box">
+      <strong>SBI Model (Situation-Behavior-Impact)</strong>
+      <br>• <strong>Situation:</strong> "In yesterday's incident review..."
+      <br>• <strong>Behavior:</strong> "...you interrupted two colleagues before they finished their point."
+      <br>• <strong>Impact:</strong> "...which made it harder for the team to hear their diagnosis. We may have missed something."
+      <br><br>Be specific, timely, and focus on observable behavior — not character or intent.
+    </div>
+
+    <h3>Identifying Growth Opportunities</h3>
+    <ul>
+      <li>Assign stretch tasks slightly beyond current comfort zone (20% stretch rule)</li>
+      <li>Give engineers ownership of features end-to-end, not just tasks</li>
+      <li>Involve engineers in architecture discussions — narrate your thinking</li>
+      <li>Create runbook/postmortem ownership so engineers feel production responsibility</li>
+      <li>Encourage conference talks, internal tech talks, and blog posts</li>
+    </ul>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" id="technical-decisions">
+    <h2><span class="section-num">3</span>Technical Decision-Making</h2>
+
+    <h3>RFC / Architecture Decision Record (ADR)</h3>
+    <div class="code-block"><span class="cmt"># ADR-0042: Switch from REST to gRPC for internal service communication</span>
+
+<span class="cmt">## Status: Accepted</span>
+
+<span class="cmt">## Context</span>
+<span class="cmt">- 12 internal services, 40% of calls are service-to-service</span>
+<span class="cmt">- REST/JSON: ~2ms serialization overhead per call, verbose schemas</span>
+<span class="cmt">- New data pipeline requires streaming semantics (server-side streaming)</span>
+
+<span class="cmt">## Decision</span>
+<span class="cmt">- Adopt gRPC with Protocol Buffers for all new internal service contracts</span>
+<span class="cmt">- Existing REST endpoints remain for external/public APIs</span>
+
+<span class="cmt">## Consequences</span>
+<span class="cmt">## Positive:</span>
+<span class="cmt">- ~5x smaller payload (Protobuf binary vs JSON)</span>
+<span class="cmt">- Strongly typed contracts with generated client/server stubs</span>
+<span class="cmt">- HTTP/2 multiplexing: multiple streams over one connection</span>
+<span class="cmt">- Native streaming support</span>
+
+<span class="cmt">## Negative:</span>
+<span class="cmt">- Steeper learning curve; team needs Protobuf training</span>
+<span class="cmt">- Harder to test/debug without gRPC tooling (Postman doesn't work natively)</span>
+<span class="cmt">- Browser clients can't call gRPC directly (need gRPC-Web proxy)</span>
+
+<span class="cmt">## Alternatives Considered</span>
+<span class="cmt">- GraphQL: better for flexible client queries, not ideal for service-to-service</span>
+<span class="cmt">- Kafka for all comms: adds latency for sync request-response patterns</span></div>
+
+    <h3>Decision Framework</h3>
+    <table>
+      <tr><th>Dimension</th><th>Questions to Ask</th></tr>
+      <tr><td><strong>Reversibility</strong></td><td>How hard is it to undo? Prefer reversible choices under uncertainty (two-way vs one-way doors)</td></tr>
+      <tr><td><strong>Team capability</strong></td><td>Does the team have the skills? What's the learning curve cost?</td></tr>
+      <tr><td><strong>Operational complexity</strong></td><td>Who runs it in production? What's the on-call burden?</td></tr>
+      <tr><td><strong>Ecosystem fit</strong></td><td>Does it integrate with existing stack, monitoring, CI/CD?</td></tr>
+      <tr><td><strong>Total cost of ownership</strong></td><td>Licensing, infrastructure, maintenance, migration cost</td></tr>
+      <tr><td><strong>Time to value</strong></td><td>How long until we see the benefit? Does it unblock other work?</td></tr>
+    </table>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" id="architecture-tradeoffs">
+    <h2><span class="section-num">4</span>Architecture Trade-offs</h2>
+
+    <table>
+      <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>Choose A when...</th></tr>
+      <tr><td><strong>Monolith vs Microservices</strong></td><td>Monolith</td><td>Microservices</td><td>Team &lt;10, domain unclear, startup phase — microservices cost is real</td></tr>
+      <tr><td><strong>Sync vs Async</strong></td><td>REST/gRPC sync</td><td>Kafka/messaging async</td><td>Caller needs immediate response; async when decoupling or resilience matters more</td></tr>
+      <tr><td><strong>SQL vs NoSQL</strong></td><td>PostgreSQL</td><td>MongoDB/Cassandra</td><td>Complex queries, ACID needed, relationships; NoSQL for massive scale, flexible schema</td></tr>
+      <tr><td><strong>Shared DB vs Per-service DB</strong></td><td>Shared</td><td>Per-service</td><td>Shared only acceptable for migration phase; per-service enables true independence</td></tr>
+      <tr><td><strong>Cache-aside vs Read-through</strong></td><td>Cache-aside</td><td>Read-through</td><td>Cache-aside when you control cache population; read-through when cache is transparent</td></tr>
+      <tr><td><strong>Event sourcing vs CRUD</strong></td><td>CRUD</td><td>Event sourcing</td><td>CRUD for 90% of apps; event sourcing only when audit trail + temporal queries are core requirements</td></tr>
+    </table>
+
+    <h3>Build vs Buy Decision</h3>
+    <div class="info-box">
+      <strong>Framework for Build vs Buy</strong>
+      <strong>Buy (or use OSS):</strong> commodity infrastructure (queues, caches, service mesh), non-differentiating capabilities, when OSS solution is battle-tested and widely adopted.<br>
+      <strong>Build:</strong> core domain logic where you have unique requirements, when off-the-shelf solutions create problematic coupling, when customization cost exceeds build cost over 3 years.<br>
+      <strong>Real example:</strong> Build custom recommendation engine (core competitive advantage). Buy Kafka (commodity messaging), use Auth0 (commodity auth), use Elasticsearch (commodity search) unless search is your business.
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" id="team-dynamics">
+    <h2><span class="section-num">5</span>Team Dynamics &amp; Conflict</h2>
+
+    <h3>Handling Technical Disagreements</h3>
+    <div class="scenario-card">
+      <div class="label">Scenario: Two senior engineers disagree on architecture (REST vs gRPC)</div>
+      <p style="margin:0">1. <strong>Surface the constraints:</strong> Ask each to write their proposal with trade-offs explicit. Disagreements often reveal different unstated assumptions about scale, team skills, or timeline.<br>
+      2. <strong>Time-box the debate:</strong> Set a decision date. "We'll decide by Thursday." Open-ended debate is expensive.<br>
+      3. <strong>Separate the decision from the ego:</strong> Frame it as "what's best for users/team?" not "who's right?"<br>
+      4. <strong>Make a call if needed:</strong> As tech lead, you must be willing to decide when the team is stuck. Disagree and commit culture — once decided, everyone executes fully.</p>
+    </div>
+
+    <h3>Underperforming Team Member</h3>
+    <div class="scenario-card">
+      <div class="label">Approach (not punitive, not avoidant)</div>
+      <ol style="margin:0;padding-left:18px">
+        <li><strong>Observe specifics:</strong> Gather concrete examples (missed deadlines, quality issues) before any conversation.</li>
+        <li><strong>Private conversation:</strong> Ask open questions first — "How do you feel the last sprint went?" Often reveals a blocker (personal issue, unclear expectations, wrong role fit).</li>
+        <li><strong>Set clear expectations:</strong> "Here's what success looks like in the next 30 days." No vague "do better."</li>
+        <li><strong>Support, then accountability:</strong> Offer pair programming, check-ins, or reduced scope. But hold the standard.</li>
+        <li><strong>Escalate early if needed:</strong> Involve manager/HR early — surprises are worse for everyone.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section" id="delivery">
+    <h2><span class="section-num">6</span>Delivery &amp; Estimation</h2>
+
+    <h3>Estimation as a Team Lead</h3>
+    <div class="info-box">
+      <strong>Key Principles</strong>
+      • Estimates are ranges, not commitments. "2-4 days" is more honest than "3 days."<br>
+      • Include: dev time + code review + testing + documentation + deployment + buffer for unknowns (1.5-2x raw estimate).<br>
+      • When asked to cut time: ask what can be de-scoped (never silently accept an impossible date).<br>
+      • Track historical velocity — teams consistently overestimate their speed by 30-50%.
+    </div>
+
+    <h3>Technical Debt Management</h3>
+    <table>
+      <tr><th>Type</th><th>When to Pay It</th><th>How to Track</th></tr>
+      <tr><td><strong>Reckless intentional</strong> ("we'll fix it later")</td><td>Immediately — this is negligence, not debt</td><td>Create tickets now</td></tr>
+      <tr><td><strong>Prudent intentional</strong> (shipped MVP, known shortcuts)</td><td>After validation, before scale</td><td>Explicit debt tickets with cost annotation</td></tr>
+      <tr><td><strong>Complex domain debt</strong> (discovered through learning)</td><td>When refactor ROI is positive</td><td>Architecture review sessions</td></tr>
+    </table>
+
+    <h3>Communicating Delays</h3>
+    <div class="scenario-card">
+      <div class="label">Bad: Surprise at deadline</div>
+      <p style="margin:0;color:#f87171">"We couldn't finish the feature because the integration was more complex than expected." [said on the delivery date]</p>
+    </div>
+    <div class="scenario-card">
+      <div class="label">Good: Early, with context and options</div>
+      <p style="margin:0;color:#86efac">"We discovered [specific blocker] on Tuesday. We're now 2 days behind the original estimate. We have three options: (A) descope X and deliver on time, (B) deliver full scope 2 days late, (C) involve another engineer. I'd recommend A because... but you have the business context to decide."</p>
+    </div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section" id="incidents">
+    <h2><span class="section-num">7</span>Production Incidents</h2>
+
+    <h3>Incident Response Playbook</h3>
+    <div class="code-block"><span class="cmt">// 1. DETECT — alerting fires (PagerDuty, Grafana alert, Slack)</span>
+<span class="cmt">// 2. TRIAGE — assess: how many users affected? What's broken? Revenue impact?</span>
+<span class="cmt">// 3. COMMUNICATE — post in incident channel immediately, even if "investigating"</span>
+<span class="cmt">//    "P1 incident: checkout failures. Impact: ~10% of orders failing. Team investigating."</span>
+<span class="cmt">// 4. MITIGATE — restore service FIRST, root cause second</span>
+<span class="cmt">//    Options: rollback deploy, toggle feature flag, scale up, redirect traffic</span>
+<span class="cmt">// 5. RESOLVE — confirm metrics back to normal</span>
+<span class="cmt">// 6. POSTMORTEM — blameless, within 48h while memory is fresh</span>
+
+<span class="cmt">// Postmortem structure:</span>
+<span class="cmt">// - Timeline of events (what happened, when)</span>
+<span class="cmt">// - Root cause (5 Whys analysis)</span>
+<span class="cmt">// - Impact (users affected, revenue, duration)</span>
+<span class="cmt">// - What went well (detection worked, rollback was fast)</span>
+<span class="cmt">// - Action items (MUST have owners + dates, not just "improve monitoring")</span>
+<span class="cmt">// - Blameless principle: focus on system failure, not individual failure</span></div>
+
+    <h3>5 Whys Example</h3>
+    <div class="scenario-card">
+      <div class="label">Incident: Database connection pool exhausted, causing service outage</div>
+      <p style="margin:0">
+        <strong>Why 1:</strong> Connection pool was exhausted → <em>because DB queries were taking 30s instead of 100ms</em><br>
+        <strong>Why 2:</strong> Queries were slow → <em>because a missing index after schema migration</em><br>
+        <strong>Why 3:</strong> Index was missing → <em>because migration script didn't include it</em><br>
+        <strong>Why 4:</strong> Migration not reviewed for performance → <em>because no checklist for migration PRs</em><br>
+        <strong>Why 5:</strong> No checklist → <em>because we had no migration review process</em><br>
+        <br>
+        <strong>Action items:</strong> (1) Add migration review checklist to PR template — owner: [name], due: Friday. (2) Add query performance test to staging pipeline — owner: [name], due: next sprint.
+      </p>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="qa-section" id="qa">
+    <h2><span class="section-num">Q</span>Team Lead Interview Q&amp;A</h2>
+
+    <div class="qa-item">
+      <p class="question">Q1: Tell me about a time you disagreed with your manager on a technical decision. What did you do?</p>
+      <div class="answer">
+        <p><strong>Structure (STAR + reflection):</strong> Describe a real situation. Key elements interviewers look for: Did you advocate clearly with data and trade-offs? Did you listen to their reasoning? Did you accept the decision once made and execute fully? Did you build the habit of revisiting decisions when context changes?</p>
+        <p><strong>What NOT to say:</strong> "I went around them." "I was right and they were wrong." "I let it go to avoid conflict." All three signal either poor judgment, low collaboration, or passivity.</p>
+        <p><strong>Strong answer pattern:</strong> "I prepared a written trade-off comparison and scheduled time to discuss it. I understood their constraint was [X — timeline/budget/risk]. We agreed on [compromise]. Three months later, [outcome]. The key thing I learned was to surface trade-offs earlier in the decision process."</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q2: How do you balance technical debt paydown against feature delivery?</p>
+      <div class="answer">
+        <p><strong>Framework:</strong> I treat tech debt as a first-class concern, not a second-class citizen that gets deferred indefinitely. My approach: quantify debt in terms of developer velocity cost ("this area takes 2x longer to change than it should"), then present it to product as a velocity investment. When debt reduction directly unblocks a planned feature, the case is easy. When it doesn't, I negotiate a sustainable allocation — typically 20% of sprint capacity for debt.</p>
+        <p><strong>Prevention:</strong> Better to prevent debt than accumulate it. Definition of Done includes tests, documentation, and no new obvious tech debt introduced. Code reviews explicitly flag debt creation. Boy Scout Rule — leave code better than you found it.</p>
+        <p><strong>Emergency situations:</strong> Sometimes the right call is intentional debt (tight deadline, known compromise). When I take this on, I create a ticket immediately with the technical cost annotated, and I commit to paying it in the next sprint, not "eventually."</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q3: Describe how you would onboard a new senior engineer onto your team.</p>
+      <div class="answer">
+        <p><strong>Week 1 — Context, not tasks:</strong> Pair with different team members each day. Walk through the domain model, key services, architecture decisions, and the "why" behind them. Review one or two recent postmortems to understand failure modes. No production access until end of week.</p>
+        <p><strong>Week 2 — Guided contribution:</strong> Small but real task — a bug fix or well-scoped feature. Guided pair programming, I review their first PRs with explicit explanations. Meet all stakeholders they'll work with regularly.</p>
+        <p><strong>Week 3-4 — Independent but supported:</strong> Own a feature. Daily stand-up check-ins. I'm available but don't hover. First PR review goes both ways.</p>
+        <p><strong>30/60/90 day check-ins:</strong> Explicit conversation about expectations, how they're finding the work, and what they want to own next. Senior engineers often have strong opinions about the tech stack — these conversations surface improvements we can adopt.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q4: A key engineer on your team is burning out. What do you do?</p>
+      <div class="answer">
+        <p><strong>Recognize the signals:</strong> Declining code quality, withdrawal from discussions, irritability, unusually long hours or sudden disengagement, missed deadlines from someone who never misses them.</p>
+        <p><strong>Act early, privately:</strong> "I've noticed you seem stressed lately. I could be wrong — is everything okay?" Don't make assumptions. Listen more than you talk.</p>
+        <p><strong>Address root causes (they vary):</strong> Overwork → redistribute load, cancel low-priority work. Monotony → change what they work on. Lack of growth → give them a stretch project or mentoring role. Interpersonal conflict → address directly. Personal circumstances → flexibility, reduced hours temporarily.</p>
+        <p><strong>Systemic fix:</strong> Burnout in a team member is often a signal of a systemic problem — too much on-call burden, unclear priorities, poor scope management. Fix the system, not just the individual.</p>
+        <p><strong>What NOT to do:</strong> Ignore the signals ("they'll bounce back"). Add more pressure. Publicly acknowledge it before the individual conversation. Offer solutions before understanding the problem.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q5: How do you make architectural decisions when there's no clear right answer?</p>
+      <div class="answer">
+        <p><strong>Accept the ambiguity explicitly:</strong> Most real decisions have genuine trade-offs. Start by making the constraints explicit: What's the timeline? What's the expected scale? What's the team's skill set? What's irreversible vs. reversible?</p>
+        <p><strong>Prefer reversible decisions:</strong> If both options have uncertain outcomes, pick the one that's easier to change later. "We'll start with a monolith and extract services if/when we hit specific scaling limits" is a valid strategy.</p>
+        <p><strong>Document the decision and its context (ADR):</strong> When you revisit in 18 months, the team needs to know what you knew then, what you chose, and why. Without context, decisions look arbitrary in hindsight.</p>
+        <p><strong>Set a trigger for revisiting:</strong> "We'll revisit this decision when we hit 10M active users" or "when the team grows to 20 engineers." Decisions aren't permanent — give them exit conditions.</p>
+        <p><strong>Involve the team:</strong> For significant decisions, write an RFC, gather input for 3-5 days, then decide. This surfaces concerns early, builds buy-in, and often improves the decision. But someone must decide — consensus-only cultures fail to move.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q6: What's your approach to engineering culture and keeping a team's technical standards high?</p>
+      <div class="answer">
+        <p><strong>Culture is repeated behavior, not posters:</strong> What gets enforced in code review, what gets praised in stand-up, what leaders model themselves — that's the culture.</p>
+        <p><strong>Practices I establish:</strong> (1) Automated quality gates in CI (tests must pass, coverage threshold, static analysis). (2) Code review norms in writing — what's blocking vs. suggestion, expected turnaround time. (3) Regular tech talks and brown bags — engineers teach each other. (4) Blameless postmortems that drive system improvements. (5) Explicit architecture decision records so decisions are deliberate, not accidental.</p>
+        <p><strong>What I model personally:</strong> I review code I write the same way I'd review anyone else's. I write tests. I admit mistakes publicly. I defer to team expertise when they know more than I do. Leadership through behavior, not authority.</p>
+        <p><strong>Metrics I watch:</strong> PR turnaround time, flaky test count, deployment frequency, MTTR from incidents. Culture problems show up in metrics before they show up in conversations.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <a href="13-security.html" class="nav-btn">← 13. Security</a>
+    <a href="index.html" class="nav-btn">Home →</a>
+  </div>
+</main>
+</body>
+</html>

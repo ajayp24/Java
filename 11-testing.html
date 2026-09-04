@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing — Java Interview Prep</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#4ade80;--accent2:#00d4aa;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:var(--accent);font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(74,222,128,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:960px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(74,222,128,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent2)}
+  .note::before{content:'💡 '}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#000;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP &amp; SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database &amp; JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html" class="active"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM &amp; Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Testing</div>
+  <div class="topic-badge">🧪 Topic 11</div>
+  <h1>Testing</h1>
+  <p class="page-desc">JUnit 5, Mockito, Spring Boot Test, Testcontainers, TDD, contract testing, and test pyramid strategy — what team leads need to know to build and defend a quality testing culture.</p>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#junit5">JUnit 5</a></li>
+      <li><a href="#mockito">Mockito</a></li>
+      <li><a href="#spring-test">Spring Boot Test</a></li>
+      <li><a href="#testcontainers">Testcontainers</a></li>
+      <li><a href="#tdd">TDD Approach</a></li>
+      <li><a href="#pyramid">Test Pyramid</a></li>
+      <li><a href="#interview-qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <section id="junit5">
+    <h2>1. JUnit 5</h2>
+    <div class="code-block"><span class="ann">@ExtendWith</span>(<span class="cls">MockitoExtension</span>.<span class="kw">class</span>)
+<span class="kw">class</span> <span class="cls">OrderServiceTest</span> {
+
+    <span class="ann">@Test</span>
+    <span class="ann">@DisplayName</span>(<span class="str">"Should throw when placing order with empty cart"</span>)
+    <span class="kw">void</span> <span class="met">throwsOnEmptyCart</span>() {
+        <span class="kw">var</span> service = <span class="kw">new</span> <span class="cls">OrderService</span>(mockRepo, mockPayment);
+        <span class="cls">Assertions</span>.<span class="met">assertThrows</span>(
+            <span class="cls">IllegalArgumentException</span>.<span class="kw">class</span>,
+            () -&gt; service.<span class="met">placeOrder</span>(<span class="cls">Cart</span>.<span class="met">empty</span>())
+        );
+    }
+
+    <span class="ann">@ParameterizedTest</span>
+    <span class="ann">@CsvSource</span>({ <span class="str">"10, 0.9, 9.0"</span>, <span class="str">"100, 0.85, 85.0"</span>, <span class="str">"50, 0.95, 47.5"</span> })
+    <span class="kw">void</span> <span class="met">appliesDiscountCorrectly</span>(<span class="kw">double</span> price, <span class="kw">double</span> rate, <span class="kw">double</span> expected) {
+        <span class="kw">var</span> result = <span class="cls">PricingService</span>.<span class="met">applyDiscount</span>(price, rate);
+        <span class="cls">Assertions</span>.<span class="met">assertEquals</span>(expected, result, <span class="num">0.001</span>);
+    }
+
+    <span class="ann">@ParameterizedTest</span>
+    <span class="ann">@MethodSource</span>(<span class="str">"invalidOrderRequests"</span>)
+    <span class="kw">void</span> <span class="met">rejectsInvalidRequests</span>(<span class="cls">CreateOrderRequest</span> req, <span class="cls">String</span> reason) {
+        <span class="cls">Assertions</span>.<span class="met">assertThrows</span>(<span class="cls">ValidationException</span>.<span class="kw">class</span>,
+            () -&gt; service.<span class="met">create</span>(req), reason);
+    }
+    <span class="kw">static</span> <span class="cls">Stream</span>&lt;<span class="cls">Arguments</span>&gt; <span class="met">invalidOrderRequests</span>() {
+        <span class="kw">return</span> <span class="cls">Stream</span>.<span class="met">of</span>(
+            <span class="cls">Arguments</span>.<span class="met">of</span>(<span class="cls">CreateOrderRequest</span>.<span class="met">withNullItems</span>(), <span class="str">"null items"</span>),
+            <span class="cls">Arguments</span>.<span class="met">of</span>(<span class="cls">CreateOrderRequest</span>.<span class="met">withEmptyItems</span>(), <span class="str">"empty items"</span>)
+        );
+    }
+
+    <span class="ann">@Test</span>
+    <span class="kw">void</span> <span class="met">allAssertionsRun</span>() {
+        <span class="kw">var</span> order = service.<span class="met">find</span>(<span class="num">1L</span>);
+        <span class="cls">Assertions</span>.<span class="met">assertAll</span>(                   <span class="cmt">// runs all, reports all failures</span>
+            () -&gt; <span class="cls">Assertions</span>.<span class="met">assertNotNull</span>(order),
+            () -&gt; <span class="cls">Assertions</span>.<span class="met">assertEquals</span>(<span class="cls">OrderStatus</span>.PENDING, order.<span class="met">getStatus</span>()),
+            () -&gt; <span class="cls">Assertions</span>.<span class="met">assertFalse</span>(order.<span class="met">getItems</span>().<span class="met">isEmpty</span>())
+        );
+    }
+}</div>
+  </section>
+
+  <section id="mockito">
+    <h2>2. Mockito</h2>
+    <div class="code-block"><span class="ann">@ExtendWith</span>(<span class="cls">MockitoExtension</span>.<span class="kw">class</span>)
+<span class="kw">class</span> <span class="cls">OrderServiceTest</span> {
+    <span class="ann">@Mock</span> <span class="cls">OrderRepository</span> repo;
+    <span class="ann">@Mock</span> <span class="cls">PaymentService</span> payment;
+    <span class="ann">@InjectMocks</span> <span class="cls">OrderService</span> service;  <span class="cmt">// injects mocks via constructor or field</span>
+
+    <span class="ann">@Test</span>
+    <span class="kw">void</span> <span class="met">placeOrderSuccessfully</span>() {
+        <span class="cmt">// Arrange — stub dependencies</span>
+        <span class="kw">var</span> order = <span class="kw">new</span> <span class="cls">Order</span>(<span class="num">1L</span>, <span class="cls">OrderStatus</span>.PENDING);
+        <span class="cls">Mockito</span>.<span class="met">when</span>(repo.<span class="met">save</span>(<span class="cls">Mockito</span>.<span class="met">any</span>(<span class="cls">Order</span>.<span class="kw">class</span>))).<span class="met">thenReturn</span>(order);
+        <span class="cls">Mockito</span>.<span class="met">when</span>(payment.<span class="met">charge</span>(<span class="cls">Mockito</span>.<span class="met">any</span>(), <span class="cls">Mockito</span>.<span class="met">any</span>())).<span class="met">thenReturn</span>(<span class="cls">PaymentResult</span>.ok());
+
+        <span class="cmt">// Act</span>
+        <span class="kw">var</span> result = service.<span class="met">placeOrder</span>(<span class="kw">new</span> <span class="cls">CreateOrderRequest</span>(...));
+
+        <span class="cmt">// Assert</span>
+        <span class="cls">Assertions</span>.<span class="met">assertEquals</span>(<span class="cls">OrderStatus</span>.PENDING, result.<span class="met">getStatus</span>());
+
+        <span class="cmt">// Verify interactions</span>
+        <span class="cls">Mockito</span>.<span class="met">verify</span>(repo, <span class="cls">Mockito</span>.<span class="met">times</span>(<span class="num">1</span>)).<span class="met">save</span>(<span class="cls">Mockito</span>.<span class="met">any</span>(<span class="cls">Order</span>.<span class="kw">class</span>));
+        <span class="cls">Mockito</span>.<span class="met">verify</span>(payment).<span class="met">charge</span>(<span class="cls">Mockito</span>.<span class="met">any</span>(), <span class="cls">Mockito</span>.<span class="met">any</span>());
+        <span class="cls">Mockito</span>.<span class="met">verifyNoMoreInteractions</span>(repo, payment);
+    }
+
+    <span class="ann">@Test</span>
+    <span class="kw">void</span> <span class="met">capturesSavedOrder</span>() {
+        <span class="cmt">// ArgumentCaptor — capture what was passed to a mock</span>
+        <span class="cls">ArgumentCaptor</span>&lt;<span class="cls">Order</span>&gt; captor = <span class="cls">ArgumentCaptor</span>.<span class="met">forClass</span>(<span class="cls">Order</span>.<span class="kw">class</span>);
+        service.<span class="met">placeOrder</span>(req);
+        <span class="cls">Mockito</span>.<span class="met">verify</span>(repo).<span class="met">save</span>(captor.<span class="met">capture</span>());
+        <span class="cls">Assertions</span>.<span class="met">assertEquals</span>(<span class="cls">OrderStatus</span>.PENDING, captor.<span class="met">getValue</span>().<span class="met">getStatus</span>());
+    }
+
+    <span class="ann">@Test</span>
+    <span class="kw">void</span> <span class="met">propagatesPaymentFailure</span>() {
+        <span class="cmt">// Stub to throw exception</span>
+        <span class="cls">Mockito</span>.<span class="met">when</span>(payment.<span class="met">charge</span>(<span class="cls">Mockito</span>.<span class="met">any</span>(), <span class="cls">Mockito</span>.<span class="met">any</span>()))
+            .<span class="met">thenThrow</span>(<span class="kw">new</span> <span class="cls">PaymentDeclinedException</span>(<span class="str">"Insufficient funds"</span>));
+        <span class="cls">Assertions</span>.<span class="met">assertThrows</span>(<span class="cls">OrderCreationException</span>.<span class="kw">class</span>, () -&gt; service.<span class="met">placeOrder</span>(req));
+    }
+}</div>
+  </section>
+
+  <section id="spring-test">
+    <h2>3. Spring Boot Test</h2>
+    <div class="code-block"><span class="cmt">// Full integration test — loads complete Spring context</span>
+<span class="ann">@SpringBootTest</span>(webEnvironment = <span class="cls">SpringBootTest</span>.<span class="cls">WebEnvironment</span>.RANDOM_PORT)
+<span class="ann">@AutoConfigureTestDatabase</span>(replace = <span class="cls">Replace</span>.NONE)  <span class="cmt">// use real DB (Testcontainers)</span>
+<span class="kw">class</span> <span class="cls">OrderApiIntegrationTest</span> {
+    <span class="ann">@Autowired</span> <span class="cls">TestRestTemplate</span> restTemplate;
+    <span class="ann">@Autowired</span> <span class="cls">OrderRepository</span> orderRepo;
+
+    <span class="ann">@Test</span>
+    <span class="kw">void</span> <span class="met">createOrderReturns201</span>() {
+        <span class="kw">var</span> request = <span class="kw">new</span> <span class="cls">CreateOrderRequest</span>(...);
+        <span class="kw">var</span> response = restTemplate.<span class="met">postForEntity</span>(<span class="str">"/api/v1/orders"</span>, request, <span class="cls">OrderDto</span>.<span class="kw">class</span>);
+        <span class="cls">Assertions</span>.<span class="met">assertEquals</span>(<span class="cls">HttpStatus</span>.CREATED, response.<span class="met">getStatusCode</span>());
+        <span class="cls">Assertions</span>.<span class="met">assertNotNull</span>(response.<span class="met">getBody</span>().<span class="met">getId</span>());
+    }
+}
+
+<span class="cmt">// Slice test — only web layer, mocks service</span>
+<span class="ann">@WebMvcTest</span>(<span class="cls">OrderController</span>.<span class="kw">class</span>)
+<span class="kw">class</span> <span class="cls">OrderControllerTest</span> {
+    <span class="ann">@Autowired</span> <span class="cls">MockMvc</span> mockMvc;
+    <span class="ann">@MockBean</span> <span class="cls">OrderService</span> orderService;  <span class="cmt">// @MockBean replaces real bean in context</span>
+
+    <span class="ann">@Test</span>
+    <span class="kw">void</span> <span class="met">getOrderReturns200</span>() <span class="kw">throws</span> <span class="cls">Exception</span> {
+        <span class="cls">Mockito</span>.<span class="met">when</span>(orderService.<span class="met">findById</span>(<span class="num">1L</span>))
+            .<span class="met">thenReturn</span>(<span class="cls">Optional</span>.<span class="met">of</span>(<span class="kw">new</span> <span class="cls">OrderDto</span>(<span class="num">1L</span>, <span class="str">"PENDING"</span>)));
+
+        mockMvc.<span class="met">perform</span>(<span class="cls">MockMvcRequestBuilders</span>.<span class="met">get</span>(<span class="str">"/api/v1/orders/1"</span>)
+                .<span class="met">contentType</span>(<span class="cls">MediaType</span>.APPLICATION_JSON))
+            .<span class="met">andExpect</span>(<span class="cls">MockMvcResultMatchers</span>.<span class="met">status</span>().<span class="met">isOk</span>())
+            .<span class="met">andExpect</span>(<span class="cls">MockMvcResultMatchers</span>.<span class="met">jsonPath</span>(<span class="str">"$.status"</span>).<span class="met">value</span>(<span class="str">"PENDING"</span>));
+    }
+}</div>
+
+    <h3>Other Slice Annotations</h3>
+    <table>
+      <tr><th>Annotation</th><th>What it loads</th></tr>
+      <tr><td>@WebMvcTest</td><td>Web layer — controllers, filters, MVC config (no service/repo beans)</td></tr>
+      <tr><td>@DataJpaTest</td><td>JPA layer — entities, repositories, embedded DB (no service/controller)</td></tr>
+      <tr><td>@JsonTest</td><td>JSON serialization — ObjectMapper configuration only</td></tr>
+      <tr><td>@RestClientTest</td><td>REST client — @RestTemplate bean, MockRestServiceServer</td></tr>
+    </table>
+  </section>
+
+  <section id="testcontainers">
+    <h2>4. Testcontainers</h2>
+    <div class="code-block"><span class="ann">@SpringBootTest</span>
+<span class="ann">@Testcontainers</span>
+<span class="kw">class</span> <span class="cls">OrderRepositoryIntegrationTest</span> {
+
+    <span class="ann">@Container</span>
+    <span class="kw">static</span> <span class="cls">PostgreSQLContainer</span>&lt;?&gt; postgres =
+        <span class="kw">new</span> <span class="cls">PostgreSQLContainer</span>&lt;&gt;(<span class="str">"postgres:15"</span>)
+            .<span class="met">withDatabaseName</span>(<span class="str">"testdb"</span>)
+            .<span class="met">withUsername</span>(<span class="str">"test"</span>)
+            .<span class="met">withPassword</span>(<span class="str">"test"</span>);
+
+    <span class="ann">@DynamicPropertySource</span>
+    <span class="kw">static void</span> <span class="met">registerProperties</span>(<span class="cls">DynamicPropertyRegistry</span> registry) {
+        registry.<span class="met">add</span>(<span class="str">"spring.datasource.url"</span>, postgres::<span class="met">getJdbcUrl</span>);
+        registry.<span class="met">add</span>(<span class="str">"spring.datasource.username"</span>, postgres::<span class="met">getUsername</span>);
+        registry.<span class="met">add</span>(<span class="str">"spring.datasource.password"</span>, postgres::<span class="met">getPassword</span>);
+    }
+
+    <span class="ann">@Autowired</span> <span class="cls">OrderRepository</span> orderRepo;
+
+    <span class="ann">@Test</span>
+    <span class="kw">void</span> <span class="met">savedOrderIsRetrievable</span>() {
+        <span class="kw">var</span> order = orderRepo.<span class="met">save</span>(<span class="kw">new</span> <span class="cls">Order</span>(<span class="cls">OrderStatus</span>.PENDING));
+        <span class="kw">var</span> found = orderRepo.<span class="met">findById</span>(order.<span class="met">getId</span>());
+        <span class="cls">Assertions</span>.<span class="met">assertTrue</span>(found.<span class="met">isPresent</span>());
+    }
+}</div>
+    <div class="note">Spring Boot 3.1+ supports @ServiceConnection — no @DynamicPropertySource needed. Spring auto-detects the container type and configures the connection automatically.</div>
+  </section>
+
+  <section id="tdd">
+    <h2>5. TDD — Red-Green-Refactor</h2>
+    <div class="code-block"><span class="cmt">// TDD cycle:</span>
+<span class="cmt">// 1. RED   — write a failing test for the behavior you want</span>
+<span class="cmt">// 2. GREEN — write the minimum code to make it pass</span>
+<span class="cmt">// 3. REFACTOR — clean up code; test still passes</span>
+
+<span class="cmt">// RED: write test first</span>
+<span class="ann">@Test</span>
+<span class="kw">void</span> <span class="met">discountAppliedForMembersOver50</span>() {
+    <span class="kw">var</span> pricer = <span class="kw">new</span> <span class="cls">OrderPricer</span>();
+    <span class="kw">var</span> order = <span class="cls">Order</span>.<span class="met">withTotal</span>(<span class="cls">BigDecimal</span>.<span class="met">valueOf</span>(<span class="num">100</span>));
+    <span class="kw">var</span> member = <span class="cls">Member</span>.<span class="met">premium</span>();
+    <span class="cls">Assertions</span>.<span class="met">assertEquals</span>(
+        <span class="cls">BigDecimal</span>.<span class="met">valueOf</span>(<span class="num">90</span>),   <span class="cmt">// expected 10% off</span>
+        pricer.<span class="met">calculateFinalPrice</span>(order, member)
+    );
+}
+
+<span class="cmt">// GREEN: minimal implementation</span>
+<span class="kw">public</span> <span class="cls">BigDecimal</span> <span class="met">calculateFinalPrice</span>(<span class="cls">Order</span> order, <span class="cls">Member</span> member) {
+    <span class="kw">if</span> (member.<span class="met">isPremium</span>() &amp;&amp; order.<span class="met">getTotal</span>().<span class="met">compareTo</span>(<span class="cls">BigDecimal</span>.<span class="met">valueOf</span>(<span class="num">50</span>)) &gt;= <span class="num">0</span>) {
+        <span class="kw">return</span> order.<span class="met">getTotal</span>().<span class="met">multiply</span>(<span class="cls">BigDecimal</span>.<span class="met">valueOf</span>(<span class="num">0.9</span>));
+    }
+    <span class="kw">return</span> order.<span class="met">getTotal</span>();
+}
+<span class="cmt">// REFACTOR: extract discount rate to constant, add more test cases</span></div>
+  </section>
+
+  <section id="pyramid">
+    <h2>6. Test Pyramid</h2>
+    <table>
+      <tr><th>Layer</th><th>Count</th><th>Speed</th><th>Tools</th><th>What to test</th></tr>
+      <tr><td>Unit tests</td><td>Most (~70%)</td><td>Milliseconds</td><td>JUnit 5, Mockito</td><td>Business logic, edge cases, algorithms</td></tr>
+      <tr><td>Integration tests</td><td>Medium (~20%)</td><td>Seconds</td><td>@SpringBootTest, Testcontainers</td><td>DB queries, API clients, message consumers</td></tr>
+      <tr><td>E2E tests</td><td>Few (~10%)</td><td>Minutes</td><td>Selenium, Playwright, Cucumber</td><td>Critical user journeys end-to-end</td></tr>
+    </table>
+    <div class="note">The "ice cream cone" anti-pattern is the inverse — many slow E2E tests, few unit tests. This leads to slow feedback loops and fragile test suites. Prioritize fast unit tests for logic and use integration tests for contract verification.</div>
+  </section>
+
+  <section id="interview-qa">
+    <h2>7. Interview Q&amp;A</h2>
+    <div class="qa-block">
+      <div class="qa-q">When would you use @MockBean vs @Mock in Spring Boot tests?</div>
+      <div class="qa-a">
+        <strong>@Mock (Mockito)</strong> — creates a mock outside the Spring context. Use in pure unit tests that don't load any Spring beans. Works with @ExtendWith(MockitoExtension.class). Fast, no Spring overhead.<br><br>
+        <strong>@MockBean (Spring Boot Test)</strong> — creates a Mockito mock AND registers it as a Spring bean, replacing the real bean in the ApplicationContext. Use when the class under test needs the Spring context (e.g., @WebMvcTest for controllers). Slower because Spring context loads.<br><br>
+        Rule of thumb: prefer @Mock + @InjectMocks for service-layer unit tests. Use @MockBean only when you need the Spring context (controller slice tests, JPA slice tests).
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between a stub, mock, and spy?</div>
+      <div class="qa-a">
+        <strong>Stub</strong> — provides canned answers to calls. No verification. Used to control dependencies' behavior.<br><br>
+        <strong>Mock</strong> — a stub that also records interactions so you can verify them later (mockito.verify()). Fails if unexpected calls occur when using strict mode.<br><br>
+        <strong>Spy</strong> — wraps a real object. Real methods are called unless explicitly stubbed. Use Mockito.spy(realObject) or @Spy. Useful when you want real behavior for most methods but stub specific ones.<br><br>
+        Example: a Spy on an ArrayList — add() and get() really work, but you can stub size() to return a fixed value and verify that add() was called.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">How do you test code that depends on the current time?</div>
+      <div class="qa-a">
+        Never use LocalDate.now(), Instant.now(), or System.currentTimeMillis() directly in production code that needs to be tested — they can't be controlled in tests.<br><br>
+        <strong>Fix — inject Clock:</strong><br>
+        Production: inject a fixed Clock or system Clock via DI.<br>
+        Test: inject Clock.fixed(expectedInstant, ZoneOffset.UTC).<br><br>
+        Example: <code>public class OrderService { private final Clock clock; ... LocalDate.now(clock); }</code><br>
+        In test: <code>new OrderService(Clock.fixed(Instant.parse("2024-01-15T00:00:00Z"), ZoneOffset.UTC))</code><br><br>
+        This eliminates flakiness from time-dependent logic (expiry, scheduling, age calculations).
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="10-system-design.html" class="btn">← System Design</a>
+    <a href="12-jvm-performance.html" class="btn next">JVM &amp; Performance →</a>
+  </div>
+</main>
+</body>
+</html>

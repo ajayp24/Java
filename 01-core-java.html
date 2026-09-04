@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core Java Fundamentals — Java Interview Prep</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d2e; --surface2: #252838; --border: #2e3250;
+    --accent: #f89820; --accent2: #00d4aa; --accent3: #ff6b6b;
+    --text: #e2e8f0; --text2: #94a3b8; --code-bg: #0d1117;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+  nav {
+    width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border);
+    padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; flex-shrink: 0;
+  }
+  .nav-brand { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .nav-brand a { color: var(--accent); font-weight: 800; font-size: 14px; text-decoration: none; }
+  .nav-brand p { font-size: 11px; color: var(--text2); margin-top: 4px; }
+  .nav-section { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2); padding: 8px 20px 4px; }
+  nav a {
+    display: flex; align-items: center; gap: 8px; padding: 8px 20px; color: var(--text2);
+    text-decoration: none; font-size: 13px; transition: all 0.15s; border-left: 2px solid transparent;
+  }
+  nav a:hover, nav a.active { color: var(--text); background: rgba(248,152,32,0.08); border-left-color: var(--accent); }
+  nav a .num { font-size: 10px; color: var(--text2); min-width: 20px; }
+  main { flex: 1; padding: 40px 48px; max-width: 900px; }
+  .breadcrumb { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .page-header { margin-bottom: 40px; }
+  .topic-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(248,152,32,0.15); border: 1px solid rgba(248,152,32,0.3); color: var(--accent); padding: 4px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+  h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 12px; }
+  .page-desc { color: var(--text2); font-size: 16px; line-height: 1.7; }
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 40px; }
+  .toc h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); margin-bottom: 12px; }
+  .toc ol { padding-left: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
+  .toc li a { color: var(--accent); text-decoration: none; font-size: 13px; }
+  .toc li a:hover { text-decoration: underline; }
+  section { margin-bottom: 56px; }
+  h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  h3 { font-size: 18px; font-weight: 600; margin: 28px 0 12px; color: var(--accent); }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; }
+  p { font-size: 15px; line-height: 1.8; color: var(--text2); margin-bottom: 14px; }
+  ul, ol { padding-left: 24px; margin-bottom: 14px; }
+  li { font-size: 15px; line-height: 1.8; color: var(--text2); margin-bottom: 4px; }
+  li strong { color: var(--text); }
+  .code-block {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; overflow-x: auto;
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 13px; line-height: 1.7;
+    white-space: pre;
+  }
+  .code-block .kw { color: #ff79c6; }
+  .code-block .cls { color: #8be9fd; }
+  .code-block .str { color: #f1fa8c; }
+  .code-block .cmt { color: #6272a4; font-style: italic; }
+  .code-block .num { color: #bd93f9; }
+  .code-block .ann { color: #50fa7b; }
+  .code-block .met { color: #50fa7b; }
+  .qa-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+  .qa-q { background: rgba(248,152,32,0.08); border-left: 3px solid var(--accent); padding: 16px 20px; font-weight: 600; font-size: 15px; }
+  .qa-q::before { content: 'Q: '; color: var(--accent); }
+  .qa-a { padding: 16px 20px; font-size: 14px; line-height: 1.8; color: var(--text2); }
+  .qa-a strong { color: var(--text); }
+  .note { background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.25); border-radius: 10px; padding: 14px 18px; margin: 16px 0; font-size: 14px; color: var(--accent2); }
+  .note::before { content: '💡 '; }
+  .warn { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.25); border-radius: 10px; padding: 14px 18px; margin: 16px 0; font-size: 14px; color: var(--accent3); }
+  .warn::before { content: '⚠️ '; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th { background: var(--surface2); text-align: left; padding: 10px 16px; font-weight: 600; border: 1px solid var(--border); color: var(--text); }
+  td { padding: 10px 16px; border: 1px solid var(--border); color: var(--text2); }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .nav-btn { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; background: var(--surface); border: 1px solid var(--border); color: var(--text); transition: all 0.2s; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.next { background: var(--accent); color: #000; border-color: var(--accent); }
+  .btn.next:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand">
+    <a href="index.html">☕ Java Interview Prep</a>
+    <p>Team Lead Edition</p>
+  </div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html" class="active"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP & SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database & JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM & Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Core Java Fundamentals</div>
+  <div class="page-header">
+    <div class="topic-badge">☕ Topic 01</div>
+    <h1>Core Java Fundamentals</h1>
+    <p class="page-desc">Deep dive into Java's foundational building blocks — from primitive types and String internals to exception handling, generics, and the Java Memory Model. Essential knowledge for every senior engineer interview.</p>
+  </div>
+
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#data-types">Data Types & Primitives</a></li>
+      <li><a href="#strings">String Internals</a></li>
+      <li><a href="#exceptions">Exception Handling</a></li>
+      <li><a href="#generics">Generics</a></li>
+      <li><a href="#annotations">Annotations</a></li>
+      <li><a href="#immutability">Immutability</a></li>
+      <li><a href="#memory-model">Java Memory Model</a></li>
+      <li><a href="#interview-qa">Interview Q&A</a></li>
+    </ol>
+  </div>
+
+  <section id="data-types">
+    <h2>1. Data Types & Primitives</h2>
+    <p>Java has 8 primitive types. Understanding their size, range, and boxing behavior is fundamental.</p>
+    <table>
+      <tr><th>Type</th><th>Size</th><th>Range</th><th>Wrapper</th><th>Default</th></tr>
+      <tr><td>byte</td><td>8-bit</td><td>-128 to 127</td><td>Byte</td><td>0</td></tr>
+      <tr><td>short</td><td>16-bit</td><td>-32,768 to 32,767</td><td>Short</td><td>0</td></tr>
+      <tr><td>int</td><td>32-bit</td><td>-2³¹ to 2³¹-1</td><td>Integer</td><td>0</td></tr>
+      <tr><td>long</td><td>64-bit</td><td>-2⁶³ to 2⁶³-1</td><td>Long</td><td>0L</td></tr>
+      <tr><td>float</td><td>32-bit IEEE 754</td><td>~±3.4e38</td><td>Float</td><td>0.0f</td></tr>
+      <tr><td>double</td><td>64-bit IEEE 754</td><td>~±1.8e308</td><td>Double</td><td>0.0d</td></tr>
+      <tr><td>char</td><td>16-bit Unicode</td><td>' ' to '￿'</td><td>Character</td><td>' '</td></tr>
+      <tr><td>boolean</td><td>JVM-dependent</td><td>true/false</td><td>Boolean</td><td>false</td></tr>
+    </table>
+    <h3>Autoboxing & Unboxing</h3>
+    <p>Java automatically converts between primitives and their wrapper classes. This can lead to subtle bugs:</p>
+    <div class="code-block"><span class="cls">Integer</span> a = <span class="num">127</span>;
+<span class="cls">Integer</span> b = <span class="num">127</span>;
+<span class="kw">System</span>.out.println(a == b);  <span class="cmt">// true — cached range -128 to 127</span>
+
+<span class="cls">Integer</span> x = <span class="num">128</span>;
+<span class="cls">Integer</span> y = <span class="num">128</span>;
+<span class="kw">System</span>.out.println(x == y);  <span class="cmt">// false — new objects outside cache</span>
+<span class="kw">System</span>.out.println(x.<span class="met">equals</span>(y)); <span class="cmt">// true — always use .equals() for wrappers</span>
+
+<span class="cmt">// Unboxing null throws NullPointerException</span>
+<span class="cls">Integer</span> val = <span class="kw">null</span>;
+<span class="kw">int</span> result = val; <span class="cmt">// NullPointerException!</span></div>
+    <div class="warn">Integer caches values from -128 to 127 by default. Never compare wrapper objects with == unless you're certain about the range.</div>
+  </section>
+
+  <section id="strings">
+    <h2>2. String Internals</h2>
+    <p>String is immutable in Java. All string literals are stored in the <strong>String Pool</strong> (part of the heap since Java 7).</p>
+    <h3>String Pool & intern()</h3>
+    <div class="code-block"><span class="cls">String</span> s1 = <span class="str">"hello"</span>;          <span class="cmt">// String pool</span>
+<span class="cls">String</span> s2 = <span class="str">"hello"</span>;          <span class="cmt">// same reference from pool</span>
+<span class="cls">String</span> s3 = <span class="kw">new</span> <span class="cls">String</span>(<span class="str">"hello"</span>); <span class="cmt">// new heap object</span>
+
+s1 == s2;          <span class="cmt">// true</span>
+s1 == s3;          <span class="cmt">// false</span>
+s1.<span class="met">equals</span>(s3);     <span class="cmt">// true</span>
+s1 == s3.<span class="met">intern</span>(); <span class="cmt">// true — intern() returns pool reference</span></div>
+
+    <h3>String vs StringBuilder vs StringBuffer</h3>
+    <table>
+      <tr><th>Class</th><th>Mutable</th><th>Thread-Safe</th><th>Performance</th><th>Use When</th></tr>
+      <tr><td>String</td><td>No</td><td>Yes (immutable)</td><td>Slow for concatenation</td><td>Fixed/constant values</td></tr>
+      <tr><td>StringBuilder</td><td>Yes</td><td>No</td><td>Fastest</td><td>Single-threaded string building</td></tr>
+      <tr><td>StringBuffer</td><td>Yes</td><td>Yes (synchronized)</td><td>Slower than StringBuilder</td><td>Multi-threaded string building</td></tr>
+    </table>
+    <div class="code-block"><span class="cmt">// Bad — creates N string objects in loop</span>
+<span class="cls">String</span> result = <span class="str">""</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; <span class="num">1000</span>; i++) result += i;
+
+<span class="cmt">// Good — single StringBuilder, much faster</span>
+<span class="cls">StringBuilder</span> sb = <span class="kw">new</span> <span class="cls">StringBuilder</span>();
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; <span class="num">1000</span>; i++) sb.<span class="met">append</span>(i);
+<span class="cls">String</span> result = sb.<span class="met">toString</span>();</div>
+    <div class="note">Java compiler optimizes string concatenation with + in a single expression to use StringBuilder, but NOT in loops.</div>
+
+    <h3>Key String Methods (Interview Favorites)</h3>
+    <div class="code-block"><span class="cls">String</span> s = <span class="str">"  Hello World  "</span>;
+s.<span class="met">trim</span>();            <span class="cmt">// "Hello World" (removes leading/trailing whitespace)</span>
+s.<span class="met">strip</span>();           <span class="cmt">// Java 11+ unicode-aware trim</span>
+s.<span class="met">charAt</span>(<span class="num">2</span>);         <span class="cmt">// 'H' (0-indexed)</span>
+s.<span class="met">substring</span>(<span class="num">2</span>, <span class="num">7</span>);   <span class="cmt">// "Hello"</span>
+s.<span class="met">indexOf</span>(<span class="str">"World"</span>);  <span class="cmt">// 8</span>
+s.<span class="met">replace</span>(<span class="str">"World"</span>, <span class="str">"Java"</span>);  <span class="cmt">// "  Hello Java  "</span>
+s.<span class="met">split</span>(<span class="str">" "</span>);         <span class="cmt">// ["", "", "Hello", "World", "", ""]</span>
+s.<span class="met">toCharArray</span>();     <span class="cmt">// convert to char[]</span>
+<span class="cls">String</span>.<span class="met">join</span>(<span class="str">", "</span>, <span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>); <span class="cmt">// "a, b, c"</span>
+<span class="cls">String</span>.<span class="met">format</span>(<span class="str">"Name: %s, Age: %d"</span>, name, age);</div>
+  </section>
+
+  <section id="exceptions">
+    <h2>3. Exception Handling</h2>
+    <h3>Exception Hierarchy</h3>
+    <div class="code-block"><span class="cls">Throwable</span>
+├── <span class="cls">Error</span>          <span class="cmt">// JVM errors — don't catch (OutOfMemoryError, StackOverflowError)</span>
+└── <span class="cls">Exception</span>
+    ├── <span class="cls">RuntimeException</span>    <span class="cmt">// Unchecked — NullPointerException, IllegalArgumentException</span>
+    │   ├── NullPointerException
+    │   ├── ArrayIndexOutOfBoundsException
+    │   ├── ClassCastException
+    │   └── ArithmeticException
+    └── <span class="cmt">Checked Exceptions</span>   <span class="cmt">// Must be caught or declared</span>
+        ├── IOException
+        ├── SQLException
+        └── ClassNotFoundException</div>
+
+    <h3>Best Practices</h3>
+    <div class="code-block"><span class="cmt">// 1. Multi-catch (Java 7+)</span>
+<span class="kw">try</span> {
+    <span class="cmt">// code</span>
+} <span class="kw">catch</span> (<span class="cls">IOException</span> | <span class="cls">SQLException</span> e) {
+    log.<span class="met">error</span>(<span class="str">"Data error"</span>, e);
+}
+
+<span class="cmt">// 2. Try-with-resources (Java 7+) — AutoCloseable</span>
+<span class="kw">try</span> (<span class="cls">Connection</span> conn = ds.<span class="met">getConnection</span>();
+     <span class="cls">PreparedStatement</span> ps = conn.<span class="met">prepareStatement</span>(sql)) {
+    <span class="cmt">// resources auto-closed even on exception</span>
+}
+
+<span class="cmt">// 3. Custom exception with cause chain</span>
+<span class="kw">public class</span> <span class="cls">PaymentException</span> <span class="kw">extends</span> <span class="cls">RuntimeException</span> {
+    <span class="kw">public</span> <span class="cls">PaymentException</span>(<span class="cls">String</span> message, <span class="cls">Throwable</span> cause) {
+        <span class="kw">super</span>(message, cause);
+    }
+}
+
+<span class="cmt">// 4. Re-throw with context</span>
+<span class="kw">try</span> {
+    processPayment(orderId);
+} <span class="kw">catch</span> (<span class="cls">SQLException</span> e) {
+    <span class="kw">throw new</span> <span class="cls">PaymentException</span>(<span class="str">"Failed for order: "</span> + orderId, e);
+}</div>
+
+    <div class="warn">Never catch Exception or Throwable generically without re-throwing. Never swallow exceptions with empty catch blocks. Always preserve the original cause when wrapping.</div>
+
+    <h3>Finally Block Behavior</h3>
+    <div class="code-block"><span class="kw">try</span> {
+    <span class="kw">return</span> <span class="str">"try"</span>;      <span class="cmt">// finally still executes!</span>
+} <span class="kw">finally</span> {
+    <span class="kw">return</span> <span class="str">"finally"</span>; <span class="cmt">// overrides the try return — AVOID this pattern</span>
+}
+<span class="cmt">// result: "finally"</span>
+
+<span class="cmt">// Exception in finally suppresses original exception — AVOID</span>
+<span class="kw">try</span> {
+    <span class="kw">throw new</span> <span class="cls">RuntimeException</span>(<span class="str">"original"</span>);
+} <span class="kw">finally</span> {
+    <span class="kw">throw new</span> <span class="cls">RuntimeException</span>(<span class="str">"finally"</span>); <span class="cmt">// "original" is lost!</span>
+}</div>
+  </section>
+
+  <section id="generics">
+    <h2>4. Generics</h2>
+    <p>Generics provide compile-time type safety and eliminate the need for casting. They are erased at runtime (type erasure).</p>
+    <div class="code-block"><span class="cmt">// Generic class</span>
+<span class="kw">public class</span> <span class="cls">Box</span>&lt;T&gt; {
+    <span class="kw">private</span> T value;
+    <span class="kw">public</span> <span class="kw">void</span> <span class="met">set</span>(T value) { <span class="kw">this</span>.value = value; }
+    <span class="kw">public</span> T <span class="met">get</span>() { <span class="kw">return</span> value; }
+}
+
+<span class="cmt">// Bounded type parameters</span>
+<span class="kw">public</span> &lt;T <span class="kw">extends</span> <span class="cls">Comparable</span>&lt;T&gt;&gt; T <span class="met">max</span>(<span class="cls">T</span> a, T b) {
+    <span class="kw">return</span> a.<span class="met">compareTo</span>(b) &gt; <span class="num">0</span> ? a : b;
+}
+
+<span class="cmt">// Wildcards</span>
+<span class="kw">void</span> <span class="met">printList</span>(<span class="cls">List</span>&lt;?&gt; list) { ... }            <span class="cmt">// unbounded</span>
+<span class="kw">void</span> <span class="met">sum</span>(<span class="cls">List</span>&lt;? <span class="kw">extends</span> <span class="cls">Number</span>&gt; list) { ... }   <span class="cmt">// upper bounded (read)</span>
+<span class="kw">void</span> <span class="met">add</span>(<span class="cls">List</span>&lt;? <span class="kw">super</span> <span class="cls">Integer</span>&gt; list) { ... }   <span class="cmt">// lower bounded (write)</span></div>
+
+    <h3>PECS Principle — Producer Extends, Consumer Super</h3>
+    <div class="code-block"><span class="cmt">// Producer: you READ from it → use extends</span>
+<span class="kw">public static</span> <span class="kw">double</span> <span class="met">sumList</span>(<span class="cls">List</span>&lt;? <span class="kw">extends</span> <span class="cls">Number</span>&gt; list) {
+    <span class="kw">return</span> list.<span class="met">stream</span>().<span class="met">mapToDouble</span>(<span class="cls">Number</span>::doubleValue).<span class="met">sum</span>();
+}
+
+<span class="cmt">// Consumer: you WRITE to it → use super</span>
+<span class="kw">public static</span> <span class="kw">void</span> <span class="met">addNumbers</span>(<span class="cls">List</span>&lt;? <span class="kw">super</span> <span class="cls">Integer</span>&gt; list) {
+    list.<span class="met">add</span>(<span class="num">1</span>); list.<span class="met">add</span>(<span class="num">2</span>); list.<span class="met">add</span>(<span class="num">3</span>);
+}</div>
+
+    <h3>Type Erasure</h3>
+    <div class="code-block"><span class="cmt">// At runtime, generics are erased — cannot do:</span>
+<span class="kw">new</span> T();               <span class="cmt">// COMPILE ERROR</span>
+<span class="kw">new</span> T[<span class="num">10</span>];             <span class="cmt">// COMPILE ERROR</span>
+T <span class="kw">instanceof</span> <span class="cls">List</span>&lt;<span class="cls">String</span>&gt;;  <span class="cmt">// COMPILE ERROR</span>
+
+<span class="cmt">// What actually exists at runtime:</span>
+<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; strList = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;&gt;();
+<span class="cls">List</span>&lt;<span class="cls">Integer</span>&gt; intList = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;&gt;();
+strList.<span class="met">getClass</span>() == intList.<span class="met">getClass</span>(); <span class="cmt">// true! Both are ArrayList.class</span></div>
+  </section>
+
+  <section id="annotations">
+    <h2>5. Annotations</h2>
+    <div class="code-block"><span class="cmt">// Built-in annotations</span>
+<span class="ann">@Override</span>      <span class="cmt">// compiler checks method overrides correctly</span>
+<span class="ann">@Deprecated</span>    <span class="cmt">// marks API as deprecated, generates warning</span>
+<span class="ann">@SuppressWarnings</span>(<span class="str">"unchecked"</span>)  <span class="cmt">// suppress compiler warnings</span>
+<span class="ann">@FunctionalInterface</span>  <span class="cmt">// marks interface has exactly one abstract method</span>
+<span class="ann">@SafeVarargs</span>   <span class="cmt">// suppress varargs heap pollution warning</span>
+
+<span class="cmt">// Custom annotation</span>
+<span class="ann">@interface</span> <span class="cls">Validated</span> {
+    <span class="cls">String</span> <span class="met">message</span>() <span class="kw">default</span> <span class="str">"Validation failed"</span>;
+    <span class="kw">int</span> <span class="met">maxLength</span>() <span class="kw">default</span> <span class="num">255</span>;
+}
+
+<span class="cmt">// Meta-annotations</span>
+<span class="ann">@Retention</span>(<span class="cls">RetentionPolicy</span>.RUNTIME)  <span class="cmt">// available at runtime via reflection</span>
+<span class="ann">@Target</span>(<span class="cls">ElementType</span>.METHOD)          <span class="cmt">// can only annotate methods</span>
+<span class="ann">@Documented</span>                          <span class="cmt">// included in JavaDoc</span>
+<span class="ann">@Inherited</span>                           <span class="cmt">// subclasses inherit the annotation</span></div>
+  </section>
+
+  <section id="immutability">
+    <h2>6. Immutability</h2>
+    <p>Immutable objects are inherently thread-safe and make code easier to reason about.</p>
+    <h3>Creating an Immutable Class</h3>
+    <div class="code-block"><span class="kw">public final class</span> <span class="cls">Money</span> {                <span class="cmt">// final — no subclassing</span>
+    <span class="kw">private final</span> <span class="kw">long</span> amount;             <span class="cmt">// final fields</span>
+    <span class="kw">private final</span> <span class="cls">Currency</span> currency;
+
+    <span class="kw">public</span> <span class="cls">Money</span>(<span class="kw">long</span> amount, <span class="cls">Currency</span> currency) {
+        <span class="kw">this</span>.amount = amount;
+        <span class="kw">this</span>.currency = <span class="cls">Objects</span>.<span class="met">requireNonNull</span>(currency);
+    }
+
+    <span class="kw">public long</span> <span class="met">getAmount</span>() { <span class="kw">return</span> amount; }
+    <span class="kw">public</span> <span class="cls">Currency</span> <span class="met">getCurrency</span>() { <span class="kw">return</span> currency; }
+
+    <span class="cmt">// Return new instance instead of mutating</span>
+    <span class="kw">public</span> <span class="cls">Money</span> <span class="met">add</span>(<span class="cls">Money</span> other) {
+        <span class="kw">if</span> (!<span class="kw">this</span>.currency.<span class="met">equals</span>(other.currency))
+            <span class="kw">throw new</span> <span class="cls">IllegalArgumentException</span>(<span class="str">"Currency mismatch"</span>);
+        <span class="kw">return new</span> <span class="cls">Money</span>(<span class="kw">this</span>.amount + other.amount, <span class="kw">this</span>.currency);
+    }
+}
+
+<span class="cmt">// Java 16+ Records — automatically immutable</span>
+<span class="kw">public record</span> <span class="cls">Point</span>(<span class="kw">double</span> x, <span class="kw">double</span> y) {}</span></div>
+
+    <h3>Rules for Immutability</h3>
+    <ul>
+      <li>Declare class as <strong>final</strong></li>
+      <li>All fields <strong>private and final</strong></li>
+      <li><strong>No setters</strong> — return new instances on modification</li>
+      <li><strong>Deep copy</strong> mutable objects in constructor and getters</li>
+      <li>Never share references to mutable internal state</li>
+    </ul>
+  </section>
+
+  <section id="memory-model">
+    <h2>7. Java Memory Model (JMM)</h2>
+    <p>The JMM defines how threads interact through memory. It specifies when writes by one thread are visible to other threads.</p>
+    <div class="code-block"><span class="cmt">// Happens-Before relationships guarantee visibility</span>
+
+<span class="cmt">// 1. volatile — writes visible to all threads immediately</span>
+<span class="kw">private volatile boolean</span> stopped = <span class="kw">false</span>;
+
+<span class="cmt">// 2. synchronized — exit of monitor happens-before entry by another thread</span>
+<span class="kw">synchronized</span> (<span class="kw">this</span>) { counter++; }
+
+<span class="cmt">// 3. Thread.start() happens-before any action in the started thread</span>
+<span class="cmt">// 4. Thread.join() — all actions in joined thread happen-before join returns</span>
+<span class="cmt">// 5. static initializer happens-before first use of the class</span></div>
+
+    <h3>volatile vs synchronized</h3>
+    <table>
+      <tr><th>Feature</th><th>volatile</th><th>synchronized</th></tr>
+      <tr><td>Visibility</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Atomicity</td><td>Only for single read/write</td><td>Yes, for compound operations</td></tr>
+      <tr><td>Mutual exclusion</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Performance</td><td>Faster</td><td>Slower</td></tr>
+      <tr><td>Use case</td><td>flags, stop signals</td><td>compound operations</td></tr>
+    </table>
+    <div class="warn">volatile does NOT make compound operations (i++) atomic. Use AtomicInteger or synchronized for increment operations.</div>
+  </section>
+
+  <section id="interview-qa">
+    <h2>8. Interview Q&A</h2>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between == and .equals() in Java?</div>
+      <div class="qa-a">
+        <strong>==</strong> compares references (memory addresses) for objects, or values for primitives.<br><br>
+        <strong>.equals()</strong> compares content/logical equality as defined by the class implementation.<br><br>
+        For String: <code>s1 == s2</code> may be false for two strings with same content (unless pooled), while <code>s1.equals(s2)</code> is true if content matches. Always use <code>.equals()</code> for object comparison. When overriding <code>.equals()</code>, always override <code>.hashCode()</code> too — objects that are equal must have the same hash code.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">Explain checked vs unchecked exceptions. When would you use each?</div>
+      <div class="qa-a">
+        <strong>Checked exceptions</strong> extend <code>Exception</code> (not RuntimeException). The compiler requires them to be caught or declared with <code>throws</code>. Use for recoverable conditions where the caller can meaningfully handle it (e.g., FileNotFoundException — caller might show file picker).<br><br>
+        <strong>Unchecked exceptions</strong> extend <code>RuntimeException</code>. No compiler enforcement. Use for programming errors (NullPointerException, IllegalArgumentException) or situations where recovery is impossible or impractical.<br><br>
+        <strong>Team Lead view:</strong> Modern Java APIs (and Spring) favor unchecked exceptions to avoid checked exception pollution up the call stack. Checked exceptions break lambdas and stream operations. I prefer custom unchecked exceptions with clear names, documented in Javadoc.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">Why is String immutable in Java?</div>
+      <div class="qa-a">
+        Several reasons: (1) <strong>String pool</strong> — multiple references can share the same literal safely because no one can change it; (2) <strong>Thread safety</strong> — immutable objects are inherently thread-safe with no synchronization needed; (3) <strong>Security</strong> — class loading, network connections, file operations use String parameters; mutable strings could be changed after security checks; (4) <strong>Hashcode caching</strong> — String caches its hashCode, making it efficient as HashMap keys.<br><br>
+        This is why changing a String always creates a new object.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between final, finally, and finalize?</div>
+      <div class="qa-a">
+        <strong>final</strong> — keyword. On variables: value can't be reassigned. On methods: can't be overridden. On classes: can't be subclassed.<br><br>
+        <strong>finally</strong> — block that always executes after try/catch (except System.exit() or JVM crash). Used for cleanup code.<br><br>
+        <strong>finalize()</strong> — deprecated method called by GC before object is collected. Unreliable timing, don't use it. Use <code>AutoCloseable</code> and try-with-resources instead.<br><br>
+        <strong>Note:</strong> finalize() was deprecated in Java 9 and removed in Java 18.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What are the rules for overriding hashCode() and equals()?</div>
+      <div class="qa-a">
+        <strong>equals() contract:</strong> reflexive (x.equals(x)=true), symmetric (x.equals(y) ↔ y.equals(x)), transitive, consistent, and x.equals(null)=false.<br><br>
+        <strong>hashCode() contract:</strong> If x.equals(y) is true, then x.hashCode() must equal y.hashCode(). The reverse is not required (hash collisions are allowed).<br><br>
+        <strong>Consequence:</strong> If you put an object in a HashMap and then change the fields used in hashCode(), you'll lose the object in the map — can't find it anymore. Keep hashCode fields immutable or don't mutate after adding to collections.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">What is type erasure and how does it affect generics?</div>
+      <div class="qa-a">
+        Type erasure means generic type parameters are removed at compile time. The bytecode has no information about the generic type. This enables backward compatibility with pre-Java-5 code.<br><br>
+        <strong>Consequences:</strong> You can't do <code>new T()</code>, <code>instanceof List&lt;String&gt;</code>, create generic arrays. All <code>List&lt;String&gt;</code> and <code>List&lt;Integer&gt;</code> instances have the same runtime class (<code>ArrayList.class</code>). Cast warnings happen when interoperating with raw types.<br><br>
+        <strong>Workaround:</strong> Pass <code>Class&lt;T&gt; type</code> as a parameter when you need the type at runtime (used in frameworks like Jackson).
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="index.html" class="btn">← Back to Index</a>
+    <a href="02-oop-solid.html" class="btn next">OOP & SOLID →</a>
+  </div>
+</main>
+</body>
+</html>

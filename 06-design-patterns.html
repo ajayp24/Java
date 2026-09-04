@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Patterns — Java Interview Prep</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#a855f7;--accent2:#00d4aa;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:var(--accent);font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(168,85,247,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:960px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  h4{font-size:15px;font-weight:600;margin:20px 0 8px;color:var(--text)}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(168,85,247,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent2)}
+  .note::before{content:'💡 '}
+  .pattern-group{margin-bottom:40px}
+  .pattern-label{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;margin-bottom:16px}
+  .creational{background:rgba(168,85,247,0.15);color:#c084fc}
+  .structural{background:rgba(0,212,170,0.15);color:#2dd4bf}
+  .behavioral{background:rgba(251,191,36,0.15);color:#fbbf24}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP &amp; SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html" class="active"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database &amp; JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM &amp; Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Design Patterns</div>
+  <div class="page-header">
+    <div class="topic-badge">🎨 Topic 06</div>
+    <h1>Design Patterns</h1>
+    <p class="page-desc">GoF patterns applied in Java with modern idioms. Creational, structural, and behavioral patterns — plus how Spring implements them and which anti-patterns to avoid in code reviews.</p>
+  </div>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#creational">Creational Patterns</a></li>
+      <li><a href="#structural">Structural Patterns</a></li>
+      <li><a href="#behavioral">Behavioral Patterns</a></li>
+      <li><a href="#spring-patterns">Patterns in Spring</a></li>
+      <li><a href="#anti-patterns">Anti-Patterns</a></li>
+      <li><a href="#interview-qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <section id="creational">
+    <h2>1. Creational Patterns</h2>
+    <div class="pattern-label creational">CREATIONAL</div>
+
+    <h3>Singleton (Thread-Safe)</h3>
+    <div class="code-block"><span class="cmt">// Best: Enum Singleton (serialization-safe, reflection-safe)</span>
+<span class="kw">public enum</span> <span class="cls">AppConfig</span> {
+    INSTANCE;
+    <span class="kw">private final</span> <span class="cls">Properties</span> props = <span class="kw">new</span> <span class="cls">Properties</span>();
+    <span class="kw">public</span> <span class="cls">String</span> <span class="met">get</span>(<span class="cls">String</span> key) { <span class="kw">return</span> props.<span class="met">getProperty</span>(key); }
+}
+
+<span class="cmt">// Alternative: Static inner class (lazy, no sync overhead)</span>
+<span class="kw">public class</span> <span class="cls">Singleton</span> {
+    <span class="kw">private</span> <span class="cls">Singleton</span>() {}
+    <span class="kw">private static class</span> <span class="cls">Holder</span> {
+        <span class="kw">static final</span> <span class="cls">Singleton</span> INSTANCE = <span class="kw">new</span> <span class="cls">Singleton</span>();
+    }
+    <span class="kw">public static</span> <span class="cls">Singleton</span> <span class="met">getInstance</span>() { <span class="kw">return</span> <span class="cls">Holder</span>.INSTANCE; }
+}</div>
+
+    <h3>Builder</h3>
+    <div class="code-block"><span class="kw">public class</span> <span class="cls">HttpRequest</span> {
+    <span class="kw">private final</span> <span class="cls">String</span> url;
+    <span class="kw">private final</span> <span class="cls">String</span> method;
+    <span class="kw">private final</span> <span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">String</span>&gt; headers;
+    <span class="kw">private final</span> <span class="kw">int</span> timeoutMs;
+
+    <span class="kw">private</span> <span class="cls">HttpRequest</span>(<span class="cls">Builder</span> b) {
+        <span class="kw">this</span>.url = b.url; <span class="kw">this</span>.method = b.method;
+        <span class="kw">this</span>.headers = <span class="cls">Map</span>.<span class="met">copyOf</span>(b.headers); <span class="kw">this</span>.timeoutMs = b.timeoutMs;
+    }
+
+    <span class="kw">public static class</span> <span class="cls">Builder</span> {
+        <span class="kw">private final</span> <span class="cls">String</span> url;             <span class="cmt">// required</span>
+        <span class="kw">private</span> <span class="cls">String</span> method = <span class="str">"GET"</span>;      <span class="cmt">// optional with default</span>
+        <span class="kw">private</span> <span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">String</span>&gt; headers = <span class="kw">new</span> <span class="cls">HashMap</span>&lt;&gt;();
+        <span class="kw">private int</span> timeoutMs = <span class="num">5000</span>;
+
+        <span class="kw">public</span> <span class="cls">Builder</span>(<span class="cls">String</span> url) { <span class="kw">this</span>.url = url; }
+        <span class="kw">public</span> <span class="cls">Builder</span> <span class="met">method</span>(<span class="cls">String</span> m) { <span class="kw">this</span>.method = m; <span class="kw">return this</span>; }
+        <span class="kw">public</span> <span class="cls">Builder</span> <span class="met">header</span>(<span class="cls">String</span> k, <span class="cls">String</span> v) { headers.<span class="met">put</span>(k, v); <span class="kw">return this</span>; }
+        <span class="kw">public</span> <span class="cls">Builder</span> <span class="met">timeout</span>(<span class="kw">int</span> ms) { <span class="kw">this</span>.timeoutMs = ms; <span class="kw">return this</span>; }
+        <span class="kw">public</span> <span class="cls">HttpRequest</span> <span class="met">build</span>() { <span class="kw">return new</span> <span class="cls">HttpRequest</span>(<span class="kw">this</span>); }
+    }
+}
+
+<span class="cls">HttpRequest</span> req = <span class="kw">new</span> <span class="cls">HttpRequest</span>.<span class="cls">Builder</span>(<span class="str">"https://api.example.com"</span>)
+    .<span class="met">method</span>(<span class="str">"POST"</span>)
+    .<span class="met">header</span>(<span class="str">"Authorization"</span>, <span class="str">"Bearer token"</span>)
+    .<span class="met">timeout</span>(<span class="num">10_000</span>)
+    .<span class="met">build</span>();</div>
+
+    <h3>Factory Method &amp; Abstract Factory</h3>
+    <div class="code-block"><span class="cmt">// Factory Method — subclass decides which class to instantiate</span>
+<span class="kw">interface</span> <span class="cls">NotificationFactory</span> {
+    <span class="cls">Notification</span> <span class="met">create</span>(<span class="cls">String</span> recipient);
+}
+<span class="kw">class</span> <span class="cls">EmailFactory</span> <span class="kw">implements</span> <span class="cls">NotificationFactory</span> {
+    <span class="kw">public</span> <span class="cls">Notification</span> <span class="met">create</span>(<span class="cls">String</span> to) { <span class="kw">return new</span> <span class="cls">EmailNotification</span>(to); }
+}
+
+<span class="cmt">// Static factory — preferred over constructors in many cases</span>
+<span class="cmt">// (see LocalDate.of(), Optional.of(), List.of())</span>
+<span class="kw">class</span> <span class="cls">NotificationService</span> {
+    <span class="kw">public static</span> <span class="cls">NotificationService</span> <span class="met">forEmail</span>()   { <span class="kw">return new</span> <span class="cls">NotificationService</span>(<span class="str">"email"</span>); }
+    <span class="kw">public static</span> <span class="cls">NotificationService</span> <span class="met">forSms</span>()     { <span class="kw">return new</span> <span class="cls">NotificationService</span>(<span class="str">"sms"</span>); }
+    <span class="kw">public static</span> <span class="cls">NotificationService</span> <span class="met">forPush</span>()    { <span class="kw">return new</span> <span class="cls">NotificationService</span>(<span class="str">"push"</span>); }
+}</div>
+  </section>
+
+  <section id="structural">
+    <h2>2. Structural Patterns</h2>
+    <div class="pattern-label structural">STRUCTURAL</div>
+
+    <h3>Decorator</h3>
+    <div class="code-block"><span class="cmt">// Add behavior to objects without modifying class</span>
+<span class="kw">interface</span> <span class="cls">DataSource</span> {
+    <span class="kw">void</span> <span class="met">writeData</span>(<span class="cls">String</span> data);
+    <span class="cls">String</span> <span class="met">readData</span>();
+}
+
+<span class="kw">class</span> <span class="cls">FileDataSource</span> <span class="kw">implements</span> <span class="cls">DataSource</span> { <span class="cmt">/* writes to file */</span> }
+
+<span class="kw">class</span> <span class="cls">EncryptionDecorator</span> <span class="kw">implements</span> <span class="cls">DataSource</span> {
+    <span class="kw">private final</span> <span class="cls">DataSource</span> wrapped;
+    <span class="kw">public</span> <span class="cls">EncryptionDecorator</span>(<span class="cls">DataSource</span> d) { <span class="kw">this</span>.wrapped = d; }
+
+    <span class="kw">public void</span> <span class="met">writeData</span>(<span class="cls">String</span> data) { wrapped.<span class="met">writeData</span>(<span class="met">encrypt</span>(data)); }
+    <span class="kw">public</span> <span class="cls">String</span> <span class="met">readData</span>() { <span class="kw">return</span> <span class="met">decrypt</span>(wrapped.<span class="met">readData</span>()); }
+}
+
+<span class="cmt">// Composing decorators at runtime</span>
+<span class="cls">DataSource</span> source = <span class="kw">new</span> <span class="cls">EncryptionDecorator</span>(
+    <span class="kw">new</span> <span class="cls">CompressionDecorator</span>(
+        <span class="kw">new</span> <span class="cls">FileDataSource</span>(<span class="str">"data.txt"</span>)
+    )
+);
+<span class="cmt">// Java uses this: BufferedReader(new InputStreamReader(new FileInputStream(...)))</span></div>
+
+    <h3>Proxy</h3>
+    <div class="code-block"><span class="cmt">// Same interface as real object — controls access</span>
+<span class="kw">class</span> <span class="cls">CachingProxy</span> <span class="kw">implements</span> <span class="cls">UserRepository</span> {
+    <span class="kw">private final</span> <span class="cls">UserRepository</span> real;
+    <span class="kw">private final</span> <span class="cls">Map</span>&lt;<span class="cls">Long</span>, <span class="cls">User</span>&gt; cache = <span class="kw">new</span> <span class="cls">ConcurrentHashMap</span>&lt;&gt;();
+
+    <span class="kw">public</span> <span class="cls">User</span> <span class="met">findById</span>(<span class="kw">long</span> id) {
+        <span class="kw">return</span> cache.<span class="met">computeIfAbsent</span>(id, real::<span class="met">findById</span>);
+    }
+}
+<span class="cmt">// Spring AOP, JPA lazy loading, Spring Security, @Transactional all use Proxy</span>
+<span class="cmt">// Java: java.lang.reflect.Proxy for dynamic proxies at runtime</span></div>
+
+    <h3>Adapter &amp; Facade</h3>
+    <div class="code-block"><span class="cmt">// Adapter — bridge incompatible interfaces</span>
+<span class="kw">class</span> <span class="cls">LegacyPaymentAdapter</span> <span class="kw">implements</span> <span class="cls">ModernPaymentGateway</span> {
+    <span class="kw">private final</span> <span class="cls">LegacyPaymentSystem</span> legacy;
+    <span class="kw">public</span> <span class="cls">PaymentResult</span> <span class="met">charge</span>(<span class="cls">Money</span> amount, <span class="cls">Card</span> card) {
+        <span class="kw">return</span> <span class="met">convertResult</span>(legacy.<span class="met">processPayment</span>(amount.<span class="met">toDouble</span>(), card.<span class="met">getNumber</span>()));
+    }
+}
+
+<span class="cmt">// Facade — simplified interface to complex subsystem</span>
+<span class="kw">class</span> <span class="cls">OrderFacade</span> {
+    <span class="kw">private final</span> <span class="cls">InventoryService</span> inventory;
+    <span class="kw">private final</span> <span class="cls">PaymentService</span> payment;
+    <span class="kw">private final</span> <span class="cls">ShippingService</span> shipping;
+    <span class="kw">private final</span> <span class="cls">NotificationService</span> notify;
+
+    <span class="kw">public</span> <span class="cls">Order</span> <span class="met">placeOrder</span>(<span class="cls">Cart</span> cart, <span class="cls">PaymentInfo</span> pi) {
+        inventory.<span class="met">reserve</span>(cart);
+        payment.<span class="met">charge</span>(cart.<span class="met">total</span>(), pi);
+        <span class="cls">Order</span> order = shipping.<span class="met">schedule</span>(cart);
+        notify.<span class="met">confirmOrder</span>(order);
+        <span class="kw">return</span> order;
+    }
+}</div>
+  </section>
+
+  <section id="behavioral">
+    <h2>3. Behavioral Patterns</h2>
+    <div class="pattern-label behavioral">BEHAVIORAL</div>
+
+    <h3>Strategy</h3>
+    <div class="code-block"><span class="cmt">// Encapsulate interchangeable algorithms behind an interface</span>
+<span class="ann">@FunctionalInterface</span>
+<span class="kw">interface</span> <span class="cls">SortStrategy</span>&lt;<span class="cls">T</span>&gt; {
+    <span class="kw">void</span> <span class="met">sort</span>(<span class="cls">List</span>&lt;<span class="cls">T</span>&gt; list);
+}
+<span class="cmt">// With lambdas, Strategy reduces to just a Function/FunctionalInterface</span>
+<span class="cls">List</span>&lt;<span class="cls">User</span>&gt; users = ...;
+users.<span class="met">sort</span>(<span class="cls">Comparator</span>.<span class="met">comparing</span>(<span class="cls">User</span>::<span class="met">getName</span>));           <span class="cmt">// sort by name</span>
+users.<span class="met">sort</span>(<span class="cls">Comparator</span>.<span class="met">comparing</span>(<span class="cls">User</span>::<span class="met">getAge</span>).<span class="met">reversed</span>());  <span class="cmt">// sort by age desc</span></div>
+
+    <h3>Observer</h3>
+    <div class="code-block"><span class="cmt">// Publish-subscribe — decouples producers from consumers</span>
+<span class="kw">interface</span> <span class="cls">EventListener</span>&lt;<span class="cls">T</span>&gt; {
+    <span class="kw">void</span> <span class="met">onEvent</span>(<span class="cls">T</span> event);
+}
+<span class="kw">class</span> <span class="cls">EventBus</span>&lt;<span class="cls">T</span>&gt; {
+    <span class="kw">private final</span> <span class="cls">List</span>&lt;<span class="cls">EventListener</span>&lt;<span class="cls">T</span>&gt;&gt; listeners = <span class="kw">new</span> <span class="cls">CopyOnWriteArrayList</span>&lt;&gt;();
+    <span class="kw">public void</span> <span class="met">subscribe</span>(<span class="cls">EventListener</span>&lt;<span class="cls">T</span>&gt; l) { listeners.<span class="met">add</span>(l); }
+    <span class="kw">public void</span> <span class="met">publish</span>(<span class="cls">T</span> event) { listeners.<span class="met">forEach</span>(l -&gt; l.<span class="met">onEvent</span>(event)); }
+}
+<span class="cmt">// Java provides: Observable (deprecated), PropertyChangeListener</span>
+<span class="cmt">// Spring: @EventListener, ApplicationEventPublisher</span></div>
+
+    <h3>Template Method</h3>
+    <div class="code-block"><span class="cmt">// Define skeleton of algorithm, subclasses fill in steps</span>
+<span class="kw">abstract class</span> <span class="cls">DataExporter</span> {
+    <span class="kw">public final void</span> <span class="met">export</span>(<span class="cls">DataSet</span> data) {  <span class="cmt">// final = template method</span>
+        <span class="cls">List</span>&lt;<span class="cls">String</span>&gt; formatted = <span class="met">format</span>(data);   <span class="cmt">// abstract — varies</span>
+        <span class="met">validate</span>(formatted);                      <span class="cmt">// concrete — shared</span>
+        <span class="met">write</span>(formatted);                         <span class="cmt">// abstract — varies</span>
+        <span class="met">logCompletion</span>();                           <span class="cmt">// concrete hook — shared</span>
+    }
+    <span class="kw">protected abstract</span> <span class="cls">List</span>&lt;<span class="cls">String</span>&gt; <span class="met">format</span>(<span class="cls">DataSet</span> data);
+    <span class="kw">protected abstract void</span> <span class="met">write</span>(<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; rows);
+    <span class="kw">protected void</span> <span class="met">validate</span>(<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; rows) { <span class="cmt">/* default validation */</span> }
+}
+<span class="cmt">// Spring uses this: JdbcTemplate, RestTemplate, AbstractController</span></div>
+
+    <h3>Chain of Responsibility</h3>
+    <div class="code-block"><span class="kw">interface</span> <span class="cls">RequestHandler</span> {
+    <span class="kw">void</span> <span class="met">setNext</span>(<span class="cls">RequestHandler</span> next);
+    <span class="kw">void</span> <span class="met">handle</span>(<span class="cls">Request</span> req);
+}
+<span class="kw">abstract class</span> <span class="cls">BaseHandler</span> <span class="kw">implements</span> <span class="cls">RequestHandler</span> {
+    <span class="kw">private</span> <span class="cls">RequestHandler</span> next;
+    <span class="kw">public void</span> <span class="met">setNext</span>(<span class="cls">RequestHandler</span> n) { <span class="kw">this</span>.next = n; }
+    <span class="kw">protected void</span> <span class="met">passToNext</span>(<span class="cls">Request</span> req) {
+        <span class="kw">if</span> (next != <span class="kw">null</span>) next.<span class="met">handle</span>(req);
+    }
+}
+<span class="cmt">// Spring Security Filter chain, Servlet Filters, log4j2 appenders all use CoR</span></div>
+  </section>
+
+  <section id="spring-patterns">
+    <h2>4. Design Patterns in Spring</h2>
+    <table>
+      <tr><th>Pattern</th><th>Spring Usage</th></tr>
+      <tr><td>Singleton</td><td>Default bean scope — one instance per ApplicationContext</td></tr>
+      <tr><td>Factory Method</td><td>BeanFactory, @Bean methods, FactoryBean</td></tr>
+      <tr><td>Proxy</td><td>@Transactional, @Cacheable, @Async, Spring Security, AOP</td></tr>
+      <tr><td>Template Method</td><td>JdbcTemplate, RestTemplate, AbstractController</td></tr>
+      <tr><td>Decorator</td><td>HttpServletRequestWrapper, BeanDefinitionDecorator</td></tr>
+      <tr><td>Observer</td><td>ApplicationEventPublisher, @EventListener</td></tr>
+      <tr><td>Strategy</td><td>Sort strategies, HandlerMapping, ViewResolver</td></tr>
+      <tr><td>Chain of Responsibility</td><td>Spring Security filter chain, DispatcherServlet handler chain</td></tr>
+      <tr><td>Composite</td><td>CompositeValidator, CompositeHealthIndicator</td></tr>
+      <tr><td>Adapter</td><td>HandlerAdapter, WebMvcConfigurer (default methods)</td></tr>
+      <tr><td>Facade</td><td>JdbcTemplate (facade over JDBC), Spring's @Service classes</td></tr>
+    </table>
+  </section>
+
+  <section id="anti-patterns">
+    <h2>5. Anti-Patterns (What to Flag in Code Reviews)</h2>
+    <table>
+      <tr><th>Anti-Pattern</th><th>Problem</th><th>Fix</th></tr>
+      <tr><td>God Class</td><td>Class does everything — SRP violation</td><td>Split into focused services</td></tr>
+      <tr><td>Magic Numbers/Strings</td><td>Unexplained literals in code</td><td>Named constants, enums</td></tr>
+      <tr><td>Anemic Domain Model</td><td>Domain objects are just data bags, all logic in services</td><td>Move behavior to domain objects</td></tr>
+      <tr><td>Service Locator</td><td>Classes look up their own dependencies</td><td>Dependency Injection</td></tr>
+      <tr><td>Feature Envy</td><td>Method uses another class's data more than its own</td><td>Move method to that class</td></tr>
+      <tr><td>Primitive Obsession</td><td>Using primitives for domain concepts (int age, String email)</td><td>Create value objects/records</td></tr>
+      <tr><td>Lava Flow</td><td>Dead code nobody dares to delete</td><td>Delete it; version control keeps history</td></tr>
+      <tr><td>Premature Optimization</td><td>Optimizing before measuring</td><td>Profile first, optimize bottlenecks</td></tr>
+    </table>
+  </section>
+
+  <section id="interview-qa">
+    <h2>6. Interview Q&amp;A</h2>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between Strategy and State pattern?</div>
+      <div class="qa-a">
+        Both patterns use an object to encapsulate variable behavior, but their intent differs:<br><br>
+        <strong>Strategy</strong> — the client chooses and sets the algorithm externally. The strategy doesn't change on its own. Example: sorting algorithm chosen at runtime.<br><br>
+        <strong>State</strong> — the object changes its own behavior when its internal state changes. States know about each other (transitions). Example: Order status (PENDING → PROCESSING → SHIPPED → DELIVERED) — the order transitions itself.<br><br>
+        Key difference: Strategy is set by the client and doesn't self-transition; State is internal and drives its own transitions.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">When would you use a Proxy vs Decorator pattern?</div>
+      <div class="qa-a">
+        Both wrap an object implementing the same interface, but the <em>intent</em> differs:<br><br>
+        <strong>Proxy</strong> controls access to the subject — it adds access control, lazy loading, logging, or remote delegation. The client often doesn't know it's talking to a proxy. Examples: Spring AOP proxy for @Transactional, lazy JPA entity loading, virtual proxies.<br><br>
+        <strong>Decorator</strong> adds new responsibilities — it extends behavior. Decorators are typically composed by the client explicitly. Examples: Java I/O streams (BufferedInputStream wraps FileInputStream), adding retry/timeout to HTTP calls.<br><br>
+        Rule of thumb: Proxy = same behavior + access control. Decorator = additional/enhanced behavior.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">How does the Builder pattern improve code quality compared to telescoping constructors?</div>
+      <div class="qa-a">
+        <strong>Telescoping constructors</strong> — you create multiple overloaded constructors with increasing numbers of parameters. Problems: caller must know the correct parameter order, optional parameters must have defaults in every combination, easy to accidentally swap two int parameters with no compile error.<br><br>
+        <strong>Builder</strong> — each parameter is set by a named method. Benefits: readable (method names = parameter names), order-independent, optional parameters are truly optional (use defaults), validates in build(), immutable result. Lombok @Builder generates this automatically.<br><br>
+        For objects with more than 3–4 parameters (especially optional ones), prefer Builder.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">Explain how Spring uses the Template Method pattern.</div>
+      <div class="qa-a">
+        JdbcTemplate is the canonical example. It defines the skeleton algorithm for executing SQL:<br>
+        1. Get connection from pool (concrete — Spring handles)<br>
+        2. Prepare statement (concrete — Spring handles)<br>
+        3. Execute query (concrete — Spring calls)<br>
+        4. Map result set to objects (abstract — YOU provide via RowMapper/lambda)<br>
+        5. Close connection, handle exceptions (concrete — Spring handles)<br><br>
+        You only provide the variable part (the SQL and row mapping). Spring handles all the boilerplate resource management.<br><br>
+        Same pattern in RestTemplate (HTTP handling), TransactionTemplate (transaction management), and RabbitTemplate (message handling).
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="05-java8-features.html" class="btn">← Java 8–17+</a>
+    <a href="07-spring-framework.html" class="btn next">Spring Boot →</a>
+  </div>
+</main>
+</body>
+</html>

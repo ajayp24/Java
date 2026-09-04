@@ -1,0 +1,835 @@
+
+<title>Java Team Lead — Round 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root {
+  --bg:#F4F7FC;--surface:#FFFFFF;--surface-2:#EDF1F9;--border:#DCE3EF;
+  --text:#0F1829;--text-2:#374151;--muted:#6B7A99;
+  --accent:#E85420;--accent-dim:#FEF0EB;
+  --blue:#2563EB;--blue-dim:#EFF4FF;--green:#059669;--green-dim:#ECFDF5;
+  --amber:#B45309;--amber-dim:#FFFBEB;--purple:#7C3AED;--purple-dim:#F5F3FF;
+  --teal:#0D9488;--teal-dim:#F0FDFA;--rose:#BE185D;--rose-dim:#FFF1F2;
+  --sidebar-w:260px;--header-h:52px;--font-mono:'JetBrains Mono',monospace;
+  --font-body:'Inter',system-ui,sans-serif;--radius:8px;--code-bg:#0D1117;
+  --kw:#FF7B57;--str:#7EE787;--cm:#6E7F95;--ty:#79C0FF;--num:#F2CC60;--an:#D2A8FF;--fn:#E3B341;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#090D18;--surface:#111827;--surface-2:#1A2236;--border:#1F2D42;
+  --text:#E1E7F5;--text-2:#94A3B8;--muted:#5D7096;--accent:#FF6B35;--accent-dim:#1F1008;
+  --blue:#60A5FA;--blue-dim:#0C1A35;--green-dim:#051A0F;--amber-dim:#1A1005;--purple-dim:#14082E;--teal-dim:#041A18;--rose-dim:#1A050D;
+}}
+:root[data-theme="dark"]{
+  --bg:#090D18;--surface:#111827;--surface-2:#1A2236;--border:#1F2D42;
+  --text:#E1E7F5;--text-2:#94A3B8;--muted:#5D7096;--accent:#FF6B35;--accent-dim:#1F1008;
+  --blue:#60A5FA;--blue-dim:#0C1A35;--green-dim:#051A0F;--amber-dim:#1A1005;--purple-dim:#14082E;--teal-dim:#041A18;--rose-dim:#1A050D;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:15px;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.65;min-height:100vh;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--header-h);
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem;}
+.topbar-left{display:flex;align-items:center;gap:0.75rem;}
+.logo{font-family:var(--font-mono);font-weight:700;font-size:1rem;color:var(--accent);letter-spacing:-0.5px;}
+.topbar-divider{width:1px;height:20px;background:var(--border);}
+.topbar-title{font-family:var(--font-mono);font-size:0.85rem;font-weight:500;color:var(--text-2);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.round-steps{display:flex;align-items:center;gap:3px;}
+.round-step{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:0.68rem;font-weight:700;
+  background:var(--surface-2);color:var(--muted);border:1px solid var(--border);
+  text-decoration:none;transition:all 0.15s;}
+.round-step.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.round-step:not(.active):hover{border-color:var(--accent);color:var(--accent);}
+.theme-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);
+  background:var(--surface-2);color:var(--muted);cursor:pointer;font-size:0.85rem;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+.layout{display:flex;padding-top:var(--header-h);min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;position:sticky;top:var(--header-h);
+  height:calc(100vh - var(--header-h));overflow-y:auto;
+  border-right:1px solid var(--border);background:var(--surface);padding:1.25rem 0;}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.nav-group{margin-bottom:1.5rem;}
+.nav-group-label{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0 1.25rem 0.5rem;}
+.nav-link{display:flex;align-items:center;justify-content:space-between;
+  padding:0.3rem 1.25rem;font-size:0.82rem;color:var(--text-2);
+  text-decoration:none;border-left:2px solid transparent;transition:all 0.15s;}
+.nav-link:hover{color:var(--text);background:var(--surface-2);}
+.nav-link.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-dim);}
+.nav-badge{font-family:var(--font-mono);font-size:0.6rem;font-weight:700;padding:1px 5px;border-radius:3px;opacity:0.85;}
+.badge-core{background:var(--accent-dim);color:var(--accent);}
+.badge-imp{background:var(--blue-dim);color:var(--blue);}
+.badge-adv{background:var(--purple-dim);color:var(--purple);}
+.content{flex:1;max-width:960px;padding:2rem 2.5rem 4rem;min-width:0;}
+.intro-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:2rem;margin-bottom:2.5rem;border-top:3px solid var(--accent);}
+.intro-eyebrow{font-family:var(--font-mono);font-size:0.7rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+.intro-card h1{font-family:var(--font-mono);font-size:2rem;font-weight:700;color:var(--text);
+  line-height:1.2;text-wrap:balance;margin-bottom:0.75rem;}
+.intro-card p{color:var(--text-2);font-size:0.95rem;max-width:62ch;margin-bottom:1.5rem;}
+.intro-stats{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.stat{display:flex;flex-direction:column;gap:2px;}
+.stat-val{font-family:var(--font-mono);font-size:1.2rem;font-weight:700;color:var(--text);}
+.stat-label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.topic-section{margin-bottom:3rem;scroll-margin-top:calc(var(--header-h) + 1rem);}
+.section-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.section-eyebrow{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.section-header h2{font-family:var(--font-mono);font-size:1.35rem;font-weight:700;color:var(--text);text-wrap:balance;}
+.diff-badge{margin-left:auto;font-family:var(--font-mono);font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:4px;}
+.diff-core{background:var(--accent-dim);color:var(--accent);}
+.diff-imp{background:var(--blue-dim);color:var(--blue);}
+.diff-adv{background:var(--purple-dim);color:var(--purple);}
+.section-body{display:flex;flex-direction:column;gap:1.25rem;}
+.section-body>p{color:var(--text-2);font-size:0.93rem;max-width:74ch;}
+.section-body>p strong{color:var(--text);}
+.key-points{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;}
+.key-points-label{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.65rem;}
+.key-points ul{list-style:none;display:flex;flex-direction:column;gap:0.45rem;}
+.key-points li{font-size:0.875rem;color:var(--text-2);padding-left:1rem;position:relative;}
+.key-points li::before{content:'›';position:absolute;left:0;color:var(--accent);font-weight:700;}
+.key-points li strong{color:var(--text);}
+.key-points code{font-family:var(--font-mono);font-size:0.8rem;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--text);}
+.callout{border-radius:var(--radius);padding:1rem 1.25rem;border:1px solid;font-size:0.875rem;}
+.callout-label{font-family:var(--font-mono);font-size:0.62rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;}
+.callout-tip{background:var(--blue-dim);border-color:var(--blue);color:var(--text-2);}
+.callout-tip .callout-label{color:var(--blue);}
+.callout-warn{background:var(--amber-dim);border-color:var(--amber);color:var(--text-2);}
+.callout-warn .callout-label{color:var(--amber);}
+.callout-key{background:var(--accent-dim);border-color:var(--accent);color:var(--text-2);}
+.callout-key .callout-label{color:var(--accent);}
+.callout-pat{background:var(--teal-dim);border-color:var(--teal);color:var(--text-2);}
+.callout-pat .callout-label{color:var(--teal);}
+.callout ul{list-style:none;margin-top:0.5rem;display:flex;flex-direction:column;gap:0.35rem;}
+.callout li{padding-left:1rem;position:relative;}
+.callout li::before{content:'→';position:absolute;left:0;font-weight:700;}
+.callout-tip li::before{color:var(--blue);}
+.callout-warn li::before{color:var(--amber);}
+.callout-key li::before{color:var(--accent);}
+.callout-pat li::before{color:var(--teal);}
+.callout code{font-family:var(--font-mono);font-size:0.8rem;background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:3px;}
+.compare-table{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);}
+.compare-table table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.compare-table th{background:var(--surface-2);padding:0.6rem 0.85rem;text-align:left;
+  font-family:var(--font-mono);font-size:0.7rem;font-weight:700;letter-spacing:0.04em;
+  color:var(--muted);border-bottom:1px solid var(--border);}
+.compare-table td{padding:0.55rem 0.85rem;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top;}
+.compare-table tr:last-child td{border-bottom:none;}
+.compare-table tr:hover td{background:var(--surface-2);}
+.compare-table code{font-family:var(--font-mono);font-size:0.78rem;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--text);}
+.compare-table td strong{color:var(--text);}
+.ascii-diagram{background:var(--code-bg);border:1px solid #1A2030;border-radius:var(--radius);
+  padding:1.1rem 1.25rem;font-family:var(--font-mono);font-size:0.78rem;line-height:1.7;
+  color:#8B9DC3;overflow-x:auto;white-space:pre;}
+.ascii-diagram .hi{color:#79C0FF;}
+.ascii-diagram .accent{color:#FF7B57;}
+.ascii-diagram .ok{color:#7EE787;}
+.ascii-diagram .warn{color:#F2CC60;}
+.ascii-diagram .mu{color:#D2A8FF;}
+/* System Design extras */
+.req-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;}
+@media(max-width:640px){.req-grid{grid-template-columns:1fr;}}
+.req-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:0.9rem 1.1rem;}
+.req-box-label{font-family:var(--font-mono);font-size:0.63rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
+.req-box ul{list-style:none;display:flex;flex-direction:column;gap:0.3rem;}
+.req-box li{font-size:0.82rem;color:var(--text-2);padding-left:1rem;position:relative;}
+.req-box li::before{content:'·';position:absolute;left:0;color:var(--muted);}
+.scale-pills{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.scale-pill{font-family:var(--font-mono);font-size:0.72rem;background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:3px 10px;color:var(--text-2);}
+.scale-pill strong{color:var(--accent);}
+.section-divider{height:1px;background:var(--border);margin:2.5rem 0;}
+@media(max-width:768px){.sidebar{display:none;}.content{padding:1.25rem;}}
+</style>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo">Java∙TL</span>
+    <div class="topbar-divider"></div>
+    <span class="topbar-title">Round 6 — System Design</span>
+  </div>
+  <div class="topbar-right">
+    <div class="round-steps">
+      <a class="round-step" href="round1.html" title="Core Java">1</a>
+      <a class="round-step" href="round2.html" title="Multithreading">2</a>
+      <a class="round-step" href="round3.html" title="Spring">3</a>
+      <a class="round-step" href="round4.html" title="Database">4</a>
+      <a class="round-step" href="round5.html" title="Microservices">5</a>
+      <a class="round-step active" title="System Design">6</a>
+      <a class="round-step" href="round7.html" title="Cloud & DevOps">7</a>
+      <a class="round-step" href="round8.html" title="Team Lead">8</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">◐</button>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <div class="nav-group">
+    <div class="nav-group-label">E-Commerce</div>
+    <a class="nav-link active" href="#ecommerce">E-Commerce Platform <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#payment">Payment System <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#ordermgmt">Order Management <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#inventory">Inventory System <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Consumer</div>
+    <a class="nav-link" href="#notification">Notification System <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#fileupload">File Upload Service <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#urlshortener">URL Shortener <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#chat">Chat Application <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Specialized</div>
+    <a class="nav-link" href="#banking">Banking System <span class="nav-badge badge-adv">Adv</span></a>
+    <a class="nav-link" href="#ridesharing">Ride Sharing <span class="nav-badge badge-adv">Adv</span></a>
+    <a class="nav-link" href="#restapi">Large-scale REST API <span class="nav-badge badge-core">Core</span></a>
+  </div>
+</nav>
+
+<main class="content" id="mainContent">
+  <div class="intro-card">
+    <div class="intro-eyebrow">Round 6 of 8</div>
+    <h1>System Design</h1>
+    <p>System design interviews test your ability to translate vague requirements into a concrete, scalable architecture — live, in 45 minutes. The frameworks here follow the standard flow: clarify → estimate → design → deep-dive. For each system, focus on the one or two design decisions that interviewers actually care about. Don't memorize diagrams — practice explaining trade-offs.</p>
+    <div class="intro-stats">
+      <div class="stat"><span class="stat-val">11</span><span class="stat-label">Systems</span></div>
+      <div class="stat"><span class="stat-val">45 min</span><span class="stat-label">Interview slot</span></div>
+      <div class="stat"><span class="stat-val">6 / 8</span><span class="stat-label">Round</span></div>
+    </div>
+  </div>
+
+  <!-- ─── 1. E-COMMERCE ─── -->
+  <section class="topic-section" id="ecommerce">
+    <div class="section-header">
+      <span class="section-eyebrow">E-Commerce</span>
+      <h2>E-Commerce Platform</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Users browse products, add items to a cart, and complete a checkout with payment. The system must handle product catalog search, session-based carts, and order processing — each with very different data and latency requirements.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>10K</strong> concurrent users</div>
+        <div class="scale-pill"><strong>100M</strong> products</div>
+        <div class="scale-pill"><strong>50K</strong> orders/day</div>
+        <div class="scale-pill"><strong>10M</strong> page views/day</div>
+        <div class="scale-pill"><strong>&lt;200ms</strong> product page</div>
+        <div class="scale-pill"><strong>99.95%</strong> checkout uptime</div>
+      </div>
+
+      <div class="req-grid">
+        <div class="req-box">
+          <div class="req-box-label">Functional</div>
+          <ul>
+            <li>Browse / search products by keyword, category, filters</li>
+            <li>Add / remove items from cart; cart persists across sessions</li>
+            <li>Checkout with address, payment method selection</li>
+            <li>Order confirmation; order history and tracking</li>
+            <li>Product reviews and ratings</li>
+          </ul>
+        </div>
+        <div class="req-box">
+          <div class="req-box-label">Non-Functional</div>
+          <ul>
+            <li>Product pages: p99 &lt; 200ms (CDN-cached)</li>
+            <li>Search: p99 &lt; 300ms (Elasticsearch)</li>
+            <li>Cart: always available (Redis, AP system)</li>
+            <li>Checkout: strongly consistent, no double charges</li>
+            <li>Images: served from CDN, not origin servers</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">High-Level Architecture</span>
+
+Browser ──► <span class="accent">CDN</span> (images, static JS/CSS, cached catalog pages)
+        │
+        └──► <span class="accent">API Gateway</span> (auth, rate limit, routing)
+               │
+    ┌──────────┼──────────┬──────────────┬────────────┐
+    ▼          ▼          ▼              ▼            ▼
+<span class="ok">Product    Search     Cart           Order       Payment</span>
+<span class="ok">Service    Service    Service        Service     Service</span>
+(Postgres) (Elastic-  (Redis TTL     (Postgres   (async,
++ S3 imgs   search)    session-key)   state m/c)  idempotent)
+                                          │            │
+                                     Kafka topic: <span class="mu">orders</span>
+                                     │   │    │
+                              Inventory  Ship  <span class="warn">Notification</span>
+                              Service    Svc   Service</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Component Decisions</div>
+        <ul>
+          <li><strong>Product catalog</strong>: PostgreSQL for writes; Elasticsearch for full-text search. Sync via Debezium CDC on the products table.</li>
+          <li><strong>Cart</strong>: Redis with <code>HSET cart:{userId}</code> — O(1) add/remove, TTL expiry for abandoned carts. Store SKU + quantity; hydrate prices at checkout (never store price in cart — prices change).</li>
+          <li><strong>Product images</strong>: upload to S3, serve via CloudFront with immutable URL caching. Thumbnails generated by Lambda on S3 event.</li>
+          <li><strong>Checkout flow</strong>: reserve inventory → charge payment → confirm order. If payment fails, release inventory reservation immediately.</li>
+          <li><strong>Sessions</strong>: JWT for auth; guest carts use a cookie-based cart ID merged into user cart on login.</li>
+          <li><strong>Read scaling</strong>: PostgreSQL read replicas for order history; Redis cache for product detail pages (TTL 5 min).</li>
+        </ul>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">Interview Talk Track</div>
+        <ul>
+          <li>First thing to say: "I'd separate the read path (catalog, search) from the write path (checkout, orders) — they have very different consistency requirements." This immediately shows architectural maturity.</li>
+          <li>Follow up: "Search is the hardest part to scale — I'd use Elasticsearch with sharding by category, and sync it asynchronously from Postgres via CDC rather than dual-writing."</li>
+          <li>Deep dive they'll ask: "How do you handle inventory overselling?" → optimistic locking with a <code>reserved_quantity</code> column + DB check constraint, or Redis DECR with floor check for hot items.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 2. PAYMENT SYSTEM ─── -->
+  <section class="topic-section" id="payment">
+    <div class="section-header">
+      <span class="section-eyebrow">E-Commerce</span>
+      <h2>Payment System</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>A payment system processes money movement: authorization, capture, settlement, and refunds. The two hardest problems are <strong>exactly-once processing</strong> (never charge twice) and <strong>auditability</strong> (immutable record of every state change). You don't build a card network — you integrate with a PSP (Stripe, Adyen) and build the ledger, idempotency, and fraud layers around it.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>10K</strong> TPS peak</div>
+        <div class="scale-pill"><strong>&lt;500ms</strong> authorization</div>
+        <div class="scale-pill"><strong>0</strong> double charges tolerated</div>
+        <div class="scale-pill"><strong>7 years</strong> audit retention</div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">Payment Flow</span>
+
+Client ──► <span class="accent">Payment API</span>
+               │
+               ├── 1. Check <span class="ok">Idempotency Store</span> (Redis, key = client's idempotencyKey)
+               │      └── if found: return cached response (prevent double charge)
+               │
+               ├── 2. <span class="warn">Fraud Detection</span> (ML score, velocity checks, geo-mismatch)
+               │      └── if score > threshold: decline or challenge (3DS)
+               │
+               ├── 3. Call <span class="accent">PSP</span> (Stripe/Adyen) → authorize card
+               │
+               ├── 4. Write to <span class="ok">Ledger DB</span> (append-only, double-entry)
+               │      ORDER_CHARGED: debit customer_wallet, credit merchant_wallet
+               │
+               └── 5. Publish to Kafka: <span class="mu">payment.completed</span>
+                         └── Notification Service: receipt email
+                         └── Order Service: advance order state</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Critical Design Points</div>
+        <ul>
+          <li><strong>Idempotency key</strong>: client generates a UUID per payment attempt and sends it as a header. Server stores result keyed by this UUID. On retry, returns cached result without re-charging. Key expires after 24h.</li>
+          <li><strong>Double-entry ledger</strong>: every transaction creates two rows (debit + credit). Balance = sum of all credits - sum of all debits. Append-only — never UPDATE or DELETE a ledger row.</li>
+          <li><strong>PSP timeout handling</strong>: if PSP call times out, you don't know if it succeeded. Query PSP for the payment status before deciding to retry or void.</li>
+          <li><strong>Reconciliation</strong>: daily job compares your ledger totals against PSP settlement reports. Discrepancies trigger alerts.</li>
+          <li><strong>Fraud detection</strong>: run as a synchronous pre-auth check. Features: same card used on multiple accounts, unusual geo, high velocity. Decline if risk score &gt; threshold.</li>
+        </ul>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-label">Never Say This in an Interview</div>
+        <ul>
+          <li>"I'd use a distributed transaction (2PC) to atomically charge the card and update the DB" — PSPs don't support 2PC. You can't wrap a third-party API call in a local transaction. The correct answer is idempotency + reconciliation.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 3. ORDER MANAGEMENT ─── -->
+  <section class="topic-section" id="ordermgmt">
+    <div class="section-header">
+      <span class="section-eyebrow">E-Commerce</span>
+      <h2>Order Management System</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>An OMS orchestrates the lifecycle of an order from placement through delivery. The core complexity is a <strong>multi-step distributed workflow</strong> across inventory, payment, warehouse, and shipping systems — any of which can fail. The Saga pattern manages this; the state machine makes the order's position in that workflow explicit.</p>
+
+      <div class="ascii-diagram"><span class="hi">Order State Machine + Saga</span>
+
+CREATED ──► PAYMENT_PENDING ──► PAID ──► WAREHOUSE_ASSIGNED
+                │                          │
+                │ payment failed            │ picking started
+                ▼                          ▼
+           PAYMENT_FAILED             PICKING ──► PACKED ──► SHIPPED ──► DELIVERED
+                                          │
+                                          │ out of stock
+                                          ▼
+                                     <span class="accent">CANCELLED</span> (compensate: refund payment)
+
+<span class="hi">Compensating Transactions:</span>
+  PAID → CANCELLED        : trigger refund via Payment Service
+  WAREHOUSE_ASSIGNED → CANCELLED : release warehouse slot
+  PICKING → CANCELLED     : restock items, refund</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Design Decisions</div>
+        <ul>
+          <li><strong>State machine</strong>: store current state as an enum column. Transitions validated in code (and optionally with DB check constraints). Log every transition with timestamp + actor.</li>
+          <li><strong>Saga orchestration</strong>: an Order Orchestrator service sends commands (ReserveInventory, ChargePayment) and waits for replies via Kafka. Easier to trace and debug than choreography for a complex flow.</li>
+          <li><strong>Idempotent steps</strong>: each saga step must be idempotent — the orchestrator may resend a command if it doesn't receive a reply within a timeout. Steps check if they've already processed the command by event ID.</li>
+          <li><strong>Order history</strong>: append-only event log per order (event sourcing light). Every state change is an event with timestamp; the UI renders the full timeline from these events.</li>
+          <li><strong>Customer cancellation window</strong>: orders in PAID or WAREHOUSE_ASSIGNED state can be cancelled by the customer; PICKING or later require customer support intervention.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 4. INVENTORY ─── -->
+  <section class="topic-section" id="inventory">
+    <div class="section-header">
+      <span class="section-eyebrow">E-Commerce</span>
+      <h2>Inventory System</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Inventory tracks physical stock: quantities on hand, reserved, and available. The core challenge is concurrent reservation — when 100 users try to buy the last unit simultaneously, exactly one should succeed. At large scale this becomes a hot-key problem in the database.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>1M</strong> SKUs</div>
+        <div class="scale-pill"><strong>100K</strong> reservations/min peak</div>
+        <div class="scale-pill"><strong>0</strong> oversells</div>
+        <div class="scale-pill"><strong>hot SKUs</strong> flash sale problem</div>
+      </div>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Concurrency Strategy</th><th>Mechanism</th><th>Trade-off</th><th>When to Use</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DB Optimistic Lock</strong></td><td><code>UPDATE SET qty=qty-1 WHERE qty&gt;0 AND version=?</code></td><td>Retry storm under contention</td><td>Low-to-medium concurrency per SKU</td></tr>
+            <tr><td><strong>DB Pessimistic Lock</strong></td><td><code>SELECT FOR UPDATE</code></td><td>Serialized throughput, deadlock risk</td><td>Low concurrency, short transactions</td></tr>
+            <tr><td><strong>Redis DECR</strong></td><td>Lua script: <code>DECR</code> + floor check atomically</td><td>Cache/DB sync complexity</td><td>Hot SKUs, flash sales, very high QPS</td></tr>
+            <tr><td><strong>Pre-allocation</strong></td><td>Assign stock buckets to instances</td><td>Uneven depletion between buckets</td><td>Very large flash sales (millions of units)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="key-points">
+        <div class="key-points-label">Stock Model</div>
+        <ul>
+          <li><strong>quantity_on_hand</strong>: physical count in warehouse</li>
+          <li><strong>quantity_reserved</strong>: held for pending orders (released after 30 min if not paid)</li>
+          <li><strong>quantity_available</strong> = on_hand − reserved. This is what's shown to customers.</li>
+          <li><strong>Reservation TTL</strong>: on checkout start, reserve stock with a 30-min TTL (Redis sorted set for expiry). Confirmed on payment; released on timeout or cancellation.</li>
+          <li><strong>Threshold alerts</strong>: Kafka events when available quantity drops below reorder point → triggers supplier reorder workflow.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 5. NOTIFICATION SYSTEM ─── -->
+  <section class="topic-section" id="notification">
+    <div class="section-header">
+      <span class="section-eyebrow">Consumer</span>
+      <h2>Notification System</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>A notification system delivers messages across multiple channels — email, SMS, push, in-app — triggered by events from any service. The design must handle high throughput, user preferences, retries for failed deliveries, and channel routing logic without coupling producer services to delivery details.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>10M</strong> notifications/day</div>
+        <div class="scale-pill"><strong>4</strong> channels (email/SMS/push/in-app)</div>
+        <div class="scale-pill"><strong>&lt;5s</strong> delivery p99</div>
+        <div class="scale-pill"><strong>retry</strong> on failure w/ backoff</div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">Notification Architecture</span>
+
+Any Service ──► Kafka: <span class="accent">notification-requests</span> topic
+                        │
+                   <span class="ok">Notification Router</span>
+                   ├── lookup user preferences
+                   ├── render template (Handlebars/Freemarker)
+                   └── fan-out to channel queues
+                        │
+           ┌────────────┼────────────┬────────────┐
+           ▼            ▼            ▼            ▼
+    <span class="mu">Email Queue    SMS Queue   Push Queue  In-App Queue</span>
+    SES/SendGrid   Twilio      FCM/APNs    WebSocket
+    worker         worker      worker      worker
+       │               │
+    dead-letter     dead-letter
+    queue (DLQ)     queue (DLQ)
+       │
+    Retry after     <span class="warn">Alert after 3 failures → ops dashboard</span>
+    exp. backoff</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Design Points</div>
+        <ul>
+          <li><strong>User preferences</strong>: per-user, per-event-type opt-in/opt-out stored in DB. Router checks preferences before dispatching to any channel. Respect unsubscribes within 10 seconds.</li>
+          <li><strong>Templates</strong>: store versioned templates in DB. Router fetches template by notification type, renders with event payload data. Never hardcode content in code.</li>
+          <li><strong>Rate limiting</strong>: per-user rate limit (max 5 SMS/hour) enforced in Redis. Prevents notification storms during bug or runaway event loop.</li>
+          <li><strong>Deduplication</strong>: idempotency key per notification event. If the same event is published twice (Kafka at-least-once), the router skips duplicates using a Redis seen-set with 24h TTL.</li>
+          <li><strong>Priority lanes</strong>: separate Kafka partitions for critical (OTP codes, fraud alerts) vs promotional. Critical lane is always processed; promotional can be throttled.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 6. FILE UPLOAD ─── -->
+  <section class="topic-section" id="fileupload">
+    <div class="section-header">
+      <span class="section-eyebrow">Consumer</span>
+      <h2>File Upload Service</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>A file upload service accepts large files from clients, stores them durably, and makes them accessible via a CDN. The key insight: don't route large binary data through your application servers — use <strong>presigned URLs</strong> to let clients upload directly to S3. Your servers handle metadata and coordination only.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>10M</strong> uploads/day</div>
+        <div class="scale-pill"><strong>5GB</strong> max file size</div>
+        <div class="scale-pill"><strong>resumable</strong> uploads required</div>
+        <div class="scale-pill"><strong>virus scan</strong> before serving</div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">Upload Flow (Presigned URL Pattern)</span>
+
+Client                  Your API              S3                  Processing
+  │                        │                  │                   Pipeline
+  │─ POST /upload/init ────►│                  │                       │
+  │◄─ presigned S3 URL ─────│                  │                       │
+  │              (signed, expires in 15min)    │                       │
+  │                                            │                       │
+  │─── PUT binary data ────────────────────────►│                       │
+  │◄── 200 OK (ETag) ──────────────────────────│                       │
+  │                                            │                       │
+  │─ POST /upload/complete ─►│                 │                       │
+  │                          │─ S3 event ──────┤─ SQS/SNS ────────────►│
+  │                          │                 │               ┌────────┴──────┐
+  │                          │                 │            Virus scan  Thumbnail gen
+  │◄─ file metadata ─────────│◄─ update DB ────│                │          │
+  │  { id, url, status }     │                 │           quarantine   S3 thumb
+                                                           if infected   bucket → CDN</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Decisions</div>
+        <ul>
+          <li><strong>Presigned URL</strong>: your API calls <code>s3.generatePresignedUrl(PUT, bucket, key, 15min)</code> and returns it to the client. Client uploads directly — your servers handle zero bytes of file content. This is the answer that impresses interviewers.</li>
+          <li><strong>Chunked / resumable upload</strong>: for files &gt;100MB, use S3 Multipart Upload. Client splits into 5MB+ chunks, uploads each part, then calls CompleteMultipartUpload. On network failure, resume by listing already-uploaded parts.</li>
+          <li><strong>Virus scanning</strong>: scan in quarantine bucket (not public) before moving to production bucket. Use ClamAV or a managed service (AWS GuardDuty malware scanning). Never serve unscanned files.</li>
+          <li><strong>File deduplication</strong>: hash file content (SHA-256) on upload. If hash already exists in DB, skip the upload and return the existing file URL. Saves storage and egress costs.</li>
+          <li><strong>Access control</strong>: private files use short-lived presigned GET URLs (15 min). Public files use CloudFront URLs. Store access policy in DB per file.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 7. URL SHORTENER ─── -->
+  <section class="topic-section" id="urlshortener">
+    <div class="section-header">
+      <span class="section-eyebrow">Consumer</span>
+      <h2>URL Shortener</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>A URL shortener maps a short code to a long URL and redirects with sub-10ms latency. It's the canonical "simple-looking but scale-interesting" system design problem. The two hard parts are unique code generation at scale and making redirects fast enough to not be perceptible.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>500M</strong> URLs total</div>
+        <div class="scale-pill"><strong>100K</strong> redirects/sec</div>
+        <div class="scale-pill"><strong>10 write</strong> / sec (creates)</div>
+        <div class="scale-pill"><strong>&lt;10ms</strong> redirect p99</div>
+        <div class="scale-pill"><strong>5 years</strong> retention</div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">URL Shortener Architecture</span>
+
+<span class="hi">Write path:</span>
+Client ──► POST /shorten ──► API Server
+                                 ├── generate base62 code (7 chars = 62^7 = 3.5 trillion)
+                                 │   Approach: auto-increment ID → base62 encode
+                                 │   (avoids guessability of sequential; prefix with shard ID)
+                                 ├── store: { code, long_url, user_id, created_at, expires_at }
+                                 │   in PostgreSQL + write-through to Redis
+                                 └── return: https://short.ly/{code}
+
+<span class="hi">Read path (redirect — hot path):</span>
+Client ──► GET /abc123 ──► <span class="accent">CDN</span> (cache-control: max-age=3600 for stable URLs)
+                      │
+                      └──(miss)──► API Server ──► <span class="ok">Redis cache</span> (O(1) lookup)
+                                             │
+                                             └──(miss)──► <span class="warn">PostgreSQL</span>
+                                                          └── return 301/302
+                                                          └── async: Kafka → analytics</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Code Generation — Critical Decision</div>
+        <ul>
+          <li><strong>Base62 encode auto-increment ID</strong>: simplest, no collision. DB auto-increment → convert to base62 (0-9, a-z, A-Z). 7 chars gives 3.5 trillion unique codes. The ID generation is the only thing needing coordination.</li>
+          <li><strong>301 vs 302</strong>: 301 (permanent) is cached by browsers — analytics will miss future clicks from cached redirects. 302 (temporary) hits your server every time — better for analytics, higher cost. Pick 302 for analytics products; 301 for pure shortening.</li>
+          <li><strong>Custom aliases</strong>: check availability against the code namespace. Store in same table with <code>is_custom = true</code>; reserve a prefix range for user-defined codes.</li>
+          <li><strong>Expiry</strong>: store <code>expires_at</code> as nullable timestamp. Scheduled job deletes expired URLs and invalidates CDN cache. Deleted codes can be recycled after 90 days.</li>
+          <li><strong>Analytics</strong>: publish click events to Kafka asynchronously. Consumer writes to ClickHouse (OLAP) for time-series click aggregation. Never block the redirect for analytics.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 8. CHAT APPLICATION ─── -->
+  <section class="topic-section" id="chat">
+    <div class="section-header">
+      <span class="section-eyebrow">Consumer</span>
+      <h2>Chat Application</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>A real-time chat application delivers messages between users with low latency and guaranteed ordering. The core problems are: how do messages reach online users instantly (WebSocket push), how do offline users receive missed messages (pull on reconnect), and how do you guarantee ordering in group chats.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>50M</strong> daily active users</div>
+        <div class="scale-pill"><strong>10B</strong> messages/day</div>
+        <div class="scale-pill"><strong>100ms</strong> delivery p99</div>
+        <div class="scale-pill"><strong>group</strong> chats up to 1000 members</div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">Chat Architecture</span>
+
+User A (online)         WebSocket Cluster          Message Service       DB
+    │                   ┌────────────────┐               │
+    ├─── connect ───────►│ WS Server A    │               │
+    │   (long-lived)     │ (Node/Netty)   │               │
+    │                   └────────┬───────┘               │
+    │                            │ pub to Kafka           │
+User B (online,         ┌────────┴───────┐               │
+different server)       │ WS Server B    ├── subscribe    │
+    ◄─── push msg ──────┤                │   from Kafka   │
+                        └────────────────┘               │
+                                                         │
+    <span class="hi">Online presence</span>: Redis SET ws-server:{userId} = serverA (TTL 60s, heartbeat)
+    <span class="hi">Message storage</span>: Cassandra (write-heavy, time-series, userId + chatId partition key)
+    <span class="hi">Offline delivery</span>: on reconnect, client sends lastSeenMessageId → server fetches newer messages
+    <span class="hi">Push (mobile offline)</span>: APNs/FCM via Notification Service</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Decisions</div>
+        <ul>
+          <li><strong>WebSocket fan-out</strong>: when User A sends to group, Message Service publishes to Kafka topic partitioned by chatId. Each WS server subscribes and pushes to connected members. This decouples WS servers — User A's server doesn't need to know which server User B is on.</li>
+          <li><strong>Message ordering</strong>: use a monotonically increasing <code>sequence_id</code> per chat (Redis INCR per chatId). Messages stored and delivered in sequence order. Client reorders if gap detected.</li>
+          <li><strong>Read receipts</strong>: client sends ACK (messageId, userId) when message is displayed. Stored in Redis bitmap or Cassandra counter. Delivered as a separate event back to sender's WS connection.</li>
+          <li><strong>Cassandra schema</strong>: partition key = <code>(chatId)</code>, clustering key = <code>(sequenceId DESC)</code>. Efficient for "load last 50 messages" query.</li>
+          <li><strong>Media</strong>: same presigned-URL S3 pattern as file upload. Message contains S3 URL, not binary data.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 9. BANKING SYSTEM ─── -->
+  <section class="topic-section" id="banking">
+    <div class="section-header">
+      <span class="section-eyebrow">Specialized</span>
+      <h2>Banking System</h2>
+      <span class="diff-badge diff-adv">Advanced</span>
+    </div>
+    <div class="section-body">
+      <p>A core banking system manages accounts, processes transfers, and maintains a complete audit trail. Unlike e-commerce, a banking system prioritizes <strong>consistency over availability</strong> (CP not AP) — an incorrect balance is never acceptable. Every money movement must be atomic, auditable, and reversible through compensating entries, not deletions.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>CP system</strong> (consistency first)</div>
+        <div class="scale-pill"><strong>ACID</strong> transactions mandatory</div>
+        <div class="scale-pill"><strong>7 years</strong> regulatory retention</div>
+        <div class="scale-pill"><strong>immutable</strong> ledger</div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">Banking Architecture</span>
+
+Client ──► API Gateway ──► <span class="accent">Account Service</span>
+                                 │
+                          ┌──────┴────────┐
+                          │               │
+                    Balance Query    <span class="ok">Transaction Service</span>
+                    (read replica)        │
+                                    1. Validate: sufficient funds, account active
+                                    2. Begin DB transaction
+                                    3. INSERT into <span class="ok">ledger</span> (debit + credit entries)
+                                    4. UPDATE account balances
+                                    5. Commit
+                                    6. Publish event to Kafka
+                                          │
+                                   ┌──────┴──────┐
+                                 <span class="mu">AML/Compliance   Notification</span>
+                                 (async ML scan)  (statement)</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Ledger Design</div>
+        <ul>
+          <li><strong>Double-entry bookkeeping</strong>: every transfer = 2 ledger rows. Transfer $100 from A to B: <code>DEBIT account_A $100</code> + <code>CREDIT account_B $100</code>. Ledger sum always = 0. This makes fraud and corruption detectable by simple sum checks.</li>
+          <li><strong>Immutability</strong>: ledger rows are NEVER updated or deleted. Corrections are made via new compensating entries. This preserves complete audit trail.</li>
+          <li><strong>Optimistic concurrency on accounts</strong>: accounts table has a <code>version</code> column. Transfer updates both accounts in a single transaction with <code>WHERE version = ?</code> check. Retry on conflict.</li>
+          <li><strong>Event sourcing</strong>: treat ledger entries as the event store. Account balance is a projection (sum of ledger entries). Can rebuild balance at any point in history.</li>
+          <li><strong>AML/compliance</strong>: async consumer on transaction events. Applies ML models to detect suspicious patterns. Does NOT block the transaction — files a SAR asynchronously if flagged.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 10. RIDE SHARING ─── -->
+  <section class="topic-section" id="ridesharing">
+    <div class="section-header">
+      <span class="section-eyebrow">Specialized</span>
+      <h2>Ride Sharing</h2>
+      <span class="diff-badge diff-adv">Advanced</span>
+    </div>
+    <div class="section-body">
+      <p>A ride-sharing platform matches riders to nearby available drivers in real time. The hardest problems are: efficiently finding nearby drivers (geospatial indexing), matching under contention (driver gets two requests simultaneously), and tracking continuously moving assets. Location data is extremely write-heavy — millions of GPS updates per second.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>5M</strong> active drivers</div>
+        <div class="scale-pill"><strong>500K</strong> location updates/sec</div>
+        <div class="scale-pill"><strong>&lt;5s</strong> match time</div>
+        <div class="scale-pill"><strong>geospatial</strong> radius search</div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">Ride Sharing Architecture</span>
+
+<span class="hi">Location Update (write-heavy):</span>
+Driver App ──► Location Service ──► Redis GEOADD driver:{city} lon lat driverId
+                                   (Redis GEO index, TTL-refreshed per update)
+                                   └──► Kafka: location-updates (async DB persist, analytics)
+
+<span class="hi">Ride Request:</span>
+Rider App ──► Ride API ──► <span class="accent">Matching Service</span>
+                               │
+                          1. GEORADIUS drivers:{city} lng lat 3km ASC COUNT 20
+                          2. Filter: available drivers only (status = AVAILABLE in Redis)
+                          3. <span class="ok">Offer to nearest driver</span> (WebSocket push, 10s timeout)
+                          4. If decline/timeout → offer to next driver in list
+                          5. On accept: create Trip in PostgreSQL
+                                          │
+                               ┌──────────┴────────────────┐
+                            Surge Pricing              Notification
+                            (supply/demand              (rider: driver
+                             ratio in Redis)             details; driver:
+                                                         pickup location)</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Decisions</div>
+        <ul>
+          <li><strong>Redis GEORADIUS</strong>: Redis stores driver locations as a geospatial sorted set (Haversine formula under the hood). <code>GEORADIUS</code> returns drivers within N km sorted by distance in O(N+log(M)) time. City-sharded: one key per city to avoid hot keys.</li>
+          <li><strong>Driver state</strong>: Redis hash <code>driver:{id}</code> with status (AVAILABLE/ON_TRIP/OFFLINE) and TTL. If driver app goes offline, TTL expires and driver is removed from available pool automatically.</li>
+          <li><strong>Match contention</strong>: two riders may simultaneously match the same driver. Use a Redis distributed lock (Redlock) when offering a trip to a driver. If lock fails, move to next candidate.</li>
+          <li><strong>Surge pricing</strong>: calculate supply/demand ratio per geohash cell every 30 seconds. If demand &gt; supply by threshold, apply surge multiplier. Store current multiplier in Redis; recalculate async.</li>
+          <li><strong>ETA calculation</strong>: call routing service (OSRM, Google Maps API) with driver's current position and pickup coordinates. Update estimated arrival as driver moves.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── 11. LARGE-SCALE REST API ─── -->
+  <section class="topic-section" id="restapi">
+    <div class="section-header">
+      <span class="section-eyebrow">Specialized</span>
+      <h2>Large-scale REST API</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Designing a REST API for millions of requests per second requires layered caching, horizontal scaling, and robust cross-cutting concerns (auth, rate limiting, versioning). This is the horizontal concern underlying every other system in this round — the API layer is how all those systems are exposed.</p>
+
+      <div class="scale-pills">
+        <div class="scale-pill"><strong>1M</strong> RPS</div>
+        <div class="scale-pill"><strong>10K</strong> clients</div>
+        <div class="scale-pill"><strong>p99 &lt;100ms</strong></div>
+        <div class="scale-pill"><strong>99.99%</strong> uptime</div>
+      </div>
+
+      <div class="ascii-diagram"><span class="hi">API Scaling Stack</span>
+
+Request ──► <span class="accent">DNS (GeoDNS → nearest region)</span>
+        ──► CDN (GET responses cached by URL+Vary:Authorization)
+        ──► Load Balancer (L7, sticky sessions optional)
+        ──► <span class="ok">API Gateway</span>
+               ├── JWT validation (public key, no DB hit)
+               ├── Rate limiting (Redis token bucket per clientId)
+               ├── Request routing (path → service)
+               └── Circuit breaker (downstream protection)
+        ──► Service instances (stateless, horizontal scale)
+               ├── <span class="ok">L1 cache</span>: in-process Caffeine (nanoseconds, per-instance)
+               ├── <span class="ok">L2 cache</span>: Redis cluster (milliseconds, shared)
+               └── DB: PostgreSQL with read replicas
+                        └── Connection pool: HikariCP (sized to CPU × 2)</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Critical Design Points</div>
+        <ul>
+          <li><strong>Auth at gateway</strong>: validate JWT using cached public key (no DB call on every request). Downstream services trust the <code>X-User-Id</code> header injected by the gateway — they don't re-validate.</li>
+          <li><strong>Cache hierarchy</strong>: CDN (minutes, shared globally) → API Gateway cache (seconds, by route) → Service L1 cache (milliseconds, per instance) → Redis L2 (milliseconds, shared) → DB. Most requests should never reach the DB.</li>
+          <li><strong>Rate limiting strategy</strong>: per-client token bucket in Redis. Return <code>429 Too Many Requests</code> with <code>Retry-After</code> and <code>X-RateLimit-Remaining</code> headers. Separate limits for authenticated vs anonymous clients.</li>
+          <li><strong>API versioning</strong>: URL versioning (<code>/v1/</code>, <code>/v2/</code>) for breaking changes. Maintain N-1 versions; announce deprecation 6 months in advance with <code>Sunset</code> header on deprecated routes.</li>
+          <li><strong>Observability</strong>: every response includes <code>X-Request-Id</code> (trace ID). Log request/response metadata (not body) at gateway level. Prometheus metrics: request rate, error rate, latency histograms per route.</li>
+          <li><strong>Graceful degradation</strong>: non-critical downstream failures return cached stale data with a <code>Warning</code> header. Critical failures return <code>503</code> with <code>Retry-After</code>.</li>
+        </ul>
+      </div>
+
+      <div class="callout callout-key">
+        <div class="callout-label">System Design Interview Framework</div>
+        <ul>
+          <li><strong>Step 1 — Clarify (5 min)</strong>: functional requirements (what users do), scale numbers (users, QPS, data size), SLA (latency, availability), geographic scope.</li>
+          <li><strong>Step 2 — Estimate (3 min)</strong>: storage (bytes × records), bandwidth (bytes × QPS), cache hit ratio target. Say numbers out loud — interviewers want to hear you think.</li>
+          <li><strong>Step 3 — High-level (10 min)</strong>: draw the main components with data flows. Name the tech choices (Postgres not just "a database"). Justify every choice with one sentence.</li>
+          <li><strong>Step 4 — Deep dive (20 min)</strong>: pick the hardest problem and go deep. Concurrency, failure modes, bottlenecks. Interviewers drive this — listen to what they ask about.</li>
+          <li><strong>Step 5 — Trade-offs (5 min)</strong>: what would you change under different constraints? What are the current bottlenecks? Shows senior thinking.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+  <div style="text-align:center;padding:1rem 0 2rem;color:var(--muted);font-family:var(--font-mono);font-size:0.78rem;">
+    Round 6 complete · 11 systems · Round 7 → Cloud &amp; DevOps
+  </div>
+</main>
+</div>
+
+<script>
+const btn = document.getElementById('themeBtn');
+const root = document.documentElement;
+const saved = localStorage.getItem('theme');
+if (saved) root.setAttribute('data-theme', saved);
+btn.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+const sections = document.querySelectorAll('.topic-section');
+const links = document.querySelectorAll('.nav-link');
+function onScroll() {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY + 80 >= s.offsetTop) current = s.id; });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+</script>

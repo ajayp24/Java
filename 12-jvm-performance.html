@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JVM & Performance — Java Interview Prep</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#f59e0b;--accent-dim:#78350f;--code-bg:#0d1117;--kw:#ff79c6;--cls:#8be9fd;--str:#f1fa8c;--cmt:#6272a4;--num:#bd93f9;--ann:#50fa7b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Sidebar */
+.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;flex-shrink:0}
+.sidebar-title{padding:0 20px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);border-bottom:1px solid var(--border);margin-bottom:8px}
+.sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--text-muted);border-left:3px solid transparent;transition:all .2s}
+.sidebar a:hover{color:var(--text);background:var(--surface2);text-decoration:none}
+.sidebar a.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-dim);font-weight:600}
+
+/* Main */
+.main{margin-left:260px;flex:1;max-width:960px;padding:40px 48px}
+
+/* Header */
+.breadcrumb{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.breadcrumb span{margin:0 6px}
+.topic-badge{display:inline-block;background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+h1{font-size:32px;font-weight:800;margin-bottom:12px;background:linear-gradient(135deg,var(--accent),#fcd34d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-desc{color:var(--text-muted);font-size:16px;margin-bottom:32px;max-width:700px}
+
+/* TOC */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+.toc h3{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px}
+.toc ol{padding-left:20px}
+.toc li{margin:6px 0;font-size:14px}
+.toc a{color:var(--text-muted)}
+.toc a:hover{color:var(--accent)}
+
+/* Sections */
+.section{margin-bottom:56px}
+.section-num{display:inline-block;background:var(--accent);color:#000;border-radius:6px;width:28px;height:28px;text-align:center;line-height:28px;font-size:12px;font-weight:800;margin-right:10px;flex-shrink:0}
+h2{font-size:22px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:16px;font-weight:600;margin:24px 0 12px;color:var(--accent)}
+p{margin-bottom:14px;color:var(--text-muted)}
+
+/* Code */
+.code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+.code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:var(--surface2);color:var(--accent);font-weight:700;padding:10px 14px;text-align:left;border:1px solid var(--border)}
+td{padding:10px 14px;border:1px solid var(--border);color:var(--text-muted);vertical-align:top}
+tr:hover td{background:var(--surface)}
+
+/* Info boxes */
+.info-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:16px 20px;margin:16px 0}
+.warn-box{background:#1a1000;border:1px solid #78350f;border-left:4px solid #f59e0b;border-radius:8px;padding:16px 20px;margin:16px 0}
+.warn-box strong,.info-box strong{display:block;margin-bottom:6px;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.warn-box strong{color:#fbbf24}.info-box strong{color:var(--accent)}
+
+/* Q&A */
+.qa-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:40px}
+.qa-section h2{border-bottom-color:var(--accent)}
+.qa-item{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.qa-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.question{font-weight:700;color:var(--accent);margin-bottom:10px;font-size:15px}
+.answer{color:var(--text-muted);font-size:14px}
+
+/* Nav */
+.page-nav{display:flex;justify-content:space-between;margin-top:60px;padding-top:24px;border-top:1px solid var(--border)}
+.nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 20px;font-size:14px;color:var(--text-muted);cursor:pointer;transition:all .2s}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-title">Java Interview Prep</div>
+  <a href="01-core-java.html">01. Core Java</a>
+  <a href="02-oop-solid.html">02. OOP & SOLID</a>
+  <a href="03-collections.html">03. Collections</a>
+  <a href="04-concurrency.html">04. Concurrency</a>
+  <a href="05-java8-features.html">05. Java 8+ Features</a>
+  <a href="06-design-patterns.html">06. Design Patterns</a>
+  <a href="07-spring-framework.html">07. Spring Framework</a>
+  <a href="08-microservices.html">08. Microservices</a>
+  <a href="09-database-jpa.html">09. Database & JPA</a>
+  <a href="10-system-design.html">10. System Design</a>
+  <a href="11-testing.html">11. Testing</a>
+  <a href="12-jvm-performance.html" class="active">12. JVM & Performance</a>
+  <a href="13-security.html">13. Security</a>
+  <a href="14-leadership-practices.html">14. Leadership</a>
+</nav>
+
+<main class="main">
+  <div class="breadcrumb"><a href="index.html">Home</a><span>›</span>JVM &amp; Performance</div>
+  <div class="topic-badge">Topic 12</div>
+  <h1>JVM &amp; Performance</h1>
+  <p class="page-desc">JVM internals, garbage collection algorithms, heap tuning, profiling tools, and diagnosing memory leaks — critical knowledge for senior engineers optimizing Java applications in production.</p>
+
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#jvm-arch">JVM Architecture</a></li>
+      <li><a href="#class-loading">Class Loading</a></li>
+      <li><a href="#memory-model">JVM Memory Model</a></li>
+      <li><a href="#gc-algorithms">Garbage Collection Algorithms</a></li>
+      <li><a href="#heap-tuning">Heap Tuning &amp; JVM Flags</a></li>
+      <li><a href="#profiling">Profiling &amp; Diagnostics</a></li>
+      <li><a href="#memory-leaks">Memory Leaks</a></li>
+      <li><a href="#qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" id="jvm-arch">
+    <h2><span class="section-num">1</span>JVM Architecture</h2>
+    <p>The JVM is a stack-based virtual machine that executes bytecode. It provides platform independence, memory management, and runtime optimization via JIT compilation.</p>
+
+    <table>
+      <tr><th>Component</th><th>Responsibility</th></tr>
+      <tr><td><strong>Class Loader Subsystem</strong></td><td>Loads, links, and initializes .class files</td></tr>
+      <tr><td><strong>Runtime Data Areas</strong></td><td>Heap, Stack, Method Area, PC Registers, Native Stack</td></tr>
+      <tr><td><strong>Execution Engine</strong></td><td>Interpreter + JIT Compiler + GC</td></tr>
+      <tr><td><strong>JIT Compiler</strong></td><td>C1 (client, fast startup) + C2 (server, peak throughput)</td></tr>
+      <tr><td><strong>Native Interface (JNI)</strong></td><td>Calls native C/C++ libraries</td></tr>
+    </table>
+
+    <h3>JIT Compilation Tiers</h3>
+    <div class="code-block"><span class="cmt">// Tiered compilation (default since Java 8):</span>
+<span class="cmt">// Level 0 — Interpreter</span>
+<span class="cmt">// Level 1 — C1 no profiling (simple methods)</span>
+<span class="cmt">// Level 2 — C1 limited profiling</span>
+<span class="cmt">// Level 3 — C1 full profiling (method invocation & branch counters)</span>
+<span class="cmt">// Level 4 — C2 (aggressive optimizations: inlining, loop unrolling, escape analysis)</span>
+
+<span class="cmt">// Enable/disable JIT (for debugging only)</span>
+<span class="cmt">// -XX:+TieredCompilation   (default: enabled)</span>
+<span class="cmt">// -XX:-TieredCompilation   (disable — pure interpreter)</span>
+<span class="cmt">// -XX:CompileThreshold=10000  (invocation count before C2 kicks in)</span></div>
+
+    <div class="info-box">
+      <strong>Escape Analysis</strong>
+      The JIT's escape analysis determines if an object is confined to a single thread or method. If it doesn't "escape", the JVM can allocate it on the stack (scalar replacement) instead of the heap, eliminating GC pressure entirely.
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" id="class-loading">
+    <h2><span class="section-num">2</span>Class Loading</h2>
+    <p>Class loading is hierarchical and lazy — a class is loaded only when first used (not at startup). The delegation model prevents core classes from being overridden by application code.</p>
+
+    <table>
+      <tr><th>Loader</th><th>Loads</th><th>Notes</th></tr>
+      <tr><td><strong>Bootstrap</strong></td><td>rt.jar / java.* (JDK core)</td><td>Native C++ code, parent of all</td></tr>
+      <tr><td><strong>Extension / Platform</strong></td><td>jre/lib/ext or --patch-module</td><td>Java 9+: Platform ClassLoader</td></tr>
+      <tr><td><strong>Application / System</strong></td><td>Classpath / modulepath</td><td>Most app classes loaded here</td></tr>
+      <tr><td><strong>Custom ClassLoader</strong></td><td>Plugins, hot-deploy, OSGi</td><td>Child of Application loader</td></tr>
+    </table>
+
+    <h3>Loading Phases</h3>
+    <div class="code-block"><span class="cmt">// 1. Loading    — read .class bytes, create Class object in Method Area</span>
+<span class="cmt">// 2. Linking</span>
+<span class="cmt">//    a. Verification  — bytecode is valid, type-safe</span>
+<span class="cmt">//    b. Preparation   — static fields allocated, set to defaults (null/0)</span>
+<span class="cmt">//    c. Resolution    — symbolic refs resolved to actual memory refs</span>
+<span class="cmt">// 3. Initialization — static initializers and static blocks execute</span>
+
+<span class="kw">public class</span> <span class="cls">ClassLoadingDemo</span> {
+    <span class="kw">static</span> {
+        <span class="cls">System</span>.<span class="met">out</span>.<span class="met">println</span>(<span class="str">"Initialized!"</span>); <span class="cmt">// runs once at first use</span>
+    }
+
+    <span class="kw">public static void</span> <span class="met">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cmt">// Check which classloader loaded a class</span>
+        <span class="cls">System</span>.<span class="met">out</span>.<span class="met">println</span>(<span class="cls">String</span>.<span class="kw">class</span>.<span class="met">getClassLoader</span>()); <span class="cmt">// null = Bootstrap</span>
+        <span class="cls">System</span>.<span class="met">out</span>.<span class="met">println</span>(<span class="cls">ClassLoadingDemo</span>.<span class="kw">class</span>.<span class="met">getClassLoader</span>()); <span class="cmt">// AppClassLoader</span>
+    }
+}</div>
+
+    <div class="warn-box">
+      <strong>ClassLoader Leaks</strong>
+      Hot-deploy (e.g., Tomcat redeployment) creates a new ClassLoader. If old references remain (via static ThreadLocal, JDBC drivers, logging frameworks), the old ClassLoader can't be GC'd, causing PermGen / Metaspace exhaustion over time.
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" id="memory-model">
+    <h2><span class="section-num">3</span>JVM Memory Model</h2>
+
+    <table>
+      <tr><th>Region</th><th>Stores</th><th>GC?</th><th>Tuning Flag</th></tr>
+      <tr><td><strong>Eden</strong></td><td>Newly allocated objects</td><td>Minor GC</td><td>-Xmn (young gen size)</td></tr>
+      <tr><td><strong>Survivor (S0/S1)</strong></td><td>Objects surviving minor GC</td><td>Minor GC</td><td>-XX:SurvivorRatio</td></tr>
+      <tr><td><strong>Old Gen (Tenured)</strong></td><td>Long-lived objects</td><td>Major/Full GC</td><td>-Xmx (max heap)</td></tr>
+      <tr><td><strong>Metaspace</strong></td><td>Class metadata (Java 8+)</td><td>Full GC</td><td>-XX:MaxMetaspaceSize</td></tr>
+      <tr><td><strong>Code Cache</strong></td><td>JIT compiled code</td><td>Code eviction</td><td>-XX:ReservedCodeCacheSize</td></tr>
+      <tr><td><strong>Thread Stack</strong></td><td>Stack frames per thread</td><td>Auto on thread exit</td><td>-Xss</td></tr>
+      <tr><td><strong>Direct / Off-heap</strong></td><td>ByteBuffer.allocateDirect, NIO</td><td>Not GC'd</td><td>-XX:MaxDirectMemorySize</td></tr>
+    </table>
+
+    <h3>Object Lifecycle</h3>
+    <div class="code-block"><span class="cmt">// Object allocation path:</span>
+<span class="cmt">// 1. TLAB (Thread-Local Allocation Buffer) — fast bump-pointer allocation</span>
+<span class="cmt">// 2. Eden if TLAB full</span>
+<span class="cmt">// 3. Old Gen directly if object is very large (humongous object in G1)</span>
+
+<span class="cmt">// Promotion path:</span>
+<span class="cmt">// Eden → Survivor (after minor GC, age=1)</span>
+<span class="cmt">// Survivor → Survivor (each minor GC, age++)</span>
+<span class="cmt">// Survivor → Old Gen (age >= MaxTenuringThreshold, default 15)</span>
+
+<span class="cmt">// -XX:MaxTenuringThreshold=15    // promote after 15 minor GCs</span>
+<span class="cmt">// -XX:+PrintTenuringDistribution // log object ages (diagnostic)</span></div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" id="gc-algorithms">
+    <h2><span class="section-num">4</span>Garbage Collection Algorithms</h2>
+
+    <table>
+      <tr><th>Collector</th><th>Use Case</th><th>Pause Type</th><th>Enable Flag</th></tr>
+      <tr><td><strong>Serial GC</strong></td><td>Single-core, tiny heap (&lt;100MB)</td><td>Stop-the-world (STW)</td><td>-XX:+UseSerialGC</td></tr>
+      <tr><td><strong>Parallel GC</strong></td><td>Batch/throughput (Java 8 default)</td><td>STW parallel threads</td><td>-XX:+UseParallelGC</td></tr>
+      <tr><td><strong>G1 GC</strong></td><td>General purpose (Java 9+ default)</td><td>Mostly concurrent, short STW</td><td>-XX:+UseG1GC</td></tr>
+      <tr><td><strong>ZGC</strong></td><td>Low-latency, huge heaps (TB)</td><td>&lt;1ms (Java 15+ prod-ready)</td><td>-XX:+UseZGC</td></tr>
+      <tr><td><strong>Shenandoah</strong></td><td>Low-latency (RedHat), large heaps</td><td>Concurrent compaction</td><td>-XX:+UseShenandoahGC</td></tr>
+    </table>
+
+    <h3>G1 GC Deep Dive</h3>
+    <div class="code-block"><span class="cmt">// G1 divides heap into equal-sized regions (~2048 regions by default)</span>
+<span class="cmt">// Regions are dynamically assigned as: Eden, Survivor, Old, or Humongous</span>
+<span class="cmt">// Humongous = object > 50% of region size</span>
+
+<span class="cmt">// Key JVM flags for G1:</span>
+<span class="cmt">// -XX:+UseG1GC</span>
+<span class="cmt">// -XX:MaxGCPauseMillis=200       // pause target (G1 tries to meet it)</span>
+<span class="cmt">// -XX:G1HeapRegionSize=16m       // region size (1MB-32MB, power of 2)</span>
+<span class="cmt">// -XX:G1NewSizePercent=20        // min young gen %</span>
+<span class="cmt">// -XX:G1MaxNewSizePercent=60     // max young gen %</span>
+<span class="cmt">// -XX:InitiatingHeapOccupancyPercent=45  // start concurrent cycle at 45% old gen</span>
+
+<span class="cmt">// G1 GC phases:</span>
+<span class="cmt">// 1. Young GC (minor) — STW, evacuates Eden+Survivor to new Survivor/Old</span>
+<span class="cmt">// 2. Concurrent Mark  — concurrent with app threads, finds live objects</span>
+<span class="cmt">// 3. Remark           — STW, finalizes marking (SATB algorithm)</span>
+<span class="cmt">// 4. Cleanup          — STW (brief), reclaims empty regions</span>
+<span class="cmt">// 5. Mixed GC         — STW, collects young + some old regions</span></div>
+
+    <h3>GC Logging (Java 9+)</h3>
+    <div class="code-block"><span class="cmt"># Unified GC logging</span>
+-Xlog:gc*:file=/var/log/app/gc.log:time,uptime,level,tags:filecount=5,filesize=20m
+
+<span class="cmt"># Key things to look for:</span>
+<span class="cmt"># - Pause time > MaxGCPauseMillis (G1 can't always meet target)</span>
+<span class="cmt"># - Full GC (should be rare — indicates promotion failure or heap too small)</span>
+<span class="cmt"># - Humongous object allocation (tune G1HeapRegionSize)</span>
+<span class="cmt"># - "To-space exhausted" (survivor/old gen full during evacuation)</span></div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" id="heap-tuning">
+    <h2><span class="section-num">5</span>Heap Tuning &amp; JVM Flags</h2>
+
+    <h3>Production JVM Startup Template</h3>
+    <div class="code-block"><span class="cmt"># Container-aware sizing (Java 10+)</span>
+-XX:+UseContainerSupport          <span class="cmt"># reads cgroup limits (enabled by default Java 11+)</span>
+-XX:MaxRAMPercentage=75.0         <span class="cmt"># heap = 75% of container RAM</span>
+-XX:InitialRAMPercentage=50.0     <span class="cmt"># start heap at 50% to avoid resize pauses</span>
+
+<span class="cmt"># Or explicit sizes</span>
+-Xms2g -Xmx2g                    <span class="cmt"># fix min==max to prevent heap resize</span>
+
+<span class="cmt"># GC selection</span>
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+
+<span class="cmt"># Metaspace</span>
+-XX:MetaspaceSize=256m            <span class="cmt"># initial (avoids early resizes)</span>
+-XX:MaxMetaspaceSize=512m         <span class="cmt"># cap it to detect leaks</span>
+
+<span class="cmt"># Thread stacks</span>
+-Xss512k                          <span class="cmt"># reduce from default 1MB for high thread count</span>
+
+<span class="cmt"># OOM diagnostics</span>
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/var/dumps/
+-XX:+ExitOnOutOfMemoryError       <span class="cmt"># fail fast, let orchestrator restart</span>
+
+<span class="cmt"># Performance</span>
+-XX:+UseStringDeduplication       <span class="cmt"># G1 only: dedup identical String objects</span>
+-XX:+OptimizeStringConcat         <span class="cmt"># optimize string concatenation</span></div>
+
+    <h3>GC Tuning Decision Tree</h3>
+    <div class="info-box">
+      <strong>Which GC to choose?</strong>
+      <br>• <strong>Latency &lt; 200ms, heap &lt; 32GB</strong> → G1 with MaxGCPauseMillis=100-200
+      <br>• <strong>Latency &lt; 10ms, large heap</strong> → ZGC (-XX:+UseZGC)
+      <br>• <strong>Max throughput, batch jobs</strong> → Parallel GC (-XX:+UseParallelGC)
+      <br>• <strong>Microservices in containers, fast startup</strong> → GraalVM Native Image (no GC tuning needed)
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section" id="profiling">
+    <h2><span class="section-num">6</span>Profiling &amp; Diagnostics</h2>
+
+    <h3>Java Flight Recorder (JFR)</h3>
+    <div class="code-block"><span class="cmt"># Start JFR from command line (Java 11+, free in production)</span>
+jcmd &lt;PID&gt; JFR.start duration=120s filename=/tmp/recording.jfr
+
+<span class="cmt"># Or via JVM flag</span>
+-XX:StartFlightRecording=duration=120s,filename=/tmp/app.jfr,settings=profile
+
+<span class="cmt"># Analyze with JDK Mission Control (JMC)</span>
+<span class="cmt"># JFR captures: CPU usage, GC events, thread activity, lock contention,</span>
+<span class="cmt"># method profiling, heap allocations, I/O events — with &lt;1% overhead</span></div>
+
+    <h3>Thread Dump Analysis</h3>
+    <div class="code-block"><span class="cmt"># Take thread dump</span>
+jcmd &lt;PID&gt; Thread.print
+<span class="cmt"># or</span>
+kill -3 &lt;PID&gt;   <span class="cmt"># sends SIGQUIT, dumps to stdout</span>
+
+<span class="cmt"># Key thread states to look for:</span>
+<span class="cmt"># BLOCKED     — thread waiting to acquire a monitor (lock contention)</span>
+<span class="cmt"># WAITING     — thread in Object.wait() or LockSupport.park()</span>
+<span class="cmt"># TIMED_WAITING — Thread.sleep, wait with timeout</span>
+
+<span class="cmt"># Deadlock example (JVM will report it in thread dump)</span>
+<span class="kw">java</span>.lang.<span class="cls">Thread</span>.State: BLOCKED (on object monitor)
+    - waiting to lock &lt;0x0000000780001234&gt; (a java.lang.<span class="cls">Object</span>)
+    - locked &lt;0x0000000780005678&gt; (a java.lang.<span class="cls">Object</span>)</div>
+
+    <h3>Heap Dump &amp; Analysis</h3>
+    <div class="code-block"><span class="cmt"># Generate heap dump</span>
+jcmd &lt;PID&gt; GC.heap_dump /tmp/heap.hprof
+<span class="cmt"># or</span>
+jmap -dump:format=b,file=/tmp/heap.hprof &lt;PID&gt;
+
+<span class="cmt"># Analyze with Eclipse MAT or VisualVM:</span>
+<span class="cmt"># 1. Dominator tree — find objects retaining most memory</span>
+<span class="cmt"># 2. Leak suspects report — identifies likely leak roots</span>
+<span class="cmt"># 3. OQL queries — SELECT * FROM java.util.HashMap WHERE size > 10000</span>
+
+<span class="cmt"># Key metrics to check:</span>
+<span class="cmt"># - Retained heap: total memory freed if object GC'd (including references)</span>
+<span class="cmt"># - Shallow heap: size of object itself (not references)</span></div>
+
+    <h3>Key JVM Diagnostic Tools</h3>
+    <table>
+      <tr><th>Tool</th><th>Purpose</th><th>Command</th></tr>
+      <tr><td>jcmd</td><td>Swiss army knife — JFR, heap dump, GC info</td><td>jcmd &lt;pid&gt; help</td></tr>
+      <tr><td>jstat</td><td>GC stats, heap usage, class loading</td><td>jstat -gcutil &lt;pid&gt; 1000</td></tr>
+      <tr><td>jstack</td><td>Thread dump</td><td>jstack &lt;pid&gt;</td></tr>
+      <tr><td>jmap</td><td>Heap dump, histogram</td><td>jmap -histo &lt;pid&gt;</td></tr>
+      <tr><td>JFR + JMC</td><td>Low-overhead production profiler</td><td>Built into JDK 11+</td></tr>
+      <tr><td>Async-Profiler</td><td>CPU/allocation flame graphs, no safepoint bias</td><td>async-profiler</td></tr>
+    </table>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section" id="memory-leaks">
+    <h2><span class="section-num">7</span>Memory Leaks</h2>
+    <p>Java memory leaks occur when objects are unintentionally reachable (held by references) even after they're no longer needed. The GC cannot collect reachable objects.</p>
+
+    <h3>Common Leak Patterns</h3>
+    <div class="code-block"><span class="cmt">// 1. Static collections growing unbounded</span>
+<span class="kw">public class</span> <span class="cls">MetricsRegistry</span> {
+    <span class="kw">private static final</span> <span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">Object</span>&gt; cache = <span class="kw">new</span> <span class="cls">HashMap</span>&lt;&gt;();
+    <span class="kw">public static void</span> <span class="met">register</span>(<span class="cls">String</span> key, <span class="cls">Object</span> val) {
+        cache.<span class="met">put</span>(key, val); <span class="cmt">// leak: never evicted</span>
+    }
+    <span class="cmt">// Fix: use WeakHashMap, Caffeine with expiry, or explicit eviction</span>
+}
+
+<span class="cmt">// 2. ThreadLocal not removed</span>
+<span class="kw">private static final</span> <span class="cls">ThreadLocal</span>&lt;<span class="cls">Connection</span>&gt; CONN = <span class="kw">new</span> <span class="cls">ThreadLocal</span>&lt;&gt;();
+<span class="kw">public void</span> <span class="met">process</span>() {
+    CONN.<span class="met">set</span>(<span class="met">getConnection</span>());
+    <span class="kw">try</span> {
+        <span class="cmt">// ... work ...</span>
+    } <span class="kw">finally</span> {
+        CONN.<span class="met">remove</span>(); <span class="cmt">// ALWAYS remove in finally — thread pool reuses threads</span>
+    }
+}
+
+<span class="cmt">// 3. Listeners / callbacks never unregistered</span>
+<span class="kw">public class</span> <span class="cls">EventBus</span> {
+    <span class="kw">private final</span> <span class="cls">List</span>&lt;<span class="cls">Listener</span>&gt; listeners = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;&gt;();
+    <span class="kw">public void</span> <span class="met">subscribe</span>(<span class="cls">Listener</span> l) { listeners.<span class="met">add</span>(l); }
+    <span class="cmt">// Fix: add unsubscribe(), or use WeakReference list</span>
+    <span class="kw">public void</span> <span class="met">unsubscribe</span>(<span class="cls">Listener</span> l) { listeners.<span class="met">remove</span>(l); }
+}
+
+<span class="cmt">// 4. Inner class holding outer class reference</span>
+<span class="kw">public class</span> <span class="cls">OuterService</span> {
+    <span class="kw">private byte</span>[] largeBuffer = <span class="kw">new byte</span>[<span class="num">10_000_000</span>];
+
+    <span class="kw">public</span> <span class="cls">Runnable</span> <span class="met">createTask</span>() {
+        <span class="kw">return new</span> <span class="cls">Runnable</span>() { <span class="cmt">// anonymous inner class holds OuterService ref!</span>
+            <span class="kw">public void</span> <span class="met">run</span>() { <span class="cls">System</span>.<span class="met">out</span>.<span class="met">println</span>(<span class="str">"running"</span>); }
+        };
+        <span class="cmt">// Fix: use lambda (no implicit this capture) or static nested class</span>
+    }
+}</div>
+
+    <h3>Reference Types for Cache-Friendly Memory</h3>
+    <div class="code-block"><span class="cmt">// Strong reference — never GC'd while reachable (default)</span>
+<span class="cls">Object</span> obj = <span class="kw">new</span> <span class="cls">Object</span>();
+
+<span class="cmt">// Soft reference — GC'd only under memory pressure (good for caches)</span>
+<span class="cls">SoftReference</span>&lt;<span class="cls">byte</span>[]&gt; softCache = <span class="kw">new</span> <span class="cls">SoftReference</span>&lt;&gt;(<span class="kw">new byte</span>[<span class="num">1024</span>]);
+
+<span class="cmt">// Weak reference — GC'd at next collection (good for canonical maps)</span>
+<span class="cls">WeakReference</span>&lt;<span class="cls">Widget</span>&gt; weakWidget = <span class="kw">new</span> <span class="cls">WeakReference</span>&lt;&gt;(widget);
+<span class="cls">WeakHashMap</span>&lt;<span class="cls">Key</span>, <span class="cls">Value</span>&gt; map = <span class="kw">new</span> <span class="cls">WeakHashMap</span>&lt;&gt;(); <span class="cmt">// keys are weak refs</span>
+
+<span class="cmt">// Phantom reference — used for cleanup actions post-GC (Cleaner API Java 9+)</span>
+<span class="cls">Cleaner</span> cleaner = <span class="cls">Cleaner</span>.<span class="met">create</span>();
+cleaner.<span class="met">register</span>(resource, () -&gt; <span class="met">cleanup</span>()); <span class="cmt">// runs when resource unreachable</span></div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="qa-section" id="qa">
+    <h2><span class="section-num">Q</span>Interview Q&amp;A</h2>
+
+    <div class="qa-item">
+      <p class="question">Q1: What's the difference between Minor GC, Major GC, and Full GC?</p>
+      <div class="answer">
+        <p><strong>Minor GC</strong> collects the young generation (Eden + Survivors). It's fast because it only scans a small area and uses the card table to find old→young references without scanning all of old gen. Happens frequently.</p>
+        <p><strong>Major GC</strong> collects the old generation. May or may not also collect young gen depending on the collector. More expensive than minor GC.</p>
+        <p><strong>Full GC</strong> collects the entire heap (young + old + Metaspace) in a single stop-the-world pause. Caused by: promotion failure (old gen full), explicit System.gc() calls, Metaspace exhaustion. Should be rare in production — frequent Full GCs indicate heap sizing problems.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q2: Your application has increasing heap usage that never comes down. How do you diagnose and fix it?</p>
+      <div class="answer">
+        <p><strong>Diagnose:</strong> 1) Monitor heap with jstat -gcutil every few seconds to confirm growing old gen. 2) Enable GC logging (-Xlog:gc*) to see GC frequency and effectiveness. 3) Take heap dump when heap is near max: jcmd &lt;pid&gt; GC.heap_dump /tmp/heap.hprof. 4) Analyze with Eclipse MAT — check dominator tree, leak suspects, and find which classes are unexpectedly retaining large retained heaps.</p>
+        <p><strong>Common causes:</strong> Static collections growing unbounded, ThreadLocal not removed (in thread pools), event listeners never unregistered, classloader leaks on hot-redeploy, connection pool objects kept in long-lived caches.</p>
+        <p><strong>Fix:</strong> Add eviction/TTL to caches, always remove() ThreadLocals in finally blocks, use weak references for listeners, ensure unsubscribe paths exist, use bounded collections.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q3: How does the JVM's JIT compiler optimize code, and what's escape analysis?</p>
+      <div class="answer">
+        <p><strong>JIT optimizations:</strong> Method inlining (replaces method call with body — eliminates call overhead), loop unrolling (reduces branch overhead), dead code elimination, constant folding (evaluate constant expressions at compile time), branch prediction hints, and vectorization (SIMD instructions).</p>
+        <p><strong>Escape analysis:</strong> The JIT determines if an object "escapes" the method or thread. If an object is local and never passed outside, the JIT can: allocate it on the stack instead of heap (scalar replacement), avoiding GC pressure entirely. Example: a temporary StringBuilder created and used within a single method often gets stack-allocated. Enable diagnostic output with -XX:+DoEscapeAnalysis -XX:+PrintEscapeAnalysis.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q4: What tuning would you apply to a Java microservice running in a 2GB container?</p>
+      <div class="answer">
+        <div class="code-block"><span class="cmt"># Container-aware settings</span>
+-XX:+UseContainerSupport
+-XX:MaxRAMPercentage=75.0      <span class="cmt"># 1.5GB heap, leaves 512MB for Metaspace/threads/off-heap</span>
+-XX:InitialRAMPercentage=50.0  <span class="cmt"># start at 1GB, grow as needed</span>
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+-XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m
+-Xss256k                       <span class="cmt"># reduce stack size if many threads</span>
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/dumps/
+-XX:+ExitOnOutOfMemoryError    <span class="cmt"># let k8s restart the pod</span></div>
+        <p>For Spring Boot 3+ with virtual threads (Java 21): add -Dspring.threads.virtual.enabled=true — significantly reduces thread stack memory since virtual threads are cheap.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <a href="11-testing.html" class="nav-btn">← 11. Testing</a>
+    <a href="13-security.html" class="nav-btn">13. Security →</a>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Security — Java Interview Prep</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#f43f5e;--accent-dim:#4c0519;--code-bg:#0d1117;--kw:#ff79c6;--cls:#8be9fd;--str:#f1fa8c;--cmt:#6272a4;--num:#bd93f9;--ann:#50fa7b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;flex-shrink:0}
+.sidebar-title{padding:0 20px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);border-bottom:1px solid var(--border);margin-bottom:8px}
+.sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--text-muted);border-left:3px solid transparent;transition:all .2s}
+.sidebar a:hover{color:var(--text);background:var(--surface2);text-decoration:none}
+.sidebar a.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-dim);font-weight:600}
+
+.main{margin-left:260px;flex:1;max-width:960px;padding:40px 48px}
+.breadcrumb{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.breadcrumb span{margin:0 6px}
+.topic-badge{display:inline-block;background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+h1{font-size:32px;font-weight:800;margin-bottom:12px;background:linear-gradient(135deg,var(--accent),#fb7185);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-desc{color:var(--text-muted);font-size:16px;margin-bottom:32px;max-width:700px}
+
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+.toc h3{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px}
+.toc ol{padding-left:20px}
+.toc li{margin:6px 0;font-size:14px}
+.toc a{color:var(--text-muted)}
+.toc a:hover{color:var(--accent)}
+
+.section{margin-bottom:56px}
+.section-num{display:inline-block;background:var(--accent);color:#fff;border-radius:6px;width:28px;height:28px;text-align:center;line-height:28px;font-size:12px;font-weight:800;margin-right:10px;flex-shrink:0}
+h2{font-size:22px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border)}
+h3{font-size:16px;font-weight:600;margin:24px 0 12px;color:var(--accent)}
+p{margin-bottom:14px;color:var(--text-muted)}
+
+.code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+.code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:var(--surface2);color:var(--accent);font-weight:700;padding:10px 14px;text-align:left;border:1px solid var(--border)}
+td{padding:10px 14px;border:1px solid var(--border);color:var(--text-muted);vertical-align:top}
+tr:hover td{background:var(--surface)}
+
+.info-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:16px 20px;margin:16px 0}
+.warn-box{background:#1a0007;border:1px solid #4c0519;border-left:4px solid #f43f5e;border-radius:8px;padding:16px 20px;margin:16px 0}
+.warn-box strong,.info-box strong{display:block;margin-bottom:6px;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.warn-box strong{color:#fb7185}.info-box strong{color:var(--accent)}
+
+.qa-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:40px}
+.qa-item{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.qa-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.question{font-weight:700;color:var(--accent);margin-bottom:10px;font-size:15px}
+.answer{color:var(--text-muted);font-size:14px}
+
+.page-nav{display:flex;justify-content:space-between;margin-top:60px;padding-top:24px;border-top:1px solid var(--border)}
+.nav-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 20px;font-size:14px;color:var(--text-muted);cursor:pointer;transition:all .2s}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-title">Java Interview Prep</div>
+  <a href="01-core-java.html">01. Core Java</a>
+  <a href="02-oop-solid.html">02. OOP & SOLID</a>
+  <a href="03-collections.html">03. Collections</a>
+  <a href="04-concurrency.html">04. Concurrency</a>
+  <a href="05-java8-features.html">05. Java 8+ Features</a>
+  <a href="06-design-patterns.html">06. Design Patterns</a>
+  <a href="07-spring-framework.html">07. Spring Framework</a>
+  <a href="08-microservices.html">08. Microservices</a>
+  <a href="09-database-jpa.html">09. Database & JPA</a>
+  <a href="10-system-design.html">10. System Design</a>
+  <a href="11-testing.html">11. Testing</a>
+  <a href="12-jvm-performance.html">12. JVM & Performance</a>
+  <a href="13-security.html" class="active">13. Security</a>
+  <a href="14-leadership-practices.html">14. Leadership</a>
+</nav>
+
+<main class="main">
+  <div class="breadcrumb"><a href="index.html">Home</a><span>›</span>Security</div>
+  <div class="topic-badge">Topic 13</div>
+  <h1>Security</h1>
+  <p class="page-desc">Authentication, JWT, Spring Security, OWASP Top 10 vulnerabilities in Java, input validation, SQL injection prevention — essential security knowledge for production Java applications.</p>
+
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#authentication">Authentication &amp; Authorization</a></li>
+      <li><a href="#jwt">JWT Deep Dive</a></li>
+      <li><a href="#spring-security">Spring Security</a></li>
+      <li><a href="#owasp">OWASP Top 10 in Java</a></li>
+      <li><a href="#input-validation">Input Validation</a></li>
+      <li><a href="#sql-injection">SQL Injection Prevention</a></li>
+      <li><a href="#cryptography">Cryptography Best Practices</a></li>
+      <li><a href="#qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" id="authentication">
+    <h2><span class="section-num">1</span>Authentication &amp; Authorization</h2>
+
+    <table>
+      <tr><th>Concept</th><th>Definition</th><th>Example</th></tr>
+      <tr><td><strong>Authentication (AuthN)</strong></td><td>Who are you?</td><td>Login with username/password, OAuth2 token</td></tr>
+      <tr><td><strong>Authorization (AuthZ)</strong></td><td>What can you do?</td><td>RBAC roles, @PreAuthorize("hasRole('ADMIN')")</td></tr>
+      <tr><td><strong>Session-based</strong></td><td>Server stores session state</td><td>JSESSIONID cookie → HttpSession in server memory</td></tr>
+      <tr><td><strong>Token-based (JWT)</strong></td><td>Stateless; server validates token</td><td>Authorization: Bearer &lt;jwt&gt;</td></tr>
+      <tr><td><strong>OAuth2 / OIDC</strong></td><td>Delegated auth; third-party identity</td><td>Login with Google, Keycloak, Auth0</td></tr>
+      <tr><td><strong>mTLS</strong></td><td>Mutual TLS — both parties present certs</td><td>Service-to-service auth in zero-trust networks</td></tr>
+    </table>
+
+    <h3>OAuth2 Flows</h3>
+    <table>
+      <tr><th>Flow</th><th>Use Case</th><th>Notes</th></tr>
+      <tr><td><strong>Authorization Code + PKCE</strong></td><td>Web/mobile apps</td><td>PKCE required for public clients</td></tr>
+      <tr><td><strong>Client Credentials</strong></td><td>Service-to-service (machine-to-machine)</td><td>No user involved</td></tr>
+      <tr><td><strong>Device Code</strong></td><td>CLI tools, smart TVs</td><td>No redirect URI needed</td></tr>
+      <tr><td><strong>Implicit</strong></td><td>DEPRECATED</td><td>Replaced by Auth Code + PKCE</td></tr>
+      <tr><td><strong>Resource Owner Password</strong></td><td>DEPRECATED (avoid)</td><td>Client sees user's password</td></tr>
+    </table>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" id="jwt">
+    <h2><span class="section-num">2</span>JWT Deep Dive</h2>
+    <p>JSON Web Tokens are base64url-encoded JSON objects signed with HMAC or RSA/EC. Structure: <code>header.payload.signature</code>.</p>
+
+    <div class="code-block"><span class="cmt">// JWT structure (decoded)</span>
+<span class="cmt">// Header: {"alg":"RS256","typ":"JWT"}</span>
+<span class="cmt">// Payload: {"sub":"user123","iss":"auth-service","aud":"api","iat":1700000000,"exp":1700003600,"roles":["USER"]}</span>
+<span class="cmt">// Signature: RS256(base64url(header) + "." + base64url(payload), privateKey)</span>
+
+<span class="cmt">// Spring Security JWT validation (spring-security-oauth2-resource-server)</span>
+<span class="ann">@Configuration</span>
+<span class="kw">public class</span> <span class="cls">SecurityConfig</span> {
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">SecurityFilterChain</span> <span class="met">filterChain</span>(<span class="cls">HttpSecurity</span> http) <span class="kw">throws</span> <span class="cls">Exception</span> {
+        http
+            .<span class="met">sessionManagement</span>(s -&gt; s.<span class="met">sessionCreationPolicy</span>(<span class="cls">STATELESS</span>))
+            .<span class="met">oauth2ResourceServer</span>(oauth2 -&gt; oauth2
+                .<span class="met">jwt</span>(jwt -&gt; jwt.<span class="met">jwtAuthenticationConverter</span>(<span class="met">jwtConverter</span>()))
+            )
+            .<span class="met">authorizeHttpRequests</span>(auth -&gt; auth
+                .<span class="met">requestMatchers</span>(<span class="str">"/public/**"</span>).<span class="met">permitAll</span>()
+                .<span class="met">requestMatchers</span>(<span class="str">"/admin/**"</span>).<span class="met">hasRole</span>(<span class="str">"ADMIN"</span>)
+                .<span class="met">anyRequest</span>().<span class="met">authenticated</span>()
+            );
+        <span class="kw">return</span> http.<span class="met">build</span>();
+    }
+
+    <span class="kw">private</span> <span class="cls">JwtAuthenticationConverter</span> <span class="met">jwtConverter</span>() {
+        <span class="cls">JwtGrantedAuthoritiesConverter</span> gac = <span class="kw">new</span> <span class="cls">JwtGrantedAuthoritiesConverter</span>();
+        gac.<span class="met">setAuthoritiesClaimName</span>(<span class="str">"roles"</span>);        <span class="cmt">// custom claim name</span>
+        gac.<span class="met">setAuthorityPrefix</span>(<span class="str">"ROLE_"</span>);            <span class="cmt">// Spring expects ROLE_ prefix</span>
+        <span class="cls">JwtAuthenticationConverter</span> converter = <span class="kw">new</span> <span class="cls">JwtAuthenticationConverter</span>();
+        converter.<span class="met">setJwtGrantedAuthoritiesConverter</span>(gac);
+        <span class="kw">return</span> converter;
+    }
+
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">JwtDecoder</span> <span class="met">jwtDecoder</span>() {
+        <span class="cmt">// Validates signature using public key from JWKS endpoint</span>
+        <span class="kw">return</span> <span class="cls">NimbusJwtDecoder</span>.<span class="met">withJwkSetUri</span>(<span class="str">"https://auth.example.com/.well-known/jwks.json"</span>).<span class="met">build</span>();
+    }
+}</div>
+
+    <div class="warn-box">
+      <strong>JWT Security Pitfalls</strong>
+      1. <strong>alg:none attack</strong> — attacker sets algorithm to "none", removing signature. Always explicitly specify allowed algorithms, never accept "none".<br>
+      2. <strong>RS256 vs HS256 confusion</strong> — if server expects RS256 but also accepts HS256, attacker can sign with the public key as HMAC secret. Explicitly whitelist algorithm.<br>
+      3. <strong>No expiry check</strong> — always validate "exp" claim and keep access tokens short-lived (15 min). Use refresh tokens for longer sessions.<br>
+      4. <strong>Sensitive data in payload</strong> — JWT payload is base64url encoded, NOT encrypted. Don't store PII, passwords, or secrets in claims.
+    </div>
+
+    <h3>Token Refresh Strategy</h3>
+    <div class="code-block"><span class="cmt">// Short-lived access token + long-lived refresh token pattern:</span>
+<span class="cmt">// Access token:  15 minutes, stateless JWT</span>
+<span class="cmt">// Refresh token: 7 days, opaque token stored in DB (allows revocation)</span>
+
+<span class="ann">@PostMapping</span>(<span class="str">"/auth/refresh"</span>)
+<span class="kw">public</span> <span class="cls">TokenResponse</span> <span class="met">refresh</span>(<span class="ann">@RequestBody</span> <span class="cls">RefreshRequest</span> request) {
+    <span class="cls">RefreshToken</span> stored = refreshTokenRepo.<span class="met">findByToken</span>(request.<span class="met">getRefreshToken</span>())
+        .<span class="met">orElseThrow</span>(() -&gt; <span class="kw">new</span> <span class="cls">UnauthorizedException</span>(<span class="str">"Invalid refresh token"</span>));
+
+    <span class="kw">if</span> (stored.<span class="met">isExpired</span>()) {
+        refreshTokenRepo.<span class="met">delete</span>(stored);
+        <span class="kw">throw new</span> <span class="cls">UnauthorizedException</span>(<span class="str">"Refresh token expired"</span>);
+    }
+
+    refreshTokenRepo.<span class="met">delete</span>(stored);             <span class="cmt">// rotate: single-use refresh token</span>
+    <span class="cls">String</span> newAccess = jwtService.<span class="met">generate</span>(stored.<span class="met">getUserId</span>());
+    <span class="cls">RefreshToken</span> newRefresh = refreshTokenRepo.<span class="met">save</span>(<span class="met">createRefreshToken</span>(stored.<span class="met">getUserId</span>()));
+    <span class="kw">return new</span> <span class="cls">TokenResponse</span>(newAccess, newRefresh.<span class="met">getToken</span>());
+}</div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" id="spring-security">
+    <h2><span class="section-num">3</span>Spring Security</h2>
+
+    <h3>Method-Level Security</h3>
+    <div class="code-block"><span class="ann">@Configuration</span>
+<span class="ann">@EnableMethodSecurity</span>  <span class="cmt">// enables @PreAuthorize, @PostAuthorize, @Secured</span>
+<span class="kw">public class</span> <span class="cls">MethodSecurityConfig</span> {}
+
+<span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="cls">AdminController</span> {
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/users/{id}"</span>)
+    <span class="ann">@PreAuthorize</span>(<span class="str">"hasRole('ADMIN') or #id == authentication.principal.userId"</span>)
+    <span class="kw">public</span> <span class="cls">User</span> <span class="met">getUser</span>(<span class="ann">@PathVariable</span> <span class="cls">Long</span> id) { ... }
+
+    <span class="ann">@PostMapping</span>(<span class="str">"/reports"</span>)
+    <span class="ann">@PreAuthorize</span>(<span class="str">"hasAnyRole('ANALYST', 'ADMIN')"</span>)
+    <span class="kw">public</span> <span class="cls">Report</span> <span class="met">generate</span>(<span class="ann">@RequestBody</span> <span class="cls">ReportRequest</span> req) { ... }
+
+    <span class="cmt">// PostAuthorize: check AFTER method executes (for return-value based checks)</span>
+    <span class="ann">@GetMapping</span>(<span class="str">"/orders/{id}"</span>)
+    <span class="ann">@PostAuthorize</span>(<span class="str">"returnObject.userId == authentication.principal.userId"</span>)
+    <span class="kw">public</span> <span class="cls">Order</span> <span class="met">getOrder</span>(<span class="ann">@PathVariable</span> <span class="cls">Long</span> id) { ... }
+}</div>
+
+    <h3>CORS Configuration</h3>
+    <div class="code-block"><span class="ann">@Bean</span>
+<span class="kw">public</span> <span class="cls">CorsConfigurationSource</span> <span class="met">corsConfigurationSource</span>() {
+    <span class="cls">CorsConfiguration</span> config = <span class="kw">new</span> <span class="cls">CorsConfiguration</span>();
+    config.<span class="met">setAllowedOrigins</span>(<span class="cls">List</span>.<span class="met">of</span>(<span class="str">"https://app.example.com"</span>)); <span class="cmt">// never use "*" in prod</span>
+    config.<span class="met">setAllowedMethods</span>(<span class="cls">List</span>.<span class="met">of</span>(<span class="str">"GET"</span>, <span class="str">"POST"</span>, <span class="str">"PUT"</span>, <span class="str">"DELETE"</span>));
+    config.<span class="met">setAllowedHeaders</span>(<span class="cls">List</span>.<span class="met">of</span>(<span class="str">"Authorization"</span>, <span class="str">"Content-Type"</span>));
+    config.<span class="met">setAllowCredentials</span>(<span class="kw">true</span>);
+    config.<span class="met">setMaxAge</span>(<span class="num">3600L</span>);
+    <span class="cls">UrlBasedCorsConfigurationSource</span> source = <span class="kw">new</span> <span class="cls">UrlBasedCorsConfigurationSource</span>();
+    source.<span class="met">registerCorsConfiguration</span>(<span class="str">"/**"</span>, config);
+    <span class="kw">return</span> source;
+}</div>
+
+    <h3>Custom Security Filter</h3>
+    <div class="code-block"><span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">ApiKeyAuthFilter</span> <span class="kw">extends</span> <span class="cls">OncePerRequestFilter</span> {
+
+    <span class="ann">@Override</span>
+    <span class="kw">protected void</span> <span class="met">doFilterInternal</span>(<span class="cls">HttpServletRequest</span> req, <span class="cls">HttpServletResponse</span> res,
+                                       <span class="cls">FilterChain</span> chain) <span class="kw">throws</span> <span class="cls">IOException</span>, <span class="cls">ServletException</span> {
+        <span class="cls">String</span> apiKey = req.<span class="met">getHeader</span>(<span class="str">"X-API-Key"</span>);
+        <span class="kw">if</span> (apiKeyService.<span class="met">isValid</span>(apiKey)) {
+            <span class="cls">UsernamePasswordAuthenticationToken</span> auth =
+                <span class="kw">new</span> <span class="cls">UsernamePasswordAuthenticationToken</span>(apiKey, <span class="kw">null</span>,
+                    <span class="cls">List</span>.<span class="met">of</span>(<span class="kw">new</span> <span class="cls">SimpleGrantedAuthority</span>(<span class="str">"ROLE_API_CLIENT"</span>)));
+            <span class="cls">SecurityContextHolder</span>.<span class="met">getContext</span>().<span class="met">setAuthentication</span>(auth);
+        }
+        chain.<span class="met">doFilter</span>(req, res);
+    }
+}</div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" id="owasp">
+    <h2><span class="section-num">4</span>OWASP Top 10 in Java</h2>
+
+    <table>
+      <tr><th>Rank</th><th>Vulnerability</th><th>Java Prevention</th></tr>
+      <tr><td>A01</td><td><strong>Broken Access Control</strong></td><td>@PreAuthorize, deny-by-default, test all endpoints</td></tr>
+      <tr><td>A02</td><td><strong>Cryptographic Failures</strong></td><td>TLS 1.3, AES-256, BCrypt for passwords, no MD5/SHA1</td></tr>
+      <tr><td>A03</td><td><strong>Injection (SQL, LDAP, NoSQL)</strong></td><td>Parameterized queries, JPA, no string concatenation in queries</td></tr>
+      <tr><td>A04</td><td><strong>Insecure Design</strong></td><td>Threat modeling, rate limiting, principle of least privilege</td></tr>
+      <tr><td>A05</td><td><strong>Security Misconfiguration</strong></td><td>Disable /actuator in prod (or secure with auth), remove defaults</td></tr>
+      <tr><td>A06</td><td><strong>Vulnerable &amp; Outdated Components</strong></td><td>Dependabot / OWASP Dependency-Check in CI</td></tr>
+      <tr><td>A07</td><td><strong>ID &amp; Authentication Failures</strong></td><td>MFA, lockout after failed attempts, secure session management</td></tr>
+      <tr><td>A08</td><td><strong>Software &amp; Data Integrity Failures</strong></td><td>Sign artifacts, verify checksums, secure CI/CD</td></tr>
+      <tr><td>A09</td><td><strong>Security Logging Failures</strong></td><td>Log auth events, never log passwords/tokens, centralized SIEM</td></tr>
+      <tr><td>A10</td><td><strong>SSRF</strong></td><td>Allowlist outbound URLs, validate user-supplied URLs</td></tr>
+    </table>
+
+    <h3>XSS Prevention</h3>
+    <div class="code-block"><span class="cmt">// 1. Never render raw user input in HTML — use Thymeleaf (auto-escapes) or React</span>
+<span class="cmt">// 2. Set Content-Security-Policy header</span>
+<span class="ann">@Bean</span>
+<span class="kw">public</span> <span class="cls">SecurityFilterChain</span> <span class="met">filterChain</span>(<span class="cls">HttpSecurity</span> http) <span class="kw">throws</span> <span class="cls">Exception</span> {
+    http.<span class="met">headers</span>(headers -&gt; headers
+        .<span class="met">contentSecurityPolicy</span>(csp -&gt; csp
+            .<span class="met">policyDirectives</span>(<span class="str">"default-src 'self'; script-src 'self'; style-src 'self'"</span>)
+        )
+        .<span class="met">frameOptions</span>(<span class="cls">HeadersConfigurer.FrameOptionsConfig</span>::<span class="met">deny</span>)   <span class="cmt">// X-Frame-Options: DENY</span>
+        .<span class="met">xssProtection</span>(<span class="cls">XssProtectionConfig</span>::<span class="met">block</span>)
+    );
+    <span class="kw">return</span> http.<span class="met">build</span>();
+}
+
+<span class="cmt">// 3. Sanitize HTML input with OWASP Java HTML Sanitizer</span>
+<span class="cls">PolicyFactory</span> policy = <span class="cls">Sanitizers</span>.<span class="met">FORMATTING</span>.<span class="met">and</span>(<span class="cls">Sanitizers</span>.<span class="met">LINKS</span>);
+<span class="cls">String</span> safe = policy.<span class="met">sanitize</span>(userInput); <span class="cmt">// strips dangerous tags</span></div>
+
+    <h3>Mass Assignment Prevention</h3>
+    <div class="code-block"><span class="cmt">// BAD: binding request body directly to entity — attacker can set 'admin=true', 'id=1'</span>
+<span class="ann">@PostMapping</span>(<span class="str">"/users"</span>)
+<span class="kw">public</span> <span class="cls">User</span> <span class="met">create</span>(<span class="ann">@RequestBody</span> <span class="cls">User</span> user) { <span class="cmt">// DANGEROUS</span>
+    <span class="kw">return</span> userRepo.<span class="met">save</span>(user);
+}
+
+<span class="cmt">// GOOD: use a DTO with only the fields the user should provide</span>
+<span class="kw">public record</span> <span class="cls">CreateUserRequest</span>(<span class="ann">@NotBlank</span> <span class="cls">String</span> username, <span class="ann">@Email</span> <span class="cls">String</span> email) {}
+
+<span class="ann">@PostMapping</span>(<span class="str">"/users"</span>)
+<span class="kw">public</span> <span class="cls">User</span> <span class="met">create</span>(<span class="ann">@RequestBody</span> <span class="ann">@Valid</span> <span class="cls">CreateUserRequest</span> request) {
+    <span class="cls">User</span> user = <span class="kw">new</span> <span class="cls">User</span>(request.<span class="met">username</span>(), request.<span class="met">email</span>());
+    user.<span class="met">setRole</span>(<span class="cls">Role</span>.USER); <span class="cmt">// always set role server-side</span>
+    <span class="kw">return</span> userRepo.<span class="met">save</span>(user);
+}</div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" id="input-validation">
+    <h2><span class="section-num">5</span>Input Validation</h2>
+
+    <div class="code-block"><span class="cmt">// Bean Validation (Jakarta Validation 3.0 / Hibernate Validator)</span>
+<span class="kw">public record</span> <span class="cls">PaymentRequest</span>(
+    <span class="ann">@NotNull</span> <span class="ann">@Positive</span>                          <span class="cls">BigDecimal</span> amount,
+    <span class="ann">@NotBlank</span> <span class="ann">@Size</span>(min=<span class="num">10</span>, max=<span class="num">10</span>)             <span class="cls">String</span> accountNumber,
+    <span class="ann">@NotBlank</span> <span class="ann">@Pattern</span>(regexp=<span class="str">"^[A-Z]{3}$"</span>)      <span class="cls">String</span> currency,
+    <span class="ann">@Future</span>                                        <span class="cls">LocalDate</span> scheduledDate,
+    <span class="ann">@Valid</span> <span class="ann">@NotNull</span>                                <span class="cls">RecipientInfo</span> recipient
+) {}
+
+<span class="cmt">// Controller — @Valid triggers validation, MethodArgumentNotValidException on failure</span>
+<span class="ann">@PostMapping</span>(<span class="str">"/payments"</span>)
+<span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">Payment</span>&gt; <span class="met">createPayment</span>(<span class="ann">@RequestBody</span> <span class="ann">@Valid</span> <span class="cls">PaymentRequest</span> req) { ... }
+
+<span class="cmt">// Global validation error handler</span>
+<span class="ann">@RestControllerAdvice</span>
+<span class="kw">public class</span> <span class="cls">ValidationExceptionHandler</span> {
+    <span class="ann">@ExceptionHandler</span>(<span class="cls">MethodArgumentNotValidException</span>.<span class="kw">class</span>)
+    <span class="kw">public</span> <span class="cls">ResponseEntity</span>&lt;<span class="cls">ErrorResponse</span>&gt; <span class="met">handleValidation</span>(<span class="cls">MethodArgumentNotValidException</span> ex) {
+        <span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="cls">String</span>&gt; errors = ex.<span class="met">getBindingResult</span>().<span class="met">getFieldErrors</span>().<span class="met">stream</span>()
+            .<span class="met">collect</span>(<span class="cls">Collectors</span>.<span class="met">toMap</span>(
+                <span class="cls">FieldError</span>::<span class="met">getField</span>,
+                e -&gt; <span class="cls">Objects</span>.<span class="met">requireNonNullElse</span>(e.<span class="met">getDefaultMessage</span>(), <span class="str">"Invalid"</span>)
+            ));
+        <span class="kw">return</span> <span class="cls">ResponseEntity</span>.<span class="met">badRequest</span>().<span class="met">body</span>(<span class="kw">new</span> <span class="cls">ErrorResponse</span>(<span class="str">"Validation failed"</span>, errors));
+    }
+}
+
+<span class="cmt">// Custom validator</span>
+<span class="ann">@Constraint</span>(validatedBy = <span class="cls">IbanValidator</span>.<span class="kw">class</span>)
+<span class="ann">@Target</span>({<span class="cls">ElementType</span>.FIELD})
+<span class="ann">@Retention</span>(<span class="cls">RetentionPolicy</span>.RUNTIME)
+<span class="kw">public @interface</span> <span class="cls">ValidIban</span> {
+    <span class="cls">String</span> <span class="met">message</span>() <span class="kw">default</span> <span class="str">"Invalid IBAN"</span>;
+    <span class="cls">Class</span>&lt;?&gt;[] <span class="met">groups</span>() <span class="kw">default</span> {};
+    <span class="cls">Class</span>&lt;? <span class="kw">extends</span> <span class="cls">Payload</span>&gt;[] <span class="met">payload</span>() <span class="kw">default</span> {};
+}
+
+<span class="kw">public class</span> <span class="cls">IbanValidator</span> <span class="kw">implements</span> <span class="cls">ConstraintValidator</span>&lt;<span class="cls">ValidIban</span>, <span class="cls">String</span>&gt; {
+    <span class="kw">public boolean</span> <span class="met">isValid</span>(<span class="cls">String</span> value, <span class="cls">ConstraintValidatorContext</span> ctx) {
+        <span class="kw">return</span> value != <span class="kw">null</span> &amp;&amp; <span class="cls">IbanUtils</span>.<span class="met">isValid</span>(value);
+    }
+}</div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section" id="sql-injection">
+    <h2><span class="section-num">6</span>SQL Injection Prevention</h2>
+
+    <div class="code-block"><span class="cmt">// VULNERABLE: string concatenation</span>
+<span class="cls">String</span> query = <span class="str">"SELECT * FROM users WHERE username = '"</span> + username + <span class="str">"'"</span>;
+<span class="cmt">// Attacker input: ' OR '1'='1  → returns all users</span>
+<span class="cmt">// Attacker input: '; DROP TABLE users; --  → destroys data</span>
+
+<span class="cmt">// SAFE: parameterized query with JPA</span>
+<span class="ann">@Query</span>(<span class="str">"SELECT u FROM User u WHERE u.username = :username"</span>)
+<span class="cls">Optional</span>&lt;<span class="cls">User</span>&gt; <span class="met">findByUsername</span>(<span class="ann">@Param</span>(<span class="str">"username"</span>) <span class="cls">String</span> username);
+
+<span class="cmt">// SAFE: derived query (Spring Data auto-generates parameterized SQL)</span>
+<span class="cls">Optional</span>&lt;<span class="cls">User</span>&gt; <span class="met">findByUsernameAndActiveTrue</span>(<span class="cls">String</span> username);
+
+<span class="cmt">// SAFE: native query with named parameter</span>
+<span class="ann">@Query</span>(value = <span class="str">"SELECT * FROM users WHERE email = :email AND deleted = false"</span>,
+       nativeQuery = <span class="kw">true</span>)
+<span class="cls">List</span>&lt;<span class="cls">User</span>&gt; <span class="met">findActiveByEmail</span>(<span class="ann">@Param</span>(<span class="str">"email"</span>) <span class="cls">String</span> email);
+
+<span class="cmt">// SAFE: JDBC PreparedStatement (if not using JPA)</span>
+<span class="cls">String</span> sql = <span class="str">"SELECT * FROM users WHERE username = ?"</span>;
+<span class="kw">try</span> (<span class="cls">PreparedStatement</span> ps = conn.<span class="met">prepareStatement</span>(sql)) {
+    ps.<span class="met">setString</span>(<span class="num">1</span>, username); <span class="cmt">// parameterized — JDBC escapes it</span>
+    <span class="cls">ResultSet</span> rs = ps.<span class="met">executeQuery</span>();
+}
+
+<span class="cmt">// DANGER ZONE: dynamic ORDER BY — parameters can't be used for column names</span>
+<span class="cmt">// Must allowlist column names:</span>
+<span class="kw">private static final</span> <span class="cls">Set</span>&lt;<span class="cls">String</span>&gt; ALLOWED_SORT_FIELDS = <span class="cls">Set</span>.<span class="met">of</span>(<span class="str">"username"</span>, <span class="str">"createdAt"</span>, <span class="str">"email"</span>);
+
+<span class="kw">public</span> <span class="cls">List</span>&lt;<span class="cls">User</span>&gt; <span class="met">findAll</span>(<span class="cls">String</span> sortField) {
+    <span class="kw">if</span> (!ALLOWED_SORT_FIELDS.<span class="met">contains</span>(sortField)) {
+        <span class="kw">throw new</span> <span class="cls">IllegalArgumentException</span>(<span class="str">"Invalid sort field"</span>);
+    }
+    <span class="kw">return</span> em.<span class="met">createQuery</span>(<span class="str">"SELECT u FROM User u ORDER BY u."</span> + sortField, <span class="cls">User</span>.<span class="kw">class</span>)
+        .<span class="met">getResultList</span>();
+}</div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section" id="cryptography">
+    <h2><span class="section-num">7</span>Cryptography Best Practices</h2>
+
+    <h3>Password Hashing</h3>
+    <div class="code-block"><span class="cmt">// ALWAYS use slow hashing for passwords (bcrypt/scrypt/argon2)</span>
+<span class="cmt">// BCrypt with cost factor 12 (Spring Security default is 10)</span>
+<span class="ann">@Bean</span>
+<span class="kw">public</span> <span class="cls">PasswordEncoder</span> <span class="met">passwordEncoder</span>() {
+    <span class="kw">return new</span> <span class="cls">BCryptPasswordEncoder</span>(<span class="num">12</span>);
+}
+
+<span class="cmt">// Usage</span>
+<span class="cls">String</span> hash = encoder.<span class="met">encode</span>(<span class="str">"rawPassword"</span>);   <span class="cmt">// stores in DB</span>
+<span class="kw">boolean</span> match = encoder.<span class="met">matches</span>(<span class="str">"rawPassword"</span>, hash); <span class="cmt">// always use matches()</span>
+
+<span class="cmt">// NEVER:</span>
+<span class="cmt">// MD5/SHA1 for passwords (fast → brute-forceable)</span>
+<span class="cmt">// Storing plain text</span>
+<span class="cmt">// String comparison instead of matches() (timing attack)</span></div>
+
+    <h3>Symmetric Encryption</h3>
+    <div class="code-block"><span class="cmt">// AES-256-GCM: authenticated encryption (provides confidentiality + integrity)</span>
+<span class="kw">public class</span> <span class="cls">AesGcmEncryptor</span> {
+    <span class="kw">private static final int</span> GCM_IV_LENGTH = <span class="num">12</span>;
+    <span class="kw">private static final int</span> GCM_TAG_LENGTH = <span class="num">128</span>;
+
+    <span class="kw">public byte</span>[] <span class="met">encrypt</span>(<span class="kw">byte</span>[] plaintext, <span class="cls">SecretKey</span> key) <span class="kw">throws</span> <span class="cls">Exception</span> {
+        <span class="kw">byte</span>[] iv = <span class="kw">new byte</span>[GCM_IV_LENGTH];
+        <span class="kw">new</span> <span class="cls">SecureRandom</span>().<span class="met">nextBytes</span>(iv); <span class="cmt">// random IV, never reuse</span>
+
+        <span class="cls">Cipher</span> cipher = <span class="cls">Cipher</span>.<span class="met">getInstance</span>(<span class="str">"AES/GCM/NoPadding"</span>);
+        cipher.<span class="met">init</span>(<span class="cls">Cipher</span>.ENCRYPT_MODE, key, <span class="kw">new</span> <span class="cls">GCMParameterSpec</span>(GCM_TAG_LENGTH, iv));
+        <span class="kw">byte</span>[] ciphertext = cipher.<span class="met">doFinal</span>(plaintext);
+
+        <span class="cmt">// Prepend IV to ciphertext (IV is not secret, needed for decryption)</span>
+        <span class="kw">byte</span>[] result = <span class="kw">new byte</span>[iv.length + ciphertext.length];
+        <span class="cls">System</span>.<span class="met">arraycopy</span>(iv, <span class="num">0</span>, result, <span class="num">0</span>, iv.length);
+        <span class="cls">System</span>.<span class="met">arraycopy</span>(ciphertext, <span class="num">0</span>, result, iv.length, ciphertext.length);
+        <span class="kw">return</span> result;
+    }
+}
+
+<span class="cmt">// Secret key generation</span>
+<span class="cls">KeyGenerator</span> keyGen = <span class="cls">KeyGenerator</span>.<span class="met">getInstance</span>(<span class="str">"AES"</span>);
+keyGen.<span class="met">init</span>(<span class="num">256</span>, <span class="kw">new</span> <span class="cls">SecureRandom</span>());
+<span class="cls">SecretKey</span> key = keyGen.<span class="met">generateKey</span>();
+<span class="cmt">// Store keys in: AWS KMS, HashiCorp Vault, Azure Key Vault — NEVER in code/config</span></div>
+
+    <table>
+      <tr><th>Use Case</th><th>Recommended</th><th>Avoid</th></tr>
+      <tr><td>Password hashing</td><td>BCrypt (cost 12), Argon2id</td><td>MD5, SHA1, SHA256 (unsalted)</td></tr>
+      <tr><td>Symmetric encryption</td><td>AES-256-GCM</td><td>DES, 3DES, AES-ECB, AES-CBC without auth</td></tr>
+      <tr><td>Asymmetric encryption</td><td>RSA-2048+ with OAEP, EC P-256</td><td>RSA PKCS#1 v1.5 (padding oracle)</td></tr>
+      <tr><td>Signing/JWT</td><td>RS256, ES256</td><td>HS256 in public APIs, alg:none</td></tr>
+      <tr><td>Random numbers</td><td>SecureRandom</td><td>Math.random(), Random</td></tr>
+      <tr><td>TLS</td><td>TLS 1.3, TLS 1.2 (with secure ciphers)</td><td>SSL 2/3, TLS 1.0/1.1, RC4</td></tr>
+    </table>
+  </div>
+
+  <!-- Q&A -->
+  <div class="qa-section" id="qa">
+    <h2><span class="section-num">Q</span>Interview Q&amp;A</h2>
+
+    <div class="qa-item">
+      <p class="question">Q1: How would you implement stateless authentication in a Spring Boot microservices environment?</p>
+      <div class="answer">
+        <p><strong>Architecture:</strong> Centralized Auth Service issues JWTs (short-lived access tokens, 15 min). Each microservice validates the JWT independently using the auth service's public key (JWKS endpoint — no network call per request once keys are cached). API Gateway can also validate JWTs before forwarding requests.</p>
+        <p><strong>Implementation:</strong> Auth Service uses spring-authorization-server or integrates with Keycloak/Auth0. Resource services use spring-security-oauth2-resource-server with NimbusJwtDecoder pointing to the JWKS URI. Extract claims (user ID, roles) from the SecurityContext.</p>
+        <p><strong>Revocation challenge:</strong> Stateless JWTs can't be revoked before expiry. Mitigations: keep access tokens short-lived (15 min), use opaque refresh tokens stored in DB (revocable), maintain a small bloom filter / denylist for immediately-revoked tokens (logout, compromised), or use token introspection endpoint.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q2: What's the difference between authentication and authorization, and how does Spring Security model them?</p>
+      <div class="answer">
+        <p><strong>Authentication (AuthN)</strong> answers "who are you?" — Spring Security represents the authenticated principal as an Authentication object stored in SecurityContextHolder. The AuthenticationManager (backed by AuthenticationProvider) handles the verification process.</p>
+        <p><strong>Authorization (AuthZ)</strong> answers "what can you do?" — Spring Security uses GrantedAuthority objects (typically roles like "ROLE_ADMIN") attached to the Authentication. The AccessDecisionManager (or the newer AuthorizationManager in Spring Security 6) evaluates these against security rules defined in SecurityFilterChain (URL-based) or @PreAuthorize annotations (method-level).</p>
+        <p>Key classes: SecurityContextHolder → Authentication → Collection&lt;GrantedAuthority&gt;. For JWT: JwtAuthenticationConverter maps JWT claims to GrantedAuthority instances.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q3: How do you prevent SSRF (Server-Side Request Forgery) in a Java application?</p>
+      <div class="answer">
+        <p><strong>SSRF occurs when</strong> an attacker tricks your server into making requests to internal services by providing a URL your application fetches (e.g., an image URL field, webhook URL, report generation endpoint).</p>
+        <p><strong>Prevention:</strong> 1) Allowlist approach — only permit requests to explicitly approved domains/IPs; reject everything else. 2) Validate URLs before fetching: resolve DNS and check if the resolved IP is in private ranges (10.x, 172.16-31.x, 192.168.x, 127.x, 169.254.x — AWS metadata). 3) Use an egress proxy that enforces allowlists. 4) Disable redirects, or validate redirect destinations. 5) Apply network-level controls: microservices should only have outbound access to what they need (network policies in k8s).</p>
+        <div class="code-block"><span class="cmt">// URL validation example</span>
+<span class="kw">public void</span> <span class="met">validateUrl</span>(<span class="cls">String</span> userUrl) {
+    <span class="cls">URL</span> url = <span class="kw">new</span> <span class="cls">URL</span>(userUrl);
+    <span class="kw">if</span> (!ALLOWED_SCHEMES.<span class="met">contains</span>(url.<span class="met">getProtocol</span>())) {
+        <span class="kw">throw new</span> <span class="cls">SecurityException</span>(<span class="str">"Scheme not allowed"</span>);
+    }
+    <span class="cls">InetAddress</span> addr = <span class="cls">InetAddress</span>.<span class="met">getByName</span>(url.<span class="met">getHost</span>());
+    <span class="kw">if</span> (addr.<span class="met">isLoopbackAddress</span>() || addr.<span class="met">isSiteLocalAddress</span>() || addr.<span class="met">isLinkLocalAddress</span>()) {
+        <span class="kw">throw new</span> <span class="cls">SecurityException</span>(<span class="str">"Access to private network not allowed"</span>);
+    }
+}</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <p class="question">Q4: How do you securely store and rotate secrets in a Spring Boot application?</p>
+      <div class="answer">
+        <p><strong>Never store secrets in:</strong> code (hardcoded strings), VCS/git (even in private repos — git history persists), application.properties in source control, environment variables in Dockerfiles or k8s manifests committed to git.</p>
+        <p><strong>Correct approach:</strong> Use a secrets manager. Spring Cloud Vault (HashiCorp Vault), AWS Secrets Manager via Spring Cloud AWS, or Kubernetes Secrets (base64 is not encryption — use sealed-secrets or external-secrets-operator). At runtime, secrets are injected as environment variables or resolved via @ConfigurationProperties / @Value from a secrets backend, not files.</p>
+        <p><strong>Rotation:</strong> Use Spring Cloud Vault with lease renewal — Spring Boot auto-refreshes @RefreshScope beans when secrets rotate. For DB credentials, use Vault's dynamic secrets (Vault generates a short-lived DB user, renews the lease, then revokes it — no rotation ceremony needed).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <a href="12-jvm-performance.html" class="nav-btn">← 12. JVM &amp; Performance</a>
+    <a href="14-leadership-practices.html" class="nav-btn">14. Leadership →</a>
+  </div>
+</main>
+</body>
+</html>

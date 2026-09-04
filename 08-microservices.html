@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microservices — Java Interview Prep</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252838;--border:#2e3250;--accent:#f97316;--accent2:#00d4aa;--text:#e2e8f0;--text2:#94a3b8;--code-bg:#0d1117}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+  nav{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+  .nav-brand{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .nav-brand a{color:var(--accent);font-weight:800;font-size:14px;text-decoration:none}
+  .nav-brand p{font-size:11px;color:var(--text2);margin-top:4px}
+  .nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:8px 20px 4px}
+  nav a{display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text2);text-decoration:none;font-size:13px;transition:all 0.15s;border-left:2px solid transparent}
+  nav a:hover,nav a.active{color:var(--text);background:rgba(249,115,22,0.08);border-left-color:var(--accent)}
+  nav a .num{font-size:10px;color:var(--text2);min-width:20px}
+  main{flex:1;padding:40px 48px;max-width:960px}
+  .breadcrumb{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .topic-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.3);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:12px}
+  .page-desc{color:var(--text2);font-size:16px;line-height:1.7}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+  .toc h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:12px}
+  .toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+  .toc li a{color:var(--accent);text-decoration:none;font-size:13px}
+  section{margin-bottom:56px}
+  h2{font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--accent)}
+  h4{font-size:15px;font-weight:600;margin:16px 0 8px;color:var(--text)}
+  p{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+  ul{padding-left:24px;margin-bottom:14px}
+  li{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:4px}
+  li strong{color:var(--text)}
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto;white-space:pre;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.7}
+  .code-block .kw{color:#ff79c6}.code-block .cls{color:#8be9fd}.code-block .str{color:#f1fa8c}.code-block .cmt{color:#6272a4;font-style:italic}.code-block .num{color:#bd93f9}.code-block .ann{color:#50fa7b}.code-block .met{color:#50fa7b}
+  .qa-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+  .qa-q{background:rgba(249,115,22,0.08);border-left:3px solid var(--accent);padding:16px 20px;font-weight:600;font-size:15px}
+  .qa-q::before{content:'Q: ';color:var(--accent)}
+  .qa-a{padding:16px 20px;font-size:14px;line-height:1.8;color:var(--text2)}
+  .qa-a strong{color:var(--text)}
+  .note{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--accent2)}
+  .note::before{content:'💡 '}
+  .warn{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:#ff6b6b}
+  .warn::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  th{background:var(--surface2);text-align:left;padding:10px 16px;font-weight:600;border:1px solid var(--border);color:var(--text)}
+  td{padding:10px 16px;border:1px solid var(--border);color:var(--text2)}
+  .nav-btn{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text);transition:all 0.2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.next:hover{opacity:0.9}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand"><a href="index.html">☕ Java Interview Prep</a><p>Team Lead Edition</p></div>
+  <div class="nav-section">Core</div>
+  <a href="01-core-java.html"><span class="num">01</span> Core Java</a>
+  <a href="02-oop-solid.html"><span class="num">02</span> OOP &amp; SOLID</a>
+  <a href="03-collections.html"><span class="num">03</span> Collections</a>
+  <a href="04-concurrency.html"><span class="num">04</span> Concurrency</a>
+  <a href="05-java8-features.html"><span class="num">05</span> Java 8–17+</a>
+  <a href="06-design-patterns.html"><span class="num">06</span> Design Patterns</a>
+  <div class="nav-section">Frameworks</div>
+  <a href="07-spring-framework.html"><span class="num">07</span> Spring Boot</a>
+  <a href="08-microservices.html" class="active"><span class="num">08</span> Microservices</a>
+  <a href="09-database-jpa.html"><span class="num">09</span> Database &amp; JPA</a>
+  <a href="10-system-design.html"><span class="num">10</span> System Design</a>
+  <div class="nav-section">Quality</div>
+  <a href="11-testing.html"><span class="num">11</span> Testing</a>
+  <a href="12-jvm-performance.html"><span class="num">12</span> JVM &amp; Performance</a>
+  <a href="13-security.html"><span class="num">13</span> Security</a>
+  <a href="14-leadership-practices.html"><span class="num">14</span> Leadership</a>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Microservices</div>
+  <div class="page-header">
+    <div class="topic-badge">⚡ Topic 08</div>
+    <h1>Microservices Architecture</h1>
+    <p class="page-desc">Service decomposition, communication patterns, resilience (circuit breaker, retries), event-driven architecture, distributed data management, and observability — all at team lead depth.</p>
+  </div>
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#decomposition">Service Decomposition</a></li>
+      <li><a href="#communication">Service Communication</a></li>
+      <li><a href="#resilience">Resilience Patterns</a></li>
+      <li><a href="#api-gateway">API Gateway</a></li>
+      <li><a href="#event-driven">Event-Driven Architecture</a></li>
+      <li><a href="#saga">Saga Pattern</a></li>
+      <li><a href="#observability">Observability</a></li>
+      <li><a href="#interview-qa">Interview Q&amp;A</a></li>
+    </ol>
+  </div>
+
+  <section id="decomposition">
+    <h2>1. Service Decomposition</h2>
+    <table>
+      <tr><th>Strategy</th><th>How</th><th>Example</th></tr>
+      <tr><td>By business capability</td><td>Align services to business functions</td><td>Order, Payment, Inventory, Shipping</td></tr>
+      <tr><td>By subdomain (DDD)</td><td>Bounded context = one service</td><td>User identity vs. user preferences</td></tr>
+      <tr><td>By team (Conway's Law)</td><td>Service boundaries match team boundaries</td><td>Team owns full stack for one service</td></tr>
+      <tr><td>Strangler Fig</td><td>Gradually replace monolith pieces</td><td>Proxy new requests to microservice, keep old path</td></tr>
+    </table>
+    <div class="note">Rule of thumb: A microservice should be independently deployable. If you have to deploy two services together for one feature, they're probably too coupled — consider merging them or redesigning the API boundary.</div>
+  </section>
+
+  <section id="communication">
+    <h2>2. Service Communication</h2>
+    <table>
+      <tr><th>Style</th><th>Technology</th><th>Best For</th><th>Trade-off</th></tr>
+      <tr><td>Sync REST</td><td>HTTP/JSON, Spring WebClient</td><td>Simple request-response</td><td>Temporal coupling — both services must be up</td></tr>
+      <tr><td>Sync gRPC</td><td>Protocol Buffers</td><td>High-throughput, internal services</td><td>Stronger contract, harder to debug</td></tr>
+      <tr><td>Async messaging</td><td>Kafka, RabbitMQ, SQS</td><td>Events, long-running work</td><td>Eventual consistency, complex error handling</td></tr>
+      <tr><td>GraphQL</td><td>Spring for GraphQL</td><td>Flexible queries, BFF layer</td><td>N+1 problem, complex caching</td></tr>
+    </table>
+    <div class="code-block"><span class="cmt">// Non-blocking HTTP client — WebClient (preferred over RestTemplate)</span>
+<span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="cls">InventoryClient</span> {
+    <span class="kw">private final</span> <span class="cls">WebClient</span> client;
+
+    <span class="kw">public</span> <span class="cls">InventoryClient</span>(<span class="cls">WebClient</span>.<span class="cls">Builder</span> builder) {
+        <span class="kw">this</span>.client = builder
+            .<span class="met">baseUrl</span>(<span class="str">"http://inventory-service"</span>)
+            .<span class="met">defaultHeader</span>(<span class="str">"X-Request-ID"</span>, <span class="cls">UUID</span>.<span class="met">randomUUID</span>().<span class="met">toString</span>())
+            .<span class="met">build</span>();
+    }
+
+    <span class="kw">public</span> <span class="cls">Mono</span>&lt;<span class="cls">StockLevel</span>&gt; <span class="met">getStock</span>(<span class="cls">Long</span> productId) {
+        <span class="kw">return</span> client.<span class="met">get</span>()
+            .<span class="met">uri</span>(<span class="str">"/products/{id}/stock"</span>, productId)
+            .<span class="met">retrieve</span>()
+            .<span class="met">onStatus</span>(<span class="cls">HttpStatus</span>::<span class="met">is4xxClientError</span>, resp -&gt;
+                resp.<span class="met">bodyToMono</span>(<span class="cls">String</span>.<span class="kw">class</span>).<span class="met">map</span>(<span class="cls">InventoryException</span>::<span class="kw">new</span>))
+            .<span class="met">bodyToMono</span>(<span class="cls">StockLevel</span>.<span class="kw">class</span>)
+            .<span class="met">timeout</span>(<span class="cls">Duration</span>.<span class="met">ofSeconds</span>(<span class="num">3</span>))
+            .<span class="met">retryWhen</span>(<span class="cls">Retry</span>.<span class="met">backoff</span>(<span class="num">3</span>, <span class="cls">Duration</span>.<span class="met">ofMillis</span>(<span class="num">500</span>))
+                .<span class="met">filter</span>(ex -&gt; ex <span class="kw">instanceof</span> <span class="cls">WebClientResponseException</span>));
+    }
+}</div>
+  </section>
+
+  <section id="resilience">
+    <h2>3. Resilience Patterns</h2>
+    <h3>Circuit Breaker (Resilience4j)</h3>
+    <div class="code-block"><span class="cmt"># application.yml</span>
+<span class="cmt">resilience4j:</span>
+<span class="cmt">  circuitbreaker:</span>
+<span class="cmt">    instances:</span>
+<span class="cmt">      inventory:</span>
+<span class="cmt">        slidingWindowSize: 10           # evaluate last 10 calls</span>
+<span class="cmt">        failureRateThreshold: 50        # open if 50%+ fail</span>
+<span class="cmt">        waitDurationInOpenState: 30s    # wait before half-open</span>
+<span class="cmt">        permittedNumberOfCallsInHalfOpenState: 3</span>
+
+<span class="ann">@CircuitBreaker</span>(name = <span class="str">"inventory"</span>, fallbackMethod = <span class="str">"getStockFallback"</span>)
+<span class="ann">@TimeLimiter</span>(name = <span class="str">"inventory"</span>)
+<span class="ann">@Retry</span>(name = <span class="str">"inventory"</span>)
+<span class="kw">public</span> <span class="cls">StockLevel</span> <span class="met">getStock</span>(<span class="cls">Long</span> productId) {
+    <span class="kw">return</span> inventoryClient.<span class="met">getStock</span>(productId);
+}
+
+<span class="kw">private</span> <span class="cls">StockLevel</span> <span class="met">getStockFallback</span>(<span class="cls">Long</span> productId, <span class="cls">Throwable</span> t) {
+    log.<span class="met">warn</span>(<span class="str">"Inventory service unavailable, using cached stock"</span>, t);
+    <span class="kw">return</span> stockCache.<span class="met">getOrDefault</span>(productId, <span class="cls">StockLevel</span>.UNKNOWN);
+}
+
+<span class="cmt">// Circuit breaker states:</span>
+<span class="cmt">// CLOSED  → calls go through normally</span>
+<span class="cmt">// OPEN    → calls immediately fail (short-circuit), no calls to remote</span>
+<span class="cmt">// HALF-OPEN → limited calls allowed to test if service recovered</span></div>
+
+    <h3>Bulkhead &amp; Rate Limiting</h3>
+    <div class="code-block"><span class="cmt">// Bulkhead — isolate failures; limit concurrent calls per downstream</span>
+<span class="ann">@Bulkhead</span>(name = <span class="str">"inventory"</span>, type = <span class="cls">Bulkhead</span>.<span class="cls">Type</span>.THREADPOOL)
+<span class="kw">public</span> <span class="cls">CompletableFuture</span>&lt;<span class="cls">StockLevel</span>&gt; <span class="met">getStockAsync</span>(<span class="cls">Long</span> productId) { ... }
+
+<span class="cmt">// Rate Limiter — protect against burst traffic</span>
+<span class="ann">@RateLimiter</span>(name = <span class="str">"inventory"</span>)
+<span class="kw">public</span> <span class="cls">StockLevel</span> <span class="met">getStock</span>(<span class="cls">Long</span> productId) { ... }</div>
+  </section>
+
+  <section id="api-gateway">
+    <h2>4. API Gateway Pattern</h2>
+    <div class="code-block"><span class="cmt">// Spring Cloud Gateway configuration</span>
+<span class="ann">@Configuration</span>
+<span class="kw">public class</span> <span class="cls">GatewayConfig</span> {
+    <span class="ann">@Bean</span>
+    <span class="kw">public</span> <span class="cls">RouteLocator</span> <span class="met">routes</span>(<span class="cls">RouteLocatorBuilder</span> builder) {
+        <span class="kw">return</span> builder.<span class="met">routes</span>()
+            .<span class="met">route</span>(<span class="str">"order-service"</span>, r -&gt; r
+                .<span class="met">path</span>(<span class="str">"/api/v1/orders/**"</span>)
+                .<span class="met">filters</span>(f -&gt; f
+                    .<span class="met">stripPrefix</span>(<span class="num">2</span>)
+                    .<span class="met">addRequestHeader</span>(<span class="str">"X-Gateway-Auth"</span>, <span class="str">"internal"</span>)
+                    .<span class="met">circuitBreaker</span>(c -&gt; c.<span class="met">setName</span>(<span class="str">"orders"</span>).<span class="met">setFallbackUri</span>(<span class="str">"forward:/fallback"</span>))
+                    .<span class="met">requestRateLimiter</span>(r2 -&gt; r2.<span class="met">setRateLimiter</span>(redisRateLimiter()))
+                )
+                .<span class="met">uri</span>(<span class="str">"lb://ORDER-SERVICE"</span>)  <span class="cmt">// lb:// = load-balanced via service discovery</span>
+            )
+            .<span class="met">build</span>();
+    }
+}</div>
+    <p>Gateway responsibilities: authentication/authorization, rate limiting, SSL termination, request routing, load balancing, observability (correlation IDs), request/response transformation, API versioning.</p>
+  </section>
+
+  <section id="event-driven">
+    <h2>5. Event-Driven Architecture</h2>
+    <div class="code-block"><span class="cmt">// Kafka producer — publish domain event</span>
+<span class="ann">@Service</span>
+<span class="kw">public class</span> <span class="cls">OrderEventPublisher</span> {
+    <span class="kw">private final</span> <span class="cls">KafkaTemplate</span>&lt;<span class="cls">String</span>, <span class="cls">OrderEvent</span>&gt; template;
+
+    <span class="kw">public void</span> <span class="met">publishOrderPlaced</span>(<span class="cls">Order</span> order) {
+        <span class="kw">var</span> event = <span class="kw">new</span> <span class="cls">OrderPlacedEvent</span>(order.<span class="met">getId</span>(), order.<span class="met">getItems</span>(), <span class="cls">Instant</span>.<span class="met">now</span>());
+        template.<span class="met">send</span>(<span class="str">"order.placed"</span>, order.<span class="met">getId</span>().<span class="met">toString</span>(), event)
+            .<span class="met">whenComplete</span>((result, ex) -&gt; {
+                <span class="kw">if</span> (ex != <span class="kw">null</span>) log.<span class="met">error</span>(<span class="str">"Failed to publish order event"</span>, ex);
+            });
+    }
+}
+
+<span class="cmt">// Kafka consumer — idempotent processing</span>
+<span class="ann">@KafkaListener</span>(topics = <span class="str">"order.placed"</span>, groupId = <span class="str">"inventory-service"</span>)
+<span class="kw">public void</span> <span class="met">onOrderPlaced</span>(<span class="cls">OrderPlacedEvent</span> event, <span class="cls">Acknowledgment</span> ack) {
+    <span class="kw">try</span> {
+        <span class="kw">if</span> (processedEvents.<span class="met">contains</span>(event.<span class="met">getId</span>())) {  <span class="cmt">// idempotency check</span>
+            ack.<span class="met">acknowledge</span>();
+            <span class="kw">return</span>;
+        }
+        inventoryService.<span class="met">reserve</span>(event.<span class="met">getItems</span>());
+        processedEvents.<span class="met">add</span>(event.<span class="met">getId</span>());
+        ack.<span class="met">acknowledge</span>();  <span class="cmt">// manual commit — only after successful processing</span>
+    } <span class="kw">catch</span> (<span class="cls">InsufficientStockException</span> e) {
+        <span class="cmt">// publish compensating event or send to DLT (Dead Letter Topic)</span>
+        template.<span class="met">send</span>(<span class="str">"order.placed.DLT"</span>, event);
+        ack.<span class="met">acknowledge</span>();
+    }
+}</div>
+
+    <h3>Outbox Pattern — Reliable Event Publishing</h3>
+    <div class="code-block"><span class="cmt">// Problem: DB commit and Kafka publish are not atomic</span>
+<span class="cmt">// Outbox: write event to DB table in same transaction, then poll and publish</span>
+
+<span class="ann">@Transactional</span>
+<span class="kw">public void</span> <span class="met">placeOrder</span>(<span class="cls">CreateOrderRequest</span> req) {
+    <span class="cls">Order</span> order = orderRepo.<span class="met">save</span>(<span class="kw">new</span> <span class="cls">Order</span>(req));
+    <span class="cmt">// Write event to outbox table IN SAME TRANSACTION — atomically consistent</span>
+    outboxRepo.<span class="met">save</span>(<span class="kw">new</span> <span class="cls">OutboxEvent</span>(<span class="str">"order.placed"</span>, toJson(order), <span class="cls">Instant</span>.<span class="met">now</span>()));
+    <span class="cmt">// Separate process (Debezium CDC or scheduled job) reads outbox and publishes</span>
+}</div>
+  </section>
+
+  <section id="saga">
+    <h2>6. Saga Pattern — Distributed Transactions</h2>
+    <table>
+      <tr><th>Type</th><th>How it works</th><th>Best For</th></tr>
+      <tr><td>Choreography</td><td>Each service publishes events; others react. No central orchestrator.</td><td>Simple flows, loose coupling</td></tr>
+      <tr><td>Orchestration</td><td>Central saga orchestrator calls each service and handles failures.</td><td>Complex flows, clear visibility</td></tr>
+    </table>
+    <div class="code-block"><span class="cmt">// Orchestration saga — order placement</span>
+<span class="cmt">// Step 1: Reserve inventory</span>
+<span class="cmt">// Step 2: Charge payment</span>
+<span class="cmt">// Step 3: Schedule shipping</span>
+<span class="cmt">// Compensating transactions on failure:</span>
+<span class="cmt">// If payment fails → release inventory reservation</span>
+<span class="cmt">// If shipping fails → refund payment + release inventory</span>
+
+<span class="kw">public class</span> <span class="cls">PlaceOrderSaga</span> {
+    <span class="kw">public</span> <span class="cls">SagaResult</span> <span class="met">execute</span>(<span class="cls">OrderRequest</span> req) {
+        <span class="cls">String</span> reservationId = <span class="kw">null</span>;
+        <span class="cls">String</span> chargeId = <span class="kw">null</span>;
+        <span class="kw">try</span> {
+            reservationId = inventory.<span class="met">reserve</span>(req.<span class="met">getItems</span>());
+            chargeId = payment.<span class="met">charge</span>(req.<span class="met">getPayment</span>(), req.<span class="met">getTotal</span>());
+            <span class="cls">String</span> shipmentId = shipping.<span class="met">schedule</span>(req.<span class="met">getAddress</span>());
+            <span class="kw">return</span> <span class="cls">SagaResult</span>.<span class="met">success</span>(reservationId, chargeId, shipmentId);
+        } <span class="kw">catch</span> (<span class="cls">PaymentException</span> e) {
+            <span class="kw">if</span> (reservationId != <span class="kw">null</span>) inventory.<span class="met">release</span>(reservationId);
+            <span class="kw">return</span> <span class="cls">SagaResult</span>.<span class="met">failure</span>(<span class="str">"Payment failed"</span>);
+        } <span class="kw">catch</span> (<span class="cls">ShippingException</span> e) {
+            payment.<span class="met">refund</span>(chargeId);
+            inventory.<span class="met">release</span>(reservationId);
+            <span class="kw">return</span> <span class="cls">SagaResult</span>.<span class="met">failure</span>(<span class="str">"Shipping failed"</span>);
+        }
+    }
+}</div>
+  </section>
+
+  <section id="observability">
+    <h2>7. Observability — Logs, Metrics, Traces</h2>
+    <div class="code-block"><span class="cmt">// Distributed tracing with Micrometer Tracing (Spring Boot 3+)</span>
+<span class="cmt">// Correlation ID propagates across service calls via HTTP headers</span>
+<span class="cmt">// W3C Trace Context: traceparent header</span>
+
+<span class="cmt">// Structured logging with MDC (Mapped Diagnostic Context)</span>
+<span class="kw">public class</span> <span class="cls">RequestLoggingFilter</span> <span class="kw">implements</span> <span class="cls">Filter</span> {
+    <span class="kw">public void</span> <span class="met">doFilter</span>(<span class="cls">ServletRequest</span> req, <span class="cls">ServletResponse</span> res, <span class="cls">FilterChain</span> chain) {
+        <span class="kw">try</span> {
+            <span class="cls">MDC</span>.<span class="met">put</span>(<span class="str">"traceId"</span>, extractOrGenerate((<span class="cls">HttpServletRequest</span>) req));
+            <span class="cls">MDC</span>.<span class="met">put</span>(<span class="str">"userId"</span>, extractUserId((<span class="cls">HttpServletRequest</span>) req));
+            chain.<span class="met">doFilter</span>(req, res);
+        } <span class="kw">finally</span> {
+            <span class="cls">MDC</span>.<span class="met">clear</span>();  <span class="cmt">// always clear — thread reuse in pools</span>
+        }
+    }
+}
+<span class="cmt">// Logback pattern: %X{traceId} %X{userId} → appears in every log line</span>
+
+<span class="cmt">// Custom metrics with Micrometer</span>
+<span class="kw">private final</span> <span class="cls">Counter</span> orderCounter = <span class="cls">Counter</span>.<span class="met">builder</span>(<span class="str">"orders.placed"</span>)
+    .<span class="met">description</span>(<span class="str">"Number of orders successfully placed"</span>)
+    .<span class="met">tag</span>(<span class="str">"region"</span>, <span class="str">"us-east"</span>)
+    .<span class="met">register</span>(meterRegistry);</div>
+  </section>
+
+  <section id="interview-qa">
+    <h2>8. Interview Q&amp;A</h2>
+    <div class="qa-block">
+      <div class="qa-q">What is the difference between choreography and orchestration in the Saga pattern?</div>
+      <div class="qa-a">
+        <strong>Choreography</strong> — each service publishes events and reacts to others' events. No central coordinator. Each service knows what to do when it receives an event and what to publish next.<br>
+        Pros: loose coupling, no single point of failure, simpler services.<br>
+        Cons: hard to see the full flow, complex distributed logic, cyclic dependencies possible.<br><br>
+        <strong>Orchestration</strong> — a central saga orchestrator calls each service step by step. It knows the entire workflow and handles compensations on failure.<br>
+        Pros: centralized visibility, clear business process, easier to debug.<br>
+        Cons: orchestrator becomes a dependency bottleneck, more coupling.<br><br>
+        Choose choreography for simple flows (2–3 steps). Use orchestration for complex, long-running business processes where you need clear visibility and audit trails.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">How would you handle eventual consistency in a microservices system?</div>
+      <div class="qa-a">
+        <strong>Design approaches:</strong><br>
+        1. <strong>Accept it</strong> — design UX to handle stale data (show "as of X minutes ago", use optimistic UI updates).<br>
+        2. <strong>Compensating transactions</strong> — instead of rollback, issue a reverse operation (refund, re-stock).<br>
+        3. <strong>Idempotent consumers</strong> — events may be delivered twice; use deduplication (event ID in DB) to process each only once.<br>
+        4. <strong>Sagas</strong> — coordinate distributed state changes with explicit compensation logic.<br>
+        5. <strong>CQRS + Event Sourcing</strong> — keep write and read models separate; read model is eventually consistent with write model.<br><br>
+        Key insight: strong consistency in distributed systems requires synchronous calls (increasing coupling and latency). Eventual consistency is the trade-off for autonomy and resilience.
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">How do you prevent the "distributed monolith" anti-pattern?</div>
+      <div class="qa-a">
+        A distributed monolith has microservice deployment but tight coupling — services must be deployed together, or can't function independently. Signs: synchronous call chains across 5+ services per request, shared databases, services that frequently change together.<br><br>
+        <strong>Prevention:</strong><br>
+        1. <strong>Database per service</strong> — no shared DB; each owns its schema<br>
+        2. <strong>API versioning</strong> — consumers aren't broken by contract changes<br>
+        3. <strong>Async communication</strong> — decouple services in time via events<br>
+        4. <strong>Bounded contexts</strong> — services own their domain, no cross-domain joins<br>
+        5. <strong>Consumer-driven contract testing</strong> — verify API compatibility without deploying all services<br>
+        6. <strong>Independent deployability test</strong> — can you deploy service A without changing B?
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-btn">
+    <a href="07-spring-framework.html" class="btn">← Spring Boot</a>
+    <a href="09-database-jpa.html" class="btn next">Database &amp; JPA →</a>
+  </div>
+</main>
+</body>
+</html>

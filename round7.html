@@ -1,0 +1,1029 @@
+
+<title>Java Team Lead — Round 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root {
+  --bg:#F4F7FC;--surface:#FFFFFF;--surface-2:#EDF1F9;--border:#DCE3EF;
+  --text:#0F1829;--text-2:#374151;--muted:#6B7A99;
+  --accent:#E85420;--accent-dim:#FEF0EB;
+  --blue:#2563EB;--blue-dim:#EFF4FF;--green:#059669;--green-dim:#ECFDF5;
+  --amber:#B45309;--amber-dim:#FFFBEB;--purple:#7C3AED;--purple-dim:#F5F3FF;
+  --teal:#0D9488;--teal-dim:#F0FDFA;--rose:#BE185D;--rose-dim:#FFF1F2;
+  --sidebar-w:260px;--header-h:52px;--font-mono:'JetBrains Mono',monospace;
+  --font-body:'Inter',system-ui,sans-serif;--radius:8px;--code-bg:#0D1117;
+  --kw:#FF7B57;--str:#7EE787;--cm:#6E7F95;--ty:#79C0FF;--num:#F2CC60;--an:#D2A8FF;--fn:#E3B341;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#090D18;--surface:#111827;--surface-2:#1A2236;--border:#1F2D42;
+  --text:#E1E7F5;--text-2:#94A3B8;--muted:#5D7096;--accent:#FF6B35;--accent-dim:#1F1008;
+  --blue:#60A5FA;--blue-dim:#0C1A35;--green-dim:#051A0F;--amber-dim:#1A1005;--purple-dim:#14082E;--teal-dim:#041A18;--rose-dim:#1A050D;
+}}
+:root[data-theme="dark"]{
+  --bg:#090D18;--surface:#111827;--surface-2:#1A2236;--border:#1F2D42;
+  --text:#E1E7F5;--text-2:#94A3B8;--muted:#5D7096;--accent:#FF6B35;--accent-dim:#1F1008;
+  --blue:#60A5FA;--blue-dim:#0C1A35;--green-dim:#051A0F;--amber-dim:#1A1005;--purple-dim:#14082E;--teal-dim:#041A18;--rose-dim:#1A050D;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:15px;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.65;min-height:100vh;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--header-h);
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem;}
+.topbar-left{display:flex;align-items:center;gap:0.75rem;}
+.logo{font-family:var(--font-mono);font-weight:700;font-size:1rem;color:var(--accent);letter-spacing:-0.5px;}
+.topbar-divider{width:1px;height:20px;background:var(--border);}
+.topbar-title{font-family:var(--font-mono);font-size:0.85rem;font-weight:500;color:var(--text-2);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.round-steps{display:flex;align-items:center;gap:3px;}
+.round-step{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:0.68rem;font-weight:700;
+  background:var(--surface-2);color:var(--muted);border:1px solid var(--border);
+  text-decoration:none;transition:all 0.15s;}
+.round-step.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.round-step:not(.active):hover{border-color:var(--accent);color:var(--accent);}
+.theme-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);
+  background:var(--surface-2);color:var(--muted);cursor:pointer;font-size:0.85rem;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+.layout{display:flex;padding-top:var(--header-h);min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;position:sticky;top:var(--header-h);
+  height:calc(100vh - var(--header-h));overflow-y:auto;
+  border-right:1px solid var(--border);background:var(--surface);padding:1.25rem 0;}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.nav-group{margin-bottom:1.5rem;}
+.nav-group-label{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0 1.25rem 0.5rem;}
+.nav-link{display:flex;align-items:center;justify-content:space-between;
+  padding:0.3rem 1.25rem;font-size:0.82rem;color:var(--text-2);
+  text-decoration:none;border-left:2px solid transparent;transition:all 0.15s;}
+.nav-link:hover{color:var(--text);background:var(--surface-2);}
+.nav-link.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-dim);}
+.nav-badge{font-family:var(--font-mono);font-size:0.6rem;font-weight:700;padding:1px 5px;border-radius:3px;opacity:0.85;}
+.badge-core{background:var(--accent-dim);color:var(--accent);}
+.badge-imp{background:var(--blue-dim);color:var(--blue);}
+.badge-adv{background:var(--purple-dim);color:var(--purple);}
+.content{flex:1;max-width:960px;padding:2rem 2.5rem 4rem;min-width:0;}
+.intro-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:2rem;margin-bottom:2.5rem;border-top:3px solid var(--accent);}
+.intro-eyebrow{font-family:var(--font-mono);font-size:0.7rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+.intro-card h1{font-family:var(--font-mono);font-size:2rem;font-weight:700;color:var(--text);
+  line-height:1.2;text-wrap:balance;margin-bottom:0.75rem;}
+.intro-card p{color:var(--text-2);font-size:0.95rem;max-width:62ch;margin-bottom:1.5rem;}
+.intro-stats{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.stat{display:flex;flex-direction:column;gap:2px;}
+.stat-val{font-family:var(--font-mono);font-size:1.2rem;font-weight:700;color:var(--text);}
+.stat-label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.topic-section{margin-bottom:3rem;scroll-margin-top:calc(var(--header-h) + 1rem);}
+.section-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.section-eyebrow{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.section-header h2{font-family:var(--font-mono);font-size:1.35rem;font-weight:700;color:var(--text);text-wrap:balance;}
+.diff-badge{margin-left:auto;font-family:var(--font-mono);font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:4px;}
+.diff-core{background:var(--accent-dim);color:var(--accent);}
+.diff-imp{background:var(--blue-dim);color:var(--blue);}
+.diff-adv{background:var(--purple-dim);color:var(--purple);}
+.section-body{display:flex;flex-direction:column;gap:1.25rem;}
+.section-body>p{color:var(--text-2);font-size:0.93rem;max-width:74ch;}
+.section-body>p strong{color:var(--text);}
+.key-points{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;}
+.key-points-label{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.65rem;}
+.key-points ul{list-style:none;display:flex;flex-direction:column;gap:0.45rem;}
+.key-points li{font-size:0.875rem;color:var(--text-2);padding-left:1rem;position:relative;}
+.key-points li::before{content:'›';position:absolute;left:0;color:var(--accent);font-weight:700;}
+.key-points li strong{color:var(--text);}
+.key-points code{font-family:var(--font-mono);font-size:0.8rem;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--text);}
+.callout{border-radius:var(--radius);padding:1rem 1.25rem;border:1px solid;font-size:0.875rem;}
+.callout-label{font-family:var(--font-mono);font-size:0.62rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;}
+.callout-tip{background:var(--blue-dim);border-color:var(--blue);color:var(--text-2);}
+.callout-tip .callout-label{color:var(--blue);}
+.callout-warn{background:var(--amber-dim);border-color:var(--amber);color:var(--text-2);}
+.callout-warn .callout-label{color:var(--amber);}
+.callout-key{background:var(--accent-dim);border-color:var(--accent);color:var(--text-2);}
+.callout-key .callout-label{color:var(--accent);}
+.callout-pat{background:var(--teal-dim);border-color:var(--teal);color:var(--text-2);}
+.callout-pat .callout-label{color:var(--teal);}
+.callout ul{list-style:none;margin-top:0.5rem;display:flex;flex-direction:column;gap:0.35rem;}
+.callout li{padding-left:1rem;position:relative;}
+.callout li::before{content:'→';position:absolute;left:0;font-weight:700;}
+.callout-tip li::before{color:var(--blue);}
+.callout-warn li::before{color:var(--amber);}
+.callout-key li::before{color:var(--accent);}
+.callout-pat li::before{color:var(--teal);}
+.callout code{font-family:var(--font-mono);font-size:0.8rem;background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:3px;}
+.compare-table{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);}
+.compare-table table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.compare-table th{background:var(--surface-2);padding:0.6rem 0.85rem;text-align:left;
+  font-family:var(--font-mono);font-size:0.7rem;font-weight:700;letter-spacing:0.04em;
+  color:var(--muted);border-bottom:1px solid var(--border);}
+.compare-table td{padding:0.55rem 0.85rem;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top;}
+.compare-table tr:last-child td{border-bottom:none;}
+.compare-table tr:hover td{background:var(--surface-2);}
+.compare-table code{font-family:var(--font-mono);font-size:0.78rem;background:var(--surface-2);padding:1px 5px;border-radius:3px;color:var(--text);}
+.compare-table td strong{color:var(--text);}
+.ascii-diagram{background:var(--code-bg);border:1px solid #1A2030;border-radius:var(--radius);
+  padding:1.1rem 1.25rem;font-family:var(--font-mono);font-size:0.78rem;line-height:1.7;
+  color:#8B9DC3;overflow-x:auto;white-space:pre;}
+.ascii-diagram .hi{color:#79C0FF;}
+.ascii-diagram .accent{color:#FF7B57;}
+.ascii-diagram .ok{color:#7EE787;}
+.ascii-diagram .warn{color:#F2CC60;}
+.ascii-diagram .mu{color:#D2A8FF;}
+.code-block{border-radius:var(--radius);border:1px solid #1A2030;overflow:hidden;}
+.code-header{background:#111927;border-bottom:1px solid #1A2030;padding:0.5rem 1rem;
+  display:flex;align-items:center;gap:0.75rem;}
+.lang-tag{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;color:#7EE787;background:rgba(126,231,135,0.12);padding:2px 7px;border-radius:3px;}
+.code-desc{font-family:var(--font-mono);font-size:0.73rem;color:#5D7096;margin-left:auto;}
+.code-block pre{background:var(--code-bg);padding:1.1rem 1.25rem;overflow-x:auto;margin:0;}
+.code-block code{font-family:var(--font-mono);font-size:0.8rem;line-height:1.7;color:#CDD5E0;display:block;}
+.kw{color:var(--kw);}.str{color:var(--str);}.cm{color:var(--cm);font-style:italic;}
+.ty{color:var(--ty);}.num{color:var(--num);}.an{color:var(--an);}.fn{color:var(--fn);}
+.section-divider{height:1px;background:var(--border);margin:2.5rem 0;}
+@media(max-width:768px){.sidebar{display:none;}.content{padding:1.25rem;}}
+</style>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo">Java∙TL</span>
+    <div class="topbar-divider"></div>
+    <span class="topbar-title">Round 7 — Cloud &amp; DevOps</span>
+  </div>
+  <div class="topbar-right">
+    <div class="round-steps">
+      <a class="round-step" href="round1.html" title="Core Java">1</a>
+      <a class="round-step" href="round2.html" title="Multithreading">2</a>
+      <a class="round-step" href="round3.html" title="Spring">3</a>
+      <a class="round-step" href="round4.html" title="Database">4</a>
+      <a class="round-step" href="round5.html" title="Microservices">5</a>
+      <a class="round-step" href="round6.html" title="System Design">6</a>
+      <a class="round-step active" title="Cloud & DevOps">7</a>
+      <a class="round-step" href="round8.html" title="Team Lead">8</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">◐</button>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <div class="nav-group">
+    <div class="nav-group-label">Compute</div>
+    <a class="nav-link active" href="#ec2">EC2 <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#ecs">ECS <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#eks">EKS <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#fargate">Fargate <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#lambda">Lambda <span class="nav-badge badge-core">Core</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Data</div>
+    <a class="nav-link" href="#s3">S3 <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#rds">RDS <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#dynamodb">DynamoDB <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Messaging</div>
+    <a class="nav-link" href="#sqs">SQS <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#sns">SNS <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#msk">Kafka / MSK <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Networking</div>
+    <a class="nav-link" href="#vpc">VPC <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#alb">ALB <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#cloudfront">CloudFront <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Operations</div>
+    <a class="nav-link" href="#cloudwatch">CloudWatch <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#iam">IAM <span class="nav-badge badge-core">Core</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Containers</div>
+    <a class="nav-link" href="#docker">Docker <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#kubernetes">Kubernetes <span class="nav-badge badge-imp">Imp</span></a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">CI/CD</div>
+    <a class="nav-link" href="#jenkins">Jenkins <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#githubactions">GitHub Actions <span class="nav-badge badge-core">Core</span></a>
+    <a class="nav-link" href="#harness">Harness <span class="nav-badge badge-imp">Imp</span></a>
+    <a class="nav-link" href="#sonarqube">SonarQube <span class="nav-badge badge-core">Core</span></a>
+  </div>
+</nav>
+
+<main class="content" id="mainContent">
+  <div class="intro-card">
+    <div class="intro-eyebrow">Round 7 of 8</div>
+    <h1>Cloud &amp; DevOps</h1>
+    <p>Cloud and DevOps questions test whether you understand not just what services exist, but when to use each one, what the trade-offs are, and how to integrate them with Java/Spring Boot applications. Focus on the <em>why</em> behind each choice — interviewers want to know if you've actually operated systems in production, not just read the docs.</p>
+    <div class="intro-stats">
+      <div class="stat"><span class="stat-val">16</span><span class="stat-label">AWS Services</span></div>
+      <div class="stat"><span class="stat-val">7</span><span class="stat-label">Tools</span></div>
+      <div class="stat"><span class="stat-val">7 / 8</span><span class="stat-label">Round</span></div>
+    </div>
+  </div>
+
+  <!-- ─── EC2 ─── -->
+  <section class="topic-section" id="ec2">
+    <div class="section-header">
+      <span class="section-eyebrow">Compute</span>
+      <h2>EC2</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>EC2 provides virtual servers you control fully. You manage OS, runtime, and software. Use it when you need full control, a specific OS configuration, or when your workload doesn't fit the container/serverless model (e.g., GPU instances, bare-metal needs, licensed software).</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Pricing Model</th><th>Discount</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><strong>On-Demand</strong></td><td>0%</td><td>Variable/unpredictable load, short-term</td></tr>
+            <tr><td><strong>Reserved (1yr)</strong></td><td>~40%</td><td>Steady-state production workloads</td></tr>
+            <tr><td><strong>Reserved (3yr)</strong></td><td>~60%</td><td>Long-term baseline compute</td></tr>
+            <tr><td><strong>Spot</strong></td><td>~70-90%</td><td>Fault-tolerant batch jobs, Kafka consumers</td></tr>
+            <tr><td><strong>Savings Plans</strong></td><td>~40-66%</td><td>Flexible commitment (any region/instance family)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Concepts</div>
+        <ul>
+          <li><strong>Instance types</strong>: t3 (burstable, cheap, dev/test), m5 (general-purpose, production), c5 (compute-optimized, CPU-intensive apps), r5 (memory-optimized, in-memory DBs).</li>
+          <li><strong>Auto Scaling Groups</strong>: maintain N instances, scale on CPU/custom metrics. Use <code>min/desired/max</code> capacity. ALB distributes traffic; health checks replace failed instances automatically.</li>
+          <li><strong>Launch Template</strong>: defines AMI, instance type, security groups, user-data script (bootstrapping). Prefer Launch Templates over Launch Configurations (deprecated).</li>
+          <li><strong>User data</strong>: runs as root on first boot. Install Java, pull your JAR from S3, start the service. Use Systems Manager Parameter Store for secrets in user-data — never hardcode.</li>
+          <li><strong>EC2 vs containers</strong>: EC2 = you manage everything. Containers (ECS/EKS) = you manage apps, AWS manages compute placement. For Spring Boot, containers are almost always better than raw EC2 today.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── ECS ─── -->
+  <section class="topic-section" id="ecs">
+    <div class="section-header">
+      <span class="section-eyebrow">Compute</span>
+      <h2>ECS — Elastic Container Service</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>ECS is AWS's managed container orchestrator. You define tasks (container specs) and services (desired count, load balancer, auto-scaling). ECS handles scheduling containers onto infrastructure — either EC2 instances you manage, or Fargate (fully managed). ECS is simpler than Kubernetes and tightly integrated with the AWS ecosystem.</p>
+
+      <div class="ascii-diagram"><span class="hi">ECS Hierarchy</span>
+
+<span class="ok">Cluster</span> (logical grouping of resources)
+  └── <span class="accent">Service</span> (maintains desired count, links to ALB target group)
+        └── <span class="hi">Task</span> (one running instance of a Task Definition)
+              └── <span class="mu">Container(s)</span> (Docker containers, share network/storage namespace)
+
+<span class="hi">Task Definition</span> (like a docker-compose file):
+  { image: "myapp:1.2", cpu: 512, memory: 1024,
+    portMappings: [{containerPort: 8080}],
+    environment: [{name: "SPRING_PROFILES_ACTIVE", value: "prod"}],
+    secrets: [{name: "DB_PASSWORD", valueFrom: "arn:aws:ssm:..."}] }</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Spring Boot on ECS</div>
+        <ul>
+          <li><strong>Health checks</strong>: configure ALB health check on <code>/actuator/health</code>. ECS replaces unhealthy tasks automatically — Spring Actuator makes this trivial.</li>
+          <li><strong>Secrets</strong>: inject from AWS Secrets Manager or SSM Parameter Store as environment variables via the Task Definition <code>secrets</code> field. Never bake secrets into your Docker image.</li>
+          <li><strong>Rolling deployments</strong>: ECS replaces tasks one at a time by default. Configure <code>minimumHealthyPercent: 100</code> and <code>maximumPercent: 200</code> for zero-downtime deploys.</li>
+          <li><strong>Service Auto Scaling</strong>: scale based on ALB Request Count per Target or CPU/memory metrics. Works well for Spring Boot services with predictable per-request CPU usage.</li>
+          <li><strong>ECS vs EKS</strong>: ECS is simpler, AWS-native, lower operational overhead. EKS is Kubernetes — more portable, richer ecosystem, more complex. Use ECS unless you need Kubernetes-specific features or multi-cloud portability.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── EKS ─── -->
+  <section class="topic-section" id="eks">
+    <div class="section-header">
+      <span class="section-eyebrow">Compute</span>
+      <h2>EKS — Elastic Kubernetes Service</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>EKS runs managed Kubernetes control plane. AWS handles etcd, API server, and control plane HA — you manage worker nodes (or use Fargate for fully serverless). Use EKS when you need Kubernetes-native features: Helm charts, CRDs, advanced scheduling, or when moving workloads across AWS/GCP/Azure.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Kubernetes Concepts for Java TL</div>
+        <ul>
+          <li><strong>Pod</strong>: smallest deployable unit. One JVM = one container = one pod (typically). Resources: <code>requests</code> (scheduling), <code>limits</code> (enforcement). Set JVM heap &lt; container memory limit or you'll get OOMKilled.</li>
+          <li><strong>Deployment</strong>: declares desired pod count and rolling update strategy. Manages ReplicaSet under the hood. <code>kubectl rollout undo</code> rolls back to previous ReplicaSet.</li>
+          <li><strong>Service</strong>: stable virtual IP for a set of pods. Types: ClusterIP (internal), NodePort (debug), LoadBalancer (creates AWS NLB). Use ALB Ingress Controller for HTTP routing instead.</li>
+          <li><strong>ConfigMap / Secret</strong>: inject config without rebuilding images. <code>spring.config.import=configtree:/etc/config/</code> reads a ConfigMap volume as Spring properties.</li>
+          <li><strong>HPA (Horizontal Pod Autoscaler)</strong>: scales pod count based on CPU, memory, or custom metrics (Kafka consumer lag via KEDA is common for Java consumers).</li>
+          <li><strong>Node groups</strong>: mix On-Demand nodes for baseline + Spot nodes for bursty workloads. Use taints and tolerations to control which pods land where.</li>
+        </ul>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-label">JVM on Kubernetes — Common Mistakes</div>
+        <ul>
+          <li>JVM reads host CPU count, not container CPU. Add <code>-XX:ActiveProcessorCount=N</code> or use JDK 17+ which is container-aware.</li>
+          <li>JVM default heap is 1/4 of host RAM. Set <code>-Xmx</code> to ~75% of the container memory limit, not the node's total RAM.</li>
+          <li>Use <code>-XX:+UseContainerSupport</code> (default in JDK 10+) to respect cgroup limits.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── FARGATE ─── -->
+  <section class="topic-section" id="fargate">
+    <div class="section-header">
+      <span class="section-eyebrow">Compute</span>
+      <h2>Fargate</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Fargate is serverless compute for containers — no EC2 instances to manage. You define CPU and memory per task; AWS provisions the underlying infrastructure invisibly. Works with both ECS and EKS. Pay per vCPU-second and GB-second used, not per idle instance.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th></th><th>Fargate</th><th>EC2 Node Group</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Operational overhead</strong></td><td>None — no AMI updates, no node patching</td><td>High — you manage OS, kubelet, capacity</td></tr>
+            <tr><td><strong>Cold start</strong></td><td>~30-60s (image pull + scheduling)</td><td>~5-10s (image already cached)</td></tr>
+            <tr><td><strong>Cost model</strong></td><td>Per-task per second (no idle waste)</td><td>Per-node per hour (pay for idle capacity)</td></tr>
+            <tr><td><strong>Host access</strong></td><td>No SSH, no DaemonSets</td><td>Full node access, DaemonSets work</td></tr>
+            <tr><td><strong>Best for</strong></td><td>Unpredictable burst, batch jobs, dev envs</td><td>Steady-state, GPU, custom node config</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── LAMBDA ─── -->
+  <section class="topic-section" id="lambda">
+    <div class="section-header">
+      <span class="section-eyebrow">Compute</span>
+      <h2>Lambda</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Lambda runs code in response to events with no server management. You provide a function; AWS handles scaling to thousands of concurrent executions. The execution model is stateless, ephemeral (15 min max), and billed per 100ms. Not suitable for long-running connections (WebSocket servers, Kafka consumers) but excellent for event-driven glue code.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Trigger</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><strong>API Gateway / ALB</strong></td><td>Serverless HTTP API (Spring Cloud Function)</td></tr>
+            <tr><td><strong>S3 event</strong></td><td>Image processing, virus scan on upload</td></tr>
+            <tr><td><strong>SQS</strong></td><td>Message processing with auto-scaling</td></tr>
+            <tr><td><strong>EventBridge</strong></td><td>Scheduled jobs (cron), cross-service events</td></tr>
+            <tr><td><strong>DynamoDB Streams</strong></td><td>React to DB changes, fan-out to other services</td></tr>
+            <tr><td><strong>Kafka / MSK</strong></td><td>Batch consumer (small events, not high-throughput)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="key-points">
+        <div class="key-points-label">Java Lambda Best Practices</div>
+        <ul>
+          <li><strong>Cold start</strong>: JVM cold start is 1-3s. Mitigate with: SnapStart (Firecracker memory snapshot on publish), Provisioned Concurrency (pre-warmed instances, extra cost), or GraalVM native image (via Spring Native).</li>
+          <li><strong>Handler class</strong>: implement <code>RequestHandler&lt;I,O&gt;</code>. Keep the handler thin — delegate to a service class that can be tested without AWS SDK. Static initialization happens once per container lifetime (reused across warm invocations).</li>
+          <li><strong>Memory setting</strong>: Lambda allocates CPU proportional to memory. Counterintuitively, giving Java 1024MB instead of 512MB often makes functions faster AND cheaper (lower duration). Test both.</li>
+          <li><strong>Lambda vs ECS/EC2</strong>: Lambda excels at event-driven, stateless, infrequent invocations. Persistent connections (DB connection pooling, WebSockets, Kafka consumers) belong on ECS/EC2 — Lambda can't hold them efficiently.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── S3 ─── -->
+  <section class="topic-section" id="s3">
+    <div class="section-header">
+      <span class="section-eyebrow">Data</span>
+      <h2>S3 — Simple Storage Service</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>S3 is object storage — immutable blobs addressed by bucket + key. 11 nines durability, essentially unlimited scale. The mental model: S3 is a global key-value store where values are arbitrary binary data. It is not a file system (no random-access writes, no append, no true directories).</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Interview Must-Knows</div>
+        <ul>
+          <li><strong>Storage classes</strong>: Standard (frequent access, high availability) → Standard-IA (infrequent, 30-day minimum) → Glacier Instant (millisecond retrieval, archival) → Glacier Deep Archive (12h retrieval, cheapest). Use Lifecycle Policies to auto-transition objects.</li>
+          <li><strong>Presigned URLs</strong>: generate a time-limited, signed URL that lets a client upload or download directly without going through your servers. Expires in 15 min–7 days. Essential for large file uploads — never proxy large files through your app.</li>
+          <li><strong>Versioning</strong>: once enabled, overwriting a key creates a new version rather than deleting the old one. Enables rollback and protects against accidental deletion. Required before enabling MFA Delete.</li>
+          <li><strong>Event notifications</strong>: trigger SQS, SNS, or Lambda on PutObject/DeleteObject. Primary pattern for file-upload processing pipelines.</li>
+          <li><strong>Java SDK</strong>: <code>S3Client</code> (sync) or <code>S3AsyncClient</code>. Spring's <code>ResourceLoader</code> supports <code>s3://bucket/key</code> URIs via spring-cloud-aws.</li>
+          <li><strong>Cross-region replication</strong>: auto-replicate objects to another region. Used for DR or bringing content closer to users. Works with versioning enabled on both buckets.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── RDS ─── -->
+  <section class="topic-section" id="rds">
+    <div class="section-header">
+      <span class="section-eyebrow">Data</span>
+      <h2>RDS — Relational Database Service</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>RDS is managed relational databases: PostgreSQL, MySQL, MariaDB, Oracle, SQL Server. AWS handles backups, patching, replication, and failover. You pick instance size, storage type, Multi-AZ, and read replicas. Aurora is AWS's optimized cloud-native engine (compatible with MySQL/Postgres) with higher throughput and automatic storage scaling.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th></th><th>RDS PostgreSQL</th><th>Aurora PostgreSQL</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Performance</strong></td><td>Baseline PostgreSQL</td><td>~3x throughput, lower replication lag</td></tr>
+            <tr><td><strong>Storage</strong></td><td>Provision EBS (gp3/io1)</td><td>Auto-scales 10GB → 128TB, no provisioning</td></tr>
+            <tr><td><strong>Replicas</strong></td><td>Up to 5 read replicas</td><td>Up to 15 Aurora Replicas, shared storage layer</td></tr>
+            <tr><td><strong>Failover</strong></td><td>Multi-AZ: ~60s (standby promotion)</td><td>~30s (replica promotes, storage already synced)</td></tr>
+            <tr><td><strong>Cost</strong></td><td>Lower per hour</td><td>~20% higher compute, storage per GB cheaper</td></tr>
+            <tr><td><strong>Choose when</strong></td><td>Cost-sensitive, smaller workloads</td><td>Production, high availability, >10K QPS</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="key-points">
+        <div class="key-points-label">Spring Boot + RDS</div>
+        <ul>
+          <li><strong>Connection string</strong>: use RDS Proxy between your app and RDS. Proxy pools connections at the AWS layer — critical for Lambda (which can't maintain persistent connections) and helps prevent connection storms on ECS restart bursts.</li>
+          <li><strong>Credentials</strong>: use IAM database authentication (no password, short-lived token) or rotate credentials via Secrets Manager auto-rotation. Spring Cloud AWS can fetch DB credentials from Secrets Manager automatically.</li>
+          <li><strong>Read replicas</strong>: point your Spring DataSource read-only transactions to the replica endpoint. Spring's <code>@Transactional(readOnly=true)</code> routes to replica with AbstractRoutingDataSource.</li>
+          <li><strong>Parameter Groups</strong>: tune PostgreSQL parameters (max_connections, shared_buffers, log_min_duration_statement) without SSH access to the instance.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── DYNAMODB ─── -->
+  <section class="topic-section" id="dynamodb">
+    <div class="section-header">
+      <span class="section-eyebrow">Data</span>
+      <h2>DynamoDB</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>DynamoDB is a fully managed NoSQL key-value + document database with single-digit millisecond latency at any scale. The entire data model is designed around access patterns known upfront — unlike relational DBs where you add indexes later. Getting the partition key wrong kills your throughput and is expensive to fix in production.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Data Modeling Principles</div>
+        <ul>
+          <li><strong>Primary key</strong>: partition key (PK) alone, or PK + sort key (SK). All queries must specify PK exactly. SK enables range queries within a partition. Design PK to distribute load evenly — no hot partitions.</li>
+          <li><strong>Single-table design</strong>: store multiple entity types in one table. PK = "USER#123", SK = "PROFILE". PK = "USER#123", SK = "ORDER#2024-01". GSIs (Global Secondary Indexes) provide alternate access patterns. Reduces costs and complexity vs multiple tables.</li>
+          <li><strong>GSI</strong>: Global Secondary Index — project attributes into an index with a different PK/SK. Enables "query by email" when your table is keyed by userId. GSIs have eventual consistency and separate capacity.</li>
+          <li><strong>Capacity modes</strong>: On-Demand (pay per request, auto-scales, ~6x more expensive at steady state) vs Provisioned (set RCU/WCU, cheaper, can burst to 2x for 300s). Use On-Demand for variable/new workloads; switch to Provisioned once traffic is predictable.</li>
+          <li><strong>DynamoDB Streams</strong>: ordered stream of item changes (like CDC). Trigger Lambda for event-driven patterns. Each shard → one Lambda concurrent invocation; processing is in order within a partition.</li>
+          <li><strong>Java SDK</strong>: use DynamoDB Enhanced Client (DynamoDB Mapper replacement). Annotate POJOs with <code>@DynamoDbBean</code>, <code>@DynamoDbPartitionKey</code>. Works well with Spring Boot.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── SQS ─── -->
+  <section class="topic-section" id="sqs">
+    <div class="section-header">
+      <span class="section-eyebrow">Messaging</span>
+      <h2>SQS — Simple Queue Service</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>SQS is a managed message queue (point-to-point). Producers enqueue messages; consumers poll and delete them. SQS handles durability, at-least-once delivery, and visibility timeout (message is hidden while being processed; requeued if not deleted in time). No message ordering by default — use FIFO queues when order matters.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th></th><th>Standard Queue</th><th>FIFO Queue</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Throughput</strong></td><td>Unlimited (effectively)</td><td>3,000 messages/sec with batching</td></tr>
+            <tr><td><strong>Ordering</strong></td><td>Best-effort (not guaranteed)</td><td>Exactly-once delivery within a group</td></tr>
+            <tr><td><strong>Deduplication</strong></td><td>Consumer must handle duplicates</td><td>5-minute deduplication window</td></tr>
+            <tr><td><strong>Use case</strong></td><td>Fan-out, high throughput, idempotent consumers</td><td>Financial transactions, ordered workflows</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Patterns</div>
+        <ul>
+          <li><strong>Visibility timeout</strong>: when a consumer receives a message, it's hidden for N seconds. Consumer must process and delete before timeout, or SQS makes it visible again for retry. Set timeout to 2× your expected processing time.</li>
+          <li><strong>Dead-letter queue (DLQ)</strong>: after N failed processing attempts, message moves to DLQ. Monitor DLQ depth as an alarm — non-zero DLQ means your consumer has a bug. Use DLQ to inspect and replay failed messages.</li>
+          <li><strong>Spring Integration</strong>: <code>@SqsListener</code> (spring-cloud-aws). Annotate a method and Spring creates a polling listener. Processes batches, handles ack/nack automatically.</li>
+          <li><strong>Lambda trigger</strong>: SQS → Lambda auto-scales Lambda concurrency proportional to queue depth. Lambda polled by the service, not by your code. Each Lambda invocation receives up to 10 messages (batch size).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── SNS ─── -->
+  <section class="topic-section" id="sns">
+    <div class="section-header">
+      <span class="section-eyebrow">Messaging</span>
+      <h2>SNS — Simple Notification Service</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>SNS is a pub/sub service — one message to a topic is delivered to all subscribers simultaneously. Subscribers can be SQS queues, Lambda functions, HTTP endpoints, email, or SMS. The classic pattern is <strong>SNS → multiple SQS queues</strong> (fan-out): decouple producer from consumers, each consumer processes at its own pace.</p>
+
+      <div class="ascii-diagram"><span class="hi">SNS Fan-out Pattern</span>
+
+Producer ──► SNS Topic: <span class="accent">order.placed</span>
+                │
+        ┌───────┼────────────┬────────────────┐
+        ▼       ▼            ▼                ▼
+      <span class="ok">SQS</span>       <span class="ok">SQS</span>          <span class="ok">SQS</span>            <span class="mu">Email</span>
+  Inventory   Shipping    Notification     Ops alert
+  Service     Service     Service          (SNS → email)
+  consumer    consumer    consumer
+
+Each SQS queue can scale its consumer independently.
+Inventory slowness doesn't affect Shipping consumer.</div>
+
+      <div class="key-points">
+        <div class="key-points-label">SNS vs SQS vs Kafka</div>
+        <ul>
+          <li><strong>SNS</strong>: push to multiple subscribers now. No message retention. Subscriber must be online (SQS buffers if not). Best for fan-out notification patterns.</li>
+          <li><strong>SQS</strong>: queue for one consumer group. Messages retained up to 14 days. Consumer polls at its own pace. Best for work queues and decoupling.</li>
+          <li><strong>Kafka/MSK</strong>: distributed log. Multiple independent consumer groups each maintain their own offset. Messages retained for days/weeks. Replay from any point. Best for event streaming, audit logs, multiple independent consumers of the same events.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── MSK / KAFKA ─── -->
+  <section class="topic-section" id="msk">
+    <div class="section-header">
+      <span class="section-eyebrow">Messaging</span>
+      <h2>Kafka / MSK</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Amazon MSK is managed Apache Kafka. Use MSK/Kafka when you need: multiple independent consumer groups reading the same events, long-term event retention (replay from days/weeks ago), strict ordering within a partition, or very high throughput (&gt;100K messages/sec). MSK removes the Kafka broker management overhead.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Spring Boot + Kafka</div>
+        <ul>
+          <li><strong>Producer</strong>: <code>KafkaTemplate&lt;K,V&gt;.send(topic, key, value)</code>. Use JSON serialization via <code>JsonSerializer</code>. Always set a message key when ordering matters — same key → same partition.</li>
+          <li><strong>Consumer</strong>: <code>@KafkaListener(topics="orders", groupId="shipping-svc")</code>. Each consumer group gets its own cursor (offset). Two services with different groupIds both receive every message.</li>
+          <li><strong>Partitions</strong>: parallelism = number of partitions. Max concurrent consumers per group = partition count. Set partitions at topic creation (adding partitions later breaks key-based ordering). Rule of thumb: start with 3× expected peak consumer count.</li>
+          <li><strong>Offset management</strong>: default auto-commit risks losing in-flight messages on crash. Use manual ack with <code>AckMode.MANUAL_IMMEDIATE</code> and commit only after successful processing.</li>
+          <li><strong>MSK-specific</strong>: IAM-based auth (no plaintext password). Use MSK Serverless for variable workloads; Provisioned for predictable high-throughput. Integrate via the MSK Bootstrap Server addresses from the AWS console.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── VPC ─── -->
+  <section class="topic-section" id="vpc">
+    <div class="section-header">
+      <span class="section-eyebrow">Networking</span>
+      <h2>VPC — Virtual Private Cloud</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>A VPC is your private network in AWS. All compute resources launch inside a VPC. You define IP ranges (CIDR blocks), divide into subnets across AZs, and control traffic with Security Groups (stateful, instance-level) and NACLs (stateless, subnet-level).</p>
+
+      <div class="ascii-diagram"><span class="hi">Standard VPC Layout (3-tier)</span>
+
+VPC: 10.0.0.0/16
+  │
+  ├── <span class="accent">Public Subnets</span> (one per AZ, /24)    ← ALB, NAT Gateway, Bastion
+  │      10.0.1.0/24 (us-east-1a)
+  │      10.0.2.0/24 (us-east-1b)        Route: 0.0.0.0/0 → Internet Gateway
+  │
+  ├── <span class="ok">Private Subnets</span> (one per AZ, /24)   ← ECS tasks, EC2, EKS nodes
+  │      10.0.11.0/24 (us-east-1a)
+  │      10.0.12.0/24 (us-east-1b)       Route: 0.0.0.0/0 → NAT Gateway
+  │
+  └── <span class="mu">Data Subnets</span> (one per AZ, /24)     ← RDS, ElastiCache, MSK brokers
+         10.0.21.0/24 (us-east-1a)       No route to internet (isolated)
+         10.0.22.0/24 (us-east-1b)</div>
+
+      <div class="key-points">
+        <div class="key-points-label">Security Model</div>
+        <ul>
+          <li><strong>Security Groups</strong>: stateful firewall attached to ENI (elastic network interface). Define inbound/outbound rules by port + source SG or CIDR. Best practice: allow traffic FROM a security group, not a CIDR. E.g., ECS task SG allows 5432 FROM RDS proxy SG.</li>
+          <li><strong>NAT Gateway</strong>: allows private subnet resources to initiate outbound internet connections (Maven dependency downloads, Docker pulls, API calls) without accepting inbound connections. Place one per AZ for HA.</li>
+          <li><strong>VPC Endpoints</strong>: private connections to AWS services (S3, DynamoDB, SQS) without leaving the AWS network. Eliminates NAT Gateway data transfer charges and reduces exposure. Critical for security-sensitive environments.</li>
+          <li><strong>VPC Peering / Transit Gateway</strong>: connect two VPCs. Peering = 1:1 connection; Transit Gateway = hub for many-to-many VPC connections across accounts and regions.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── ALB ─── -->
+  <section class="topic-section" id="alb">
+    <div class="section-header">
+      <span class="section-eyebrow">Networking</span>
+      <h2>ALB — Application Load Balancer</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>ALB operates at Layer 7 (HTTP/HTTPS/WebSocket) and routes requests to target groups based on host header, path, query string, or HTTP method. It's the primary entry point for web applications on AWS — placed in public subnets, routing to private-subnet targets.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Features</div>
+        <ul>
+          <li><strong>Path-based routing</strong>: <code>/api/users/*</code> → User Service TG, <code>/api/products/*</code> → Product Service TG. One ALB can front multiple microservices without a separate API Gateway layer.</li>
+          <li><strong>Target groups</strong>: can target EC2 instances, ECS tasks, Lambda functions, or IP addresses. Health check on each target — unhealthy targets removed from rotation automatically.</li>
+          <li><strong>TLS termination</strong>: ALB handles HTTPS (certificate via ACM — free), forwards HTTP to internal targets. Never expose HTTP to the internet; always redirect 80 → 443 with an ALB listener rule.</li>
+          <li><strong>WebSocket support</strong>: ALB supports WebSocket connections natively. Enable <code>stickiness</code> on the target group if your WS server is stateful (not recommended — prefer Redis for shared WS state).</li>
+          <li><strong>WAF integration</strong>: attach AWS WAF to ALB to block OWASP Top 10, rate limit by IP, or allow-list specific user agents. First line of defense for public-facing APIs.</li>
+          <li><strong>Access logs</strong>: enable ALB access logs to S3. Contains every request: timestamp, source IP, latency, target response. Essential for debugging production issues and capacity planning.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── CLOUDFRONT ─── -->
+  <section class="topic-section" id="cloudfront">
+    <div class="section-header">
+      <span class="section-eyebrow">Networking</span>
+      <h2>CloudFront</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>CloudFront is AWS's CDN — 450+ edge locations cache content close to users. It reduces latency for static assets, images, and cacheable API responses. Also works as a security boundary: you can block all direct traffic to your ALB/S3 and only allow CloudFront IPs.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Patterns</div>
+        <ul>
+          <li><strong>Cache behaviors</strong>: different TTL per path. <code>/static/*</code> (immutable assets with content hash in filename) → TTL 1 year. <code>/api/*</code> → TTL 0 (no cache, pass-through). <code>/images/*</code> → TTL 24h with S3 origin.</li>
+          <li><strong>Origins</strong>: S3 bucket (static hosting), ALB, API Gateway, or any HTTP endpoint. Use Origin Access Control (OAC) for S3: CloudFront signs requests to S3; S3 bucket policy denies all other origins.</li>
+          <li><strong>Cache invalidation</strong>: on deploy, invalidate changed paths (<code>/index.html</code>). For versioned assets (hash in filename), no invalidation needed — old CDN URL simply isn't used anymore. Invalidations cost $0.005/path.</li>
+          <li><strong>Lambda@Edge / CloudFront Functions</strong>: run code at edge nodes. Use for: auth token validation, request/response header manipulation, A/B testing, URL rewriting.</li>
+          <li><strong>Signed URLs/Cookies</strong>: protect private content (behind-login images, premium video). CloudFront verifies a signature before serving. Generate signed URLs from your Spring Boot backend using CloudFront SDK.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── CLOUDWATCH ─── -->
+  <section class="topic-section" id="cloudwatch">
+    <div class="section-header">
+      <span class="section-eyebrow">Operations</span>
+      <h2>CloudWatch</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>CloudWatch is AWS's integrated observability service — metrics, logs, alarms, and dashboards. Every AWS service publishes metrics to CloudWatch automatically. You add application metrics and structured logs. CloudWatch Alarms trigger auto-scaling, SNS notifications, or Lambda functions when thresholds are breached.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Spring Boot Observability on AWS</div>
+        <ul>
+          <li><strong>Custom metrics</strong>: use Micrometer (Spring Boot Actuator's metric facade) with the CloudWatch registry (<code>micrometer-registry-cloudwatch2</code>). Metrics published as CloudWatch Custom Metrics every 60s. Create alarms on these for auto-scaling or pages.</li>
+          <li><strong>Structured logging</strong>: log in JSON with a <code>requestId</code> / <code>traceId</code> field. CloudWatch Logs Insights queries JSON fields natively: <code>filter level="ERROR" | stats count() by service</code>.</li>
+          <li><strong>Log groups + retention</strong>: set log group retention (30-90 days). Logs older than retention are deleted automatically — important for cost and compliance.</li>
+          <li><strong>Composite Alarms</strong>: combine multiple metric alarms with AND/OR logic. Alert only when error rate is high AND latency is high (not just one) — reduces false positives.</li>
+          <li><strong>CloudWatch Container Insights</strong>: automatic ECS/EKS metrics (CPU, memory, network per container) without any code changes. Enable in cluster settings. Replaces the need for node-level Prometheus for basic container metrics.</li>
+          <li><strong>X-Ray integration</strong>: CloudWatch ServiceMap and traces powered by AWS X-Ray. Add the X-Ray Spring Boot starter for automatic trace instrumentation of HTTP calls, DynamoDB, SQS, etc.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── IAM ─── -->
+  <section class="topic-section" id="iam">
+    <div class="section-header">
+      <span class="section-eyebrow">Operations</span>
+      <h2>IAM — Identity and Access Management</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>IAM controls who (identity) can do what (action) on which AWS resources (resource). Critical principle: <strong>least privilege</strong> — grant only the exact permissions needed, nothing more. IAM mistakes are the #1 cause of AWS data breaches.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Concepts</div>
+        <ul>
+          <li><strong>IAM Roles vs Users</strong>: Users have long-lived credentials (access key ID + secret). Roles are assumed — short-lived STS credentials (1h default). Your ECS tasks, Lambda functions, and EC2 instances should always run with a Role, never with an IAM User's access key hardcoded.</li>
+          <li><strong>IAM Role for ECS/Lambda</strong>: attach a task execution role to your ECS task or Lambda function. The AWS SDK automatically fetches credentials from the instance metadata endpoint — no configuration needed in your Spring Boot app. Works with spring-cloud-aws and standard AWS SDK.</li>
+          <li><strong>Policy structure</strong>: <code>{ Effect: Allow, Action: ["s3:GetObject","s3:PutObject"], Resource: "arn:aws:s3:::my-bucket/*" }</code>. Always scope Resource to the specific bucket/table — never use <code>"*"</code> in production.</li>
+          <li><strong>Service Control Policies (SCPs)</strong>: org-level guardrails that cap what any account or user can do, regardless of their own IAM permissions. E.g., prevent any account from disabling CloudTrail or creating resources outside approved regions.</li>
+          <li><strong>OIDC-based CI/CD</strong>: GitHub Actions and other CI systems can assume IAM Roles via OIDC — no access keys stored in CI secrets. The CI system presents a token; AWS validates it against the registered OIDC provider and issues short-lived credentials. Best practice for all CI/CD pipelines in 2024.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── DOCKER ─── -->
+  <section class="topic-section" id="docker">
+    <div class="section-header">
+      <span class="section-eyebrow">Containers</span>
+      <h2>Docker</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Docker packages an application and its runtime dependencies into a portable container image. Every container starts from an image; images are built via a Dockerfile. The container runtime (Docker/containerd) isolates processes via Linux cgroups and namespaces. Images are stored in registries (ECR, Docker Hub).</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">DOCKERFILE</span><span class="code-desc">Spring Boot multi-stage build</span></div>
+        <pre><code><span class="cm"># Stage 1: extract layers from fat JAR</span>
+<span class="kw">FROM</span> <span class="ty">eclipse-temurin:21-jre</span> <span class="kw">AS</span> builder
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> target/myapp.jar myapp.jar
+<span class="kw">RUN</span> java -Djarmode=layertools -jar myapp.jar extract
+
+<span class="cm"># Stage 2: lean runtime image</span>
+<span class="kw">FROM</span> <span class="ty">eclipse-temurin:21-jre-alpine</span>
+<span class="kw">WORKDIR</span> /app
+<span class="cm"># Copy layers in order of how often they change</span>
+<span class="kw">COPY</span> --from=builder /app/dependencies/ ./
+<span class="kw">COPY</span> --from=builder /app/spring-boot-loader/ ./
+<span class="kw">COPY</span> --from=builder /app/snapshot-dependencies/ ./
+<span class="kw">COPY</span> --from=builder /app/application/ ./
+<span class="cm"># Non-root user</span>
+<span class="kw">RUN</span> addgroup -S app &amp;&amp; adduser -S app -G app
+<span class="kw">USER</span> app
+<span class="kw">EXPOSE</span> <span class="num">8080</span>
+<span class="kw">ENTRYPOINT</span> [<span class="str">"java"</span>, <span class="str">"-XX:+UseContainerSupport"</span>, <span class="str">"-XX:MaxRAMPercentage=75"</span>, <span class="str">"org.springframework.boot.loader.JarLauncher"</span>]</code></pre>
+      </div>
+
+      <div class="key-points">
+        <div class="key-points-label">Best Practices</div>
+        <ul>
+          <li><strong>Layer caching</strong>: put rarely-changing layers (dependencies) before frequently-changing ones (application code). Spring Boot layered JARs exploit this optimally — <code>dependency</code> layer is cache-hit on 95% of builds.</li>
+          <li><strong>Minimal base image</strong>: use JRE (not JDK) Alpine variants for smallest attack surface. JDK 21 allows custom JRE via <code>jlink</code> for even smaller images (30-50MB vs 200MB+).</li>
+          <li><strong>Non-root user</strong>: always run the container as a non-root user. Containers that run as root can escalate privileges if the container runtime is misconfigured.</li>
+          <li><strong>ECR lifecycle policies</strong>: auto-expire old image tags. Keep last 10 releases; delete everything older. Prevents unbounded ECR storage growth.</li>
+          <li><strong>.dockerignore</strong>: exclude <code>target/</code>, <code>.git/</code>, <code>*.md</code>. Prevents sending large build context to the daemon.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── KUBERNETES ─── -->
+  <section class="topic-section" id="kubernetes">
+    <div class="section-header">
+      <span class="section-eyebrow">Containers</span>
+      <h2>Kubernetes</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Kubernetes orchestrates containerized workloads across a cluster of nodes. The control plane (API server, scheduler, etcd, controller manager) manages state; worker nodes run pods. You describe desired state in YAML manifests; Kubernetes continuously reconciles actual state toward desired state.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">YAML</span><span class="code-desc">Spring Boot Deployment with resource limits</span></div>
+        <pre><code><span class="kw">apiVersion</span>: apps/v1
+<span class="kw">kind</span>: Deployment
+<span class="kw">metadata</span>:
+  <span class="kw">name</span>: user-service
+<span class="kw">spec</span>:
+  <span class="kw">replicas</span>: <span class="num">3</span>
+  <span class="kw">strategy</span>:
+    <span class="kw">type</span>: RollingUpdate
+    <span class="kw">rollingUpdate</span>: { maxSurge: <span class="num">1</span>, maxUnavailable: <span class="num">0</span> }
+  <span class="kw">template</span>:
+    <span class="kw">spec</span>:
+      <span class="kw">containers</span>:
+      - <span class="kw">name</span>: user-service
+        <span class="kw">image</span>: <span class="str">123456789.dkr.ecr.us-east-1.amazonaws.com/user-service:1.2.3</span>
+        <span class="kw">ports</span>: [{ <span class="kw">containerPort</span>: <span class="num">8080</span> }]
+        <span class="kw">resources</span>:
+          <span class="kw">requests</span>: { cpu: <span class="str">"250m"</span>, memory: <span class="str">"512Mi"</span> }   <span class="cm"># scheduling baseline</span>
+          <span class="kw">limits</span>:   { cpu: <span class="str">"1000m"</span>, memory: <span class="str">"1Gi"</span> }   <span class="cm"># enforcement ceiling</span>
+        <span class="kw">livenessProbe</span>:
+          <span class="kw">httpGet</span>: { path: <span class="str">/actuator/health/liveness</span>, port: <span class="num">8080</span> }
+          <span class="kw">initialDelaySeconds</span>: <span class="num">30</span>
+        <span class="kw">readinessProbe</span>:
+          <span class="kw">httpGet</span>: { path: <span class="str">/actuator/health/readiness</span>, port: <span class="num">8080</span> }
+        <span class="kw">env</span>:
+        - <span class="kw">name</span>: SPRING_PROFILES_ACTIVE
+          <span class="kw">value</span>: <span class="str">prod</span>
+        - <span class="kw">name</span>: DB_PASSWORD
+          <span class="kw">valueFrom</span>:
+            <span class="kw">secretKeyRef</span>: { name: db-secret, key: password }</code></pre>
+      </div>
+
+      <div class="key-points">
+        <div class="key-points-label">Probes — Critical Distinction</div>
+        <ul>
+          <li><strong>Liveness probe</strong>: "Is the process alive?" If it fails, Kubernetes kills and restarts the pod. Use <code>/actuator/health/liveness</code>. Should only fail on unrecoverable states (deadlock, corrupt state). Never check DB connectivity here — a DB outage shouldn't restart all your pods.</li>
+          <li><strong>Readiness probe</strong>: "Is this pod ready to receive traffic?" If it fails, Kubernetes removes the pod from the Service endpoints (no traffic sent) but does NOT restart it. Use <code>/actuator/health/readiness</code>. Check DB connection, cache availability here.</li>
+          <li><strong>Startup probe</strong>: for slow-starting apps (JVM warm-up). Kubernetes waits for startup probe to succeed before starting liveness checks. Prevents killing a JVM that's still initializing Spring context.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── JENKINS ─── -->
+  <section class="topic-section" id="jenkins">
+    <div class="section-header">
+      <span class="section-eyebrow">CI/CD</span>
+      <h2>Jenkins</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>Jenkins is the most widely deployed open-source CI/CD server. Self-hosted, highly configurable via plugins, with a large ecosystem. Pipelines are defined in Jenkinsfile (Groovy DSL). Requires operational investment — Jenkins itself needs maintenance, scaling, and security patching. Suitable when you need maximum control or work in air-gapped environments.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">GROOVY</span><span class="code-desc">Jenkinsfile — standard Java pipeline</span></div>
+        <pre><code><span class="kw">pipeline</span> {
+  <span class="kw">agent</span> { docker { image <span class="str">'eclipse-temurin:21'</span> } }
+  <span class="kw">stages</span> {
+    <span class="kw">stage</span>(<span class="str">'Test'</span>) {
+      <span class="kw">steps</span> { sh <span class="str">'mvn test -Dmaven.test.failure.ignore=false'</span> }
+      <span class="kw">post</span> { always { junit <span class="str">'target/surefire-reports/*.xml'</span> } }
+    }
+    <span class="kw">stage</span>(<span class="str">'Build'</span>) {
+      <span class="kw">steps</span> { sh <span class="str">'mvn package -DskipTests'</span> }
+    }
+    <span class="kw">stage</span>(<span class="str">'Docker Push'</span>) {
+      <span class="kw">steps</span> {
+        <span class="kw">withCredentials</span>([usernamePassword(credentialsId: <span class="str">'ecr-creds'</span>, ...)]) {
+          sh <span class="str">'docker build -t $IMAGE_NAME .'</span>
+          sh <span class="str">'docker push $IMAGE_NAME'</span>
+        }
+      }
+    }
+    <span class="kw">stage</span>(<span class="str">'Deploy'</span>) {
+      <span class="kw">when</span> { branch <span class="str">'main'</span> }
+      <span class="kw">steps</span> { sh <span class="str">'kubectl set image deployment/app app=$IMAGE_NAME'</span> }
+    }
+  }
+}</code></pre>
+      </div>
+
+      <div class="key-points">
+        <div class="key-points-label">Jenkins vs Alternatives</div>
+        <ul>
+          <li><strong>Use Jenkins when</strong>: on-prem or air-gapped environment, existing large Jenkins investment, complex custom pipeline logic, need enterprise plugins (LDAP, SAML, RBAC).</li>
+          <li><strong>Drawbacks</strong>: operational overhead (master HA, agent fleet management), Groovy DSL verbosity, plugin compatibility matrix, slow to adopt new features.</li>
+          <li><strong>Jenkins on Kubernetes</strong>: use the Kubernetes plugin to spin up ephemeral pods as build agents. No need to maintain a static agent fleet — agents start fresh per build, scale to zero between builds.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── GITHUB ACTIONS ─── -->
+  <section class="topic-section" id="githubactions">
+    <div class="section-header">
+      <span class="section-eyebrow">CI/CD</span>
+      <h2>GitHub Actions</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>GitHub Actions is a cloud-native CI/CD platform integrated directly into GitHub. Workflows are YAML files in <code>.github/workflows/</code>. GitHub-hosted runners start fresh for each job — no maintenance. OIDC federation with AWS allows secure deployments without storing long-lived credentials.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang-tag">YAML</span><span class="code-desc">.github/workflows/deploy.yml</span></div>
+        <pre><code><span class="kw">on</span>:
+  <span class="kw">push</span>: { branches: [main] }
+
+<span class="kw">jobs</span>:
+  <span class="kw">build-and-deploy</span>:
+    <span class="kw">runs-on</span>: ubuntu-latest
+    <span class="kw">permissions</span>:
+      id-token: write    <span class="cm"># required for OIDC</span>
+      contents: read
+    <span class="kw">steps</span>:
+    - <span class="kw">uses</span>: actions/checkout@v4
+    - <span class="kw">uses</span>: actions/setup-java@v4
+      <span class="kw">with</span>: { java-version: <span class="str">'21'</span>, distribution: temurin }
+    - <span class="kw">name</span>: Cache Maven
+      <span class="kw">uses</span>: actions/cache@v4
+      <span class="kw">with</span>:
+        path: ~/.m2
+        key: <span class="str">${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}</span>
+    - <span class="kw">name</span>: Build &amp; Test
+      <span class="kw">run</span>: mvn verify
+    - <span class="kw">name</span>: Configure AWS credentials (OIDC)
+      <span class="kw">uses</span>: aws-actions/configure-aws-credentials@v4
+      <span class="kw">with</span>:
+        role-to-assume: <span class="str">arn:aws:iam::123456789:role/github-actions-deploy</span>
+        aws-region: us-east-1
+    - <span class="kw">name</span>: Build &amp; push Docker image
+      <span class="kw">run</span>: |
+        aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
+        docker build -t $ECR_REGISTRY/myapp:${{ github.sha }} .
+        docker push $ECR_REGISTRY/myapp:${{ github.sha }}
+    - <span class="kw">name</span>: Deploy to ECS
+      <span class="kw">run</span>: |
+        aws ecs update-service --cluster prod --service myapp \
+          --force-new-deployment</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── HARNESS ─── -->
+  <section class="topic-section" id="harness">
+    <div class="section-header">
+      <span class="section-eyebrow">CI/CD</span>
+      <h2>Harness</h2>
+      <span class="diff-badge diff-imp">Important</span>
+    </div>
+    <div class="section-body">
+      <p>Harness is an enterprise CD platform built around safe, automated deployments. Its differentiating features are: <strong>canary and blue/green deployments with automatic rollback</strong> based on metrics (CloudWatch, Prometheus, Datadog), <strong>deployment verification</strong> using ML to detect anomalies post-deploy, and <strong>cost governance</strong> for cloud spending. Used when you need CD features beyond what GitHub Actions/Jenkins provide natively.</p>
+
+      <div class="compare-table">
+        <table>
+          <thead><tr><th>Feature</th><th>Jenkins / GitHub Actions</th><th>Harness</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Canary rollout</strong></td><td>Manual scripting required</td><td>Built-in: 10% → 25% → 50% → 100% with verification gates</td></tr>
+            <tr><td><strong>Auto rollback</strong></td><td>Manual trigger or custom script</td><td>Automatic on metric threshold breach (error rate, latency)</td></tr>
+            <tr><td><strong>Approval gates</strong></td><td>Plugin or manual workflow</td><td>First-class: Slack approval, JIRA ticket, scheduled window</td></tr>
+            <tr><td><strong>Feature flags</strong></td><td>Not included</td><td>Harness Feature Flags module (integrated with deploys)</td></tr>
+            <tr><td><strong>GitOps</strong></td><td>Flux/ArgoCD separately</td><td>Harness GitOps Agent (Argo CD based)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">When to Mention Harness in an Interview</div>
+        <ul>
+          <li>When asked about zero-downtime deploys or handling deployment risk. Say: "We used Harness canary deployments with CloudWatch verification gates — it would automatically roll back if error rate exceeded 1% in the first 10 minutes."</li>
+          <li>When asked about incident root cause: "We pinpointed that the spike in 500 errors correlated with the last deploy — Harness deployment tracking made that correlation immediate."</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── SONARQUBE ─── -->
+  <section class="topic-section" id="sonarqube">
+    <div class="section-header">
+      <span class="section-eyebrow">CI/CD</span>
+      <h2>SonarQube</h2>
+      <span class="diff-badge diff-core">Core</span>
+    </div>
+    <div class="section-body">
+      <p>SonarQube is a continuous code quality and security analysis platform. It scans source code for bugs, code smells, vulnerabilities, and test coverage gaps. Integrated into CI — a Quality Gate blocks merges when quality metrics fall below defined thresholds. This is how you enforce code standards at scale without manual review checklists.</p>
+
+      <div class="key-points">
+        <div class="key-points-label">Key Concepts</div>
+        <ul>
+          <li><strong>Quality Gate</strong>: a set of conditions that must pass before code can merge or deploy. Typical gate: coverage on new code &gt;80%, no new critical bugs, no new security hotspots unreviewed, new code duplication &lt;3%.</li>
+          <li><strong>Issue types</strong>: Bug (likely error in code, definite fix needed), Vulnerability (security flaw, exploitable), Code Smell (maintainability issue, technical debt), Security Hotspot (needs human review to determine if risky).</li>
+          <li><strong>Maven integration</strong>: <code>mvn sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=http://sonar:9000 -Dsonar.token=$SONAR_TOKEN</code>. Runs after test phase — Sonar reads JaCoCo coverage reports.</li>
+          <li><strong>PR decoration</strong>: SonarQube posts analysis results as comments on GitHub/GitLab PRs. Developers see issues inline in the PR review interface — no need to navigate to the SonarQube dashboard.</li>
+          <li><strong>As a Team Lead</strong>: configure Quality Gates to match your team's standards. Start lenient (Coverage &gt;60% on new code) and tighten over time. Don't block PRs with existing legacy debt — use the "new code" period concept so only changes are gated, not the entire codebase at once.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+  <div style="text-align:center;padding:1rem 0 2rem;color:var(--muted);font-family:var(--font-mono);font-size:0.78rem;">
+    Round 7 complete · 16 AWS services + 7 tools · Round 8 → Team Lead
+  </div>
+</main>
+</div>
+
+<script>
+const btn = document.getElementById('themeBtn');
+const root = document.documentElement;
+const saved = localStorage.getItem('theme');
+if (saved) root.setAttribute('data-theme', saved);
+btn.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+const sections = document.querySelectorAll('.topic-section');
+const links = document.querySelectorAll('.nav-link');
+function onScroll() {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY + 80 >= s.offsetTop) current = s.id; });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+</script>
